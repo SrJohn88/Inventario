@@ -40,16 +40,11 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 Vue.component('marcas', require('./components/Marcas.vue').default);
 Vue.component('entidades', require('./components/Entidades.vue').default);
 Vue.component('rubro', require('./components/Rubro.vue').default);
+Vue.component('cuentas', require('./components/Cuentas.vue').default);
+Vue.component('ubicaciones', require('./components/Ubicaciones.vue').default);
 
 import auth from './mixins/auth';
 Vue.mixin(auth);
-
-//Vue.component(VueNumberInput.name, VueNumberInput);
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
 
 Vue.component('date-picker',Datepicker)
 

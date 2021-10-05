@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRubrosTable extends Migration
+class CreateCuentasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateRubrosTable extends Migration
      */
     public function up()
     {
-        Schema::create('rubros', function (Blueprint $table) {
+        Schema::create('cuentas', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('rubro', 200)->unique();
+            $table->string('cuenta', 200)->unique();
             $table->boolean('eliminado')->default(false);
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class CreateRubrosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rubros');
+        Schema::dropIfExists('cuentas');
     }
 }

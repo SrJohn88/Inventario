@@ -177,8 +177,6 @@ export default {
         .catch(console.error);
     },
     save() {
-      console.log(this.entidad.id);
-
       let path = this.entidad.id
         ? `/Api/entidades/${this.entidad.id}/edit`
         : "/Api/entidades";
@@ -207,8 +205,6 @@ export default {
         .catch(() => {
           console.error("Error en la promesa de guardar");
         });
-
-      console.log(this.entidad);
     },
     deleteEntidad(entidad) {
       Swal.fire({

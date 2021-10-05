@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\EntidadController;
 use App\Http\Controllers\RubroController;
+use App\Http\Controllers\CuentaController;
+use App\Http\Controllers\UbicacionController;
 
 Auth::routes();
 Route::get('/',HomeController::class);
@@ -31,4 +33,22 @@ Route::delete('/Api/entidades/{entidad}',[EntidadController::class,'delete'])->n
 //RUBROS
 Route::get('/rubros',[RubroController::class,'index'])->name("rubros.index");
 
+//API RUBROS
+Route::get('/Api/rubros',[RubroController::class,'getRubros'])->name("rubros.get");
+Route::post('/Api/rubros',[RubroController::class,'save'])->name("rubrosApi.save");
+Route::post('/Api/rubros/{rubro}/edit',[RubroController::class,'update'])->name("rubrosApi.update");
+Route::delete('/Api/rubros/{rubro}',[RubroController::class,'delete'])->name("rubrosApi.delete");
+
+// CUENTAS
+Route::get('/cuentas',[CuentaController::class,'index'])->name("cuentas.index");
+
+// API CUENTAS
+Route::get('/Api/cuentas',[CuentaController::class,'getCuentas'])->name("cuentas.get");
+Route::post('/Api/cuentas',[CuentaController::class,'save'])->name("cuentas.save");
+Route::post('/Api/cuentas/{cuenta}/edit',[CuentaController::class,'update'])->name("cuentas.update");
+Route::delete('/Api/cuentas/{cuenta}',[CuentaController::class,'delete'])->name("cuentas.delete");
+
+
+//UBICACIONES
+Route::get('/ubicaciones',[UbicacionController::class,'index'])->name("ubicaciones.index");
 
