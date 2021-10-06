@@ -3,6 +3,10 @@
     <div
       class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
     >
+      <v-overlay :value="loader" :z-index="'99999999'">
+        <v-progress-circular indeterminate size="80" color="grey darken-4"></v-progress-circular>
+      </v-overlay>
+
       <v-card>
         <v-card-title>
           Rubros
@@ -15,7 +19,7 @@
         </v-card-title>
         <v-data-table
           :headers="encabezados"
-          :items="EstadoRubro ? rubrosActivos : rubrosEliminado"
+          :items="EstadoRubro ? rubrosEliminado : rubrosActivos"
           :footer-props="{
             'items-per-page-options': [5, 10, 20, 30, 40],
             'items-per-page-text': 'Registros Por Página',
@@ -29,6 +33,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
+                 v-show="!EstadoRubro"
                   color="success"
                   elevation="8"
                   small
@@ -45,6 +50,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
+                   v-show="!EstadoRubro"
                   color="info"
                   class="mx-1"
                   elevation="8"
@@ -59,6 +65,24 @@
               </template>
               <span>Eliminar Entidad</span>
             </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-show="EstadoRubro"
+                  color="teal"
+                  class="mx-1"
+                  elevation="8"
+                  small
+                  dark
+                  :disabled="item.id < 0"
+                  v-on="on"
+                  @click="restaurar(item)"
+                >
+                  <v-icon>mdi-restore</v-icon>
+                </v-btn>
+              </template>
+              <span>Eliminar Entidad</span>
+            </v-tooltip>
           </template>
 
           <template v-slot:top>
@@ -67,6 +91,7 @@
               <v-dialog v-model="modalRubro" persistent max-width="700px">
                 <template v-slot:activator="{ on }">
                   <v-btn
+                    v-show="!EstadoRubro"
                     elevation="10"
                     color="blue  darken-3"
                     dark
@@ -76,6 +101,15 @@
                     Agregar Rubro&nbsp;
                     <v-icon>mdi-plus-box-multiple-outline</v-icon>
                   </v-btn>
+
+                    <v-checkbox 
+                        v-model="EstadoRubro"
+                        class="mx-10"
+                        style="margin-top: 1.5rem;"
+                        label="Mostrar Los Rubros Removidas"
+                        value="false"
+                    />
+
                 </template>
                 <v-card>
                   <v-card-title class="headline grey lighten-2" primary-titles>
@@ -101,6 +135,26 @@
                           required
                           :error-messages="errores"
                         ></v-text-field>
+
+                        <v-row>
+                                <v-col cols="12">
+                                    <v-autocomplete
+                                        v-model="rubro.cuenta"
+                                        :items="cuentas"
+                                        required
+                                        label="Seleccione una cuenta"
+                                        item-text="cuenta"
+                                        item-value="id"
+                                        aling="center"
+                                        return-object
+                                        clearable
+                                        :menu-props="{ closeOnClick: true }"
+                                    ></v-autocomplete>
+                                </v-col>                                                          
+                          </v-row>
+
+
+
                       </v-form>
                     </v-container>
                   </v-card-text>
@@ -132,13 +186,15 @@
 export default {
   data() {
     return {
+      loader: false,
       encabezados: [
         { text: "ID", value: "id" },
         { text: "Rubro", value: "rubro" },
+        { text: 'Cuenta', value: 'cuenta.cuenta' },
         { text: "Acciones", value: "action", sortable: false, align: "center" },
       ],
-      rubro: { id: null, rubro: "" },
-      EstadoRubro: true,
+      rubro: { id: null, rubro: "", cuenta: { id: null, cuenta: ''}},
+      EstadoRubro: false,
       rubrosActivos: [],
       rubrosEliminado: [],
       buscarRubro: "",
@@ -151,9 +207,10 @@ export default {
           (v && v.length >= 2 && v.length <= 100) ||
           "Nombre de la entidad debe ser mayor a 2 caracteres",
         expresion: (v) =>
-          /^[A-Za-z0-9ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
+          /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
           "Nombre de la entidad no puede tener caracteres especiales",
       },
+      cuentas: [],
     };
   },
   computed: {
@@ -166,8 +223,18 @@ export default {
   },
   mounted() {
     this.obtenerRubros();
+    this.obtenerCuentas();
   },
   methods: {
+    obtenerCuentas ()
+    {
+      axios
+        .get("/Api/cuentas")
+        .then(({ data: { cuentas } }) => {
+          this.cuentas = cuentas;
+        })
+        .catch(console.error);
+    },
     obtenerRubros() {
       axios
         .get("/Api/rubros")
@@ -178,6 +245,7 @@ export default {
         .catch(console.error);
     },
     save() {
+      console.log( this.rubro );
       const path =
         this.rubro.id == null
           ? "/Api/rubros"
@@ -208,8 +276,31 @@ export default {
         cancelButtonText: 'No'
       }).then((result) => {
         if (result.isConfirmed) {
-          axios
-        .delete(`/Api/rubros/${rubro.id}`)
+          this.cambiarEstadoRubro(rubro)
+        }
+      });
+    },
+    restaurar ( {...rubro} )
+    {
+      Swal.fire({
+        title: "INFORMACION",
+        text: `¿Estas que quieres restaurar el rubro ${rubro.rubro} ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.cambiarEstadoRubro( rubro, false )
+        }
+      });
+
+    },
+    cambiarEstadoRubro( rubro, eliminar = true) {
+      axios
+        .delete(`/Api/rubros/${rubro.id}/${eliminar}`)
         .then((response) => {
 
           if (response.status == 200) {
@@ -217,15 +308,13 @@ export default {
 
           if (respuesta) {
             this.obtenerRubros();
-            this.alerta( mensaje, 'success', 'Buena hecho');
+            this.alerta( mensaje, 'success', '¡Bien hecho!');
           } else {
-            this.alerta( mensaje, 'error', 'Importante');
+            this.alerta( mensaje, 'error', '¡Importante!');
           }
         }
         })
         .catch(console.error);
-        }
-      });
     },
     mostrarModal( { ...rubro} ) {
       this.rubro = rubro;

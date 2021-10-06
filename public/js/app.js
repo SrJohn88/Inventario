@@ -1851,6 +1851,26 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2009,9 +2029,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       loader: false,
       modal: false,
-      cuentasRemovidas: false,
       buscarCuentas: "",
       cuentas: [],
+      mostrarCuentasEliminadas: false,
+      cuentasEliminadas: [],
       cuenta: {
         id: null,
         cuenta: ""
@@ -2038,7 +2059,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           return v.length >= 2 && v.length <= 100 || "Nombre de la cuenta debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9 \s]+$/g.test(v) || "Nombre de la cuenta no puede tener caracteres especiales";
+          return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la cuenta no puede tener caracteres especiales";
         }
       }
     };
@@ -2058,9 +2079,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     obtenerCuentas: function obtenerCuentas() {
       var _this = this;
 
+      this.cuentas = [];
+      this.cuentasEliminadas = [];
       axios.get("/Api/cuentas").then(function (_ref) {
         var cuentas = _ref.data.cuentas;
-        _this.cuentas = cuentas;
+        _this.cuentas = cuentas.filter(function (r) {
+          return r.eliminado == false;
+        });
+        _this.cuentasEliminadas = cuentas.filter(function (r) {
+          return r.eliminado == true;
+        });
+        console.log([_this.cuentas, _this.cuentasEliminadas]);
       })["catch"](console.error);
     },
     save: function save() {
@@ -2091,7 +2120,66 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this2.modal = false;
       });
     },
-    eliminar: function eliminar() {},
+    eliminar: function eliminar(_ref2) {
+      var _this3 = this;
+
+      var cuenta = _extends({}, _ref2);
+
+      Swal.fire({
+        title: "INFORMACION",
+        text: "\xBFEstas seguro de eliminar la cuenta ".concat(cuenta.cuenta, " ?"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          _this3.cambiarEstadoCuenta(cuenta);
+        }
+      });
+    },
+    restaurar: function restaurar(_ref3) {
+      var _this4 = this;
+
+      var cuenta = _extends({}, _ref3);
+
+      Swal.fire({
+        title: "INFORMACION",
+        text: "\xBFQuieres restaurar la cuenta ".concat(cuenta.cuenta, " ?"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          _this4.cambiarEstadoCuenta(cuenta, false);
+        }
+      });
+    },
+    cambiarEstadoCuenta: function cambiarEstadoCuenta(cuenta) {
+      var _this5 = this;
+
+      var eliminar = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      axios.get("/Api/cuentas/".concat(cuenta.id, "/").concat(eliminar)).then(function (response) {
+        if (response.status == 200) {
+          var _response$data2 = response.data,
+              respuesta = _response$data2.respuesta,
+              _mensaje2 = _response$data2.mensaje;
+
+          if (respuesta) {
+            _this5.alerta(_mensaje2, 'success', 'Buena hecho');
+
+            _this5.obtenerCuentas();
+          } else {
+            _this5.alerta(_mensaje2, 'error', 'Importante');
+          }
+        }
+      })["catch"](console.error);
+    },
     mostrarModal: function mostrarModal(cuenta) {
       this.cuenta = _objectSpread({}, cuenta);
       this.modal = true;
@@ -2299,7 +2387,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           return v.length >= 2 && v.length <= 100 || "Nombre de la entidad debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9 \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
+          return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
         }
       }
     };
@@ -2942,15 +3030,73 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      loader: false,
       encabezados: [{
         text: "ID",
         value: "id"
       }, {
         text: "Rubro",
         value: "rubro"
+      }, {
+        text: 'Cuenta',
+        value: 'cuenta.cuenta'
       }, {
         text: "Acciones",
         value: "action",
@@ -2959,9 +3105,13 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       }],
       rubro: {
         id: null,
-        rubro: ""
+        rubro: "",
+        cuenta: {
+          id: null,
+          cuenta: ''
+        }
       },
-      EstadoRubro: true,
+      EstadoRubro: false,
       rubrosActivos: [],
       rubrosEliminado: [],
       buscarRubro: "",
@@ -2976,9 +3126,10 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
           return v && v.length >= 2 && v.length <= 100 || "Nombre de la entidad debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
+          return /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
         }
-      }
+      },
+      cuentas: []
     };
   },
   computed: {
@@ -2991,24 +3142,34 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
   },
   mounted: function mounted() {
     this.obtenerRubros();
+    this.obtenerCuentas();
   },
   methods: {
-    obtenerRubros: function obtenerRubros() {
+    obtenerCuentas: function obtenerCuentas() {
       var _this = this;
 
-      axios.get("/Api/rubros").then(function (_ref) {
-        var rubros = _ref.data.rubros;
-        _this.rubrosActivos = rubros.filter(function (r) {
+      axios.get("/Api/cuentas").then(function (_ref) {
+        var cuentas = _ref.data.cuentas;
+        _this.cuentas = cuentas;
+      })["catch"](console.error);
+    },
+    obtenerRubros: function obtenerRubros() {
+      var _this2 = this;
+
+      axios.get("/Api/rubros").then(function (_ref2) {
+        var rubros = _ref2.data.rubros;
+        _this2.rubrosActivos = rubros.filter(function (r) {
           return r.eliminado == false;
         });
-        _this.rubrosEliminado = rubros.filter(function (r) {
+        _this2.rubrosEliminado = rubros.filter(function (r) {
           return r.eliminado == true;
         });
       })["catch"](console.error);
     },
     save: function save() {
-      var _this2 = this;
+      var _this3 = this;
 
+      console.log(this.rubro);
       var path = this.rubro.id == null ? "/Api/rubros" : "/Api/rubros/".concat(this.rubro.id, "/edit");
       axios.post(path, this.rubro).then(function (response) {
         if (response.status == 200) {
@@ -3017,21 +3178,21 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
               mensaje = _response$data.mensaje;
 
           if (respuesta) {
-            _this2.obtenerRubros();
+            _this3.obtenerRubros();
 
-            _this2.alerta(mensaje, 'success', 'Buena hecho');
+            _this3.alerta(mensaje, 'success', 'Buena hecho');
 
-            _this2.cerrarModal();
+            _this3.cerrarModal();
           } else {
-            _this2.alerta(mensaje, 'error', 'Importante');
+            _this3.alerta(mensaje, 'error', 'Importante');
           }
         }
       });
     },
-    deleteRubro: function deleteRubro(_ref2) {
-      var _this3 = this;
+    deleteRubro: function deleteRubro(_ref3) {
+      var _this4 = this;
 
-      var rubro = _extends({}, _ref2);
+      var rubro = _extends({}, _ref3);
 
       Swal.fire({
         title: "INFORMACION",
@@ -3044,26 +3205,52 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
         cancelButtonText: 'No'
       }).then(function (result) {
         if (result.isConfirmed) {
-          axios["delete"]("/Api/rubros/".concat(rubro.id)).then(function (response) {
-            if (response.status == 200) {
-              var _response$data2 = response.data,
-                  respuesta = _response$data2.respuesta,
-                  mensaje = _response$data2.mensaje;
-
-              if (respuesta) {
-                _this3.obtenerRubros();
-
-                _this3.alerta(mensaje, 'success', 'Buena hecho');
-              } else {
-                _this3.alerta(mensaje, 'error', 'Importante');
-              }
-            }
-          })["catch"](console.error);
+          _this4.cambiarEstadoRubro(rubro);
         }
       });
     },
-    mostrarModal: function mostrarModal(_ref3) {
-      var rubro = _extends({}, _ref3);
+    restaurar: function restaurar(_ref4) {
+      var _this5 = this;
+
+      var rubro = _extends({}, _ref4);
+
+      Swal.fire({
+        title: "INFORMACION",
+        text: "\xBFEstas que quieres restaurar el rubro ".concat(rubro.rubro, " ?"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          _this5.cambiarEstadoRubro(rubro, false);
+        }
+      });
+    },
+    cambiarEstadoRubro: function cambiarEstadoRubro(rubro) {
+      var _this6 = this;
+
+      var eliminar = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      axios["delete"]("/Api/rubros/".concat(rubro.id, "/").concat(eliminar)).then(function (response) {
+        if (response.status == 200) {
+          var _response$data2 = response.data,
+              respuesta = _response$data2.respuesta,
+              mensaje = _response$data2.mensaje;
+
+          if (respuesta) {
+            _this6.obtenerRubros();
+
+            _this6.alerta(mensaje, 'success', '¡Bien hecho!');
+          } else {
+            _this6.alerta(mensaje, 'error', '¡Importante!');
+          }
+        }
+      })["catch"](console.error);
+    },
+    mostrarModal: function mostrarModal(_ref5) {
+      var rubro = _extends({}, _ref5);
 
       this.rubro = rubro;
       this.modalRubro = true;
@@ -42966,7 +43153,9 @@ var render = function() {
               staticClass: "elevation-1",
               attrs: {
                 headers: _vm.TheadTable,
-                items: _vm.cuentas,
+                items: _vm.mostrarCuentasEliminadas
+                  ? _vm.cuentasEliminadas
+                  : _vm.cuentas,
                 "footer-props": {
                   "items-per-page-options": [5, 10, 20, 30, 40],
                   "items-per-page-text": "Registros Por Página"
@@ -43000,7 +43189,19 @@ var render = function() {
                                         "v-btn",
                                         _vm._g(
                                           {
+                                            directives: [
+                                              {
+                                                name: "show",
+                                                rawName: "v-show",
+                                                value: !_vm.mostrarCuentasEliminadas,
+                                                expression:
+                                                  "!mostrarCuentasEliminadas"
+                                              }
+                                            ],
                                             staticClass: "mb-2",
+                                            staticStyle: {
+                                              "font-size": "10px"
+                                            },
                                             attrs: {
                                               elevation: "10",
                                               color: "blue  darken-3",
@@ -43025,21 +43226,13 @@ var render = function() {
                                       _c("v-checkbox", {
                                         staticClass: "mx-10",
                                         staticStyle: { "margin-top": "1.5rem" },
-                                        attrs: {
-                                          label: "Cuentas eliminadas",
-                                          value: "false"
-                                        },
-                                        on: {
-                                          change: function($event) {
-                                            return _vm.fetchCuentasRemovidas()
-                                          }
-                                        },
+                                        attrs: { label: "Cuentas eliminadas" },
                                         model: {
-                                          value: _vm.cuentasRemovidas,
+                                          value: _vm.mostrarCuentasEliminadas,
                                           callback: function($$v) {
-                                            _vm.cuentasRemovidas = $$v
+                                            _vm.mostrarCuentasEliminadas = $$v
                                           },
-                                          expression: "cuentasRemovidas"
+                                          expression: "mostrarCuentasEliminadas"
                                         }
                                       })
                                     ]
@@ -43210,6 +43403,15 @@ var render = function() {
                                       "v-btn",
                                       _vm._g(
                                         {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.mostrarCuentasEliminadas,
+                                              expression:
+                                                "!mostrarCuentasEliminadas"
+                                            }
+                                          ],
                                           attrs: {
                                             color: "success",
                                             elevation: "8",
@@ -43254,6 +43456,15 @@ var render = function() {
                                       "v-btn",
                                       _vm._g(
                                         {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.mostrarCuentasEliminadas,
+                                              expression:
+                                                "!mostrarCuentasEliminadas"
+                                            }
+                                          ],
                                           staticClass: "mx-1",
                                           attrs: {
                                             color: "info",
@@ -43264,7 +43475,7 @@ var render = function() {
                                           },
                                           on: {
                                             click: function($event) {
-                                              return _vm.eliminar()
+                                              return _vm.eliminar(item)
                                             }
                                           }
                                         },
@@ -43282,6 +43493,61 @@ var render = function() {
                           )
                         },
                         [_vm._v(" "), _c("span", [_vm._v("Eliminar")])]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value:
+                                                _vm.mostrarCuentasEliminadas,
+                                              expression:
+                                                " mostrarCuentasEliminadas"
+                                            }
+                                          ],
+                                          staticClass: "mx-1",
+                                          attrs: {
+                                            color: "teal",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.restaurar(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-restore")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Restaurar")])]
                       )
                     ]
                   }
@@ -44132,6 +44398,17 @@ var render = function() {
       },
       [
         _c(
+          "v-overlay",
+          { attrs: { value: _vm.loader, "z-index": "99999999" } },
+          [
+            _c("v-progress-circular", {
+              attrs: { indeterminate: "", size: "80", color: "grey darken-4" }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
           "v-card",
           [
             _c(
@@ -44159,8 +44436,8 @@ var render = function() {
               attrs: {
                 headers: _vm.encabezados,
                 items: _vm.EstadoRubro
-                  ? _vm.rubrosActivos
-                  : _vm.rubrosEliminado,
+                  ? _vm.rubrosEliminado
+                  : _vm.rubrosActivos,
                 "footer-props": {
                   "items-per-page-options": [5, 10, 20, 30, 40],
                   "items-per-page-text": "Registros Por Página"
@@ -44190,6 +44467,14 @@ var render = function() {
                                       "v-btn",
                                       _vm._g(
                                         {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.EstadoRubro,
+                                              expression: "!EstadoRubro"
+                                            }
+                                          ],
                                           attrs: {
                                             color: "success",
                                             elevation: "8",
@@ -44237,6 +44522,14 @@ var render = function() {
                                       "v-btn",
                                       _vm._g(
                                         {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.EstadoRubro,
+                                              expression: "!EstadoRubro"
+                                            }
+                                          ],
                                           staticClass: "mx-1",
                                           attrs: {
                                             color: "info",
@@ -44254,6 +44547,59 @@ var render = function() {
                                         on
                                       ),
                                       [_c("v-icon", [_vm._v("mdi-delete")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Eliminar Entidad")])]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.EstadoRubro,
+                                              expression: "EstadoRubro"
+                                            }
+                                          ],
+                                          staticClass: "mx-1",
+                                          attrs: {
+                                            color: "teal",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.restaurar(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-restore")])],
                                       1
                                     )
                                   ]
@@ -44293,6 +44639,14 @@ var render = function() {
                                         "v-btn",
                                         _vm._g(
                                           {
+                                            directives: [
+                                              {
+                                                name: "show",
+                                                rawName: "v-show",
+                                                value: !_vm.EstadoRubro,
+                                                expression: "!EstadoRubro"
+                                              }
+                                            ],
                                             staticClass: "mb-2",
                                             attrs: {
                                               elevation: "10",
@@ -44313,7 +44667,23 @@ var render = function() {
                                           ])
                                         ],
                                         1
-                                      )
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-checkbox", {
+                                        staticClass: "mx-10",
+                                        staticStyle: { "margin-top": "1.5rem" },
+                                        attrs: {
+                                          label: "Mostrar Los Rubros Removidas",
+                                          value: "false"
+                                        },
+                                        model: {
+                                          value: _vm.EstadoRubro,
+                                          callback: function($$v) {
+                                            _vm.EstadoRubro = $$v
+                                          },
+                                          expression: "EstadoRubro"
+                                        }
+                                      })
                                     ]
                                   }
                                 }
@@ -44401,7 +44771,52 @@ var render = function() {
                                                   },
                                                   expression: "rubro.rubro"
                                                 }
-                                              })
+                                              }),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-row",
+                                                [
+                                                  _c(
+                                                    "v-col",
+                                                    { attrs: { cols: "12" } },
+                                                    [
+                                                      _c("v-autocomplete", {
+                                                        attrs: {
+                                                          items: _vm.cuentas,
+                                                          required: "",
+                                                          label:
+                                                            "Seleccione una cuenta",
+                                                          "item-text": "cuenta",
+                                                          "item-value": "id",
+                                                          aling: "center",
+                                                          "return-object": "",
+                                                          clearable: "",
+                                                          "menu-props": {
+                                                            closeOnClick: true
+                                                          }
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.rubro.cuenta,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.rubro,
+                                                              "cuenta",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "rubro.cuenta"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  )
+                                                ],
+                                                1
+                                              )
                                             ],
                                             1
                                           )

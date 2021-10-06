@@ -77,8 +77,15 @@ class CuentaController extends Controller
 
     }
 
-    function delete()
+    function delete( Cuenta $cuenta, $accion )
     {
+        $cuenta->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
+        $cuenta->save();
+
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'La cuenta ha sido eliminada con exito'
+        ]);
 
     }
 }

@@ -24,7 +24,7 @@
 
         <v-data-table
           :headers="TheadTable"
-          :items="cuentas"
+          :items=" mostrarCuentasEliminadas ? cuentasEliminadas : cuentas"
           :footer-props="{
             'items-per-page-options': [5, 10, 20, 30, 40],
             'items-per-page-text': 'Registros Por Página',
@@ -35,8 +35,6 @@
           class="elevation-1"
         >
 
-        
-
           <template v-slot:top>
             <v-toolbar flat color="white">
               <div class="flex-grow-1"></div>
@@ -46,7 +44,9 @@
                     elevation="10"
                     color="blue  darken-3"
                     dark
+                    v-show= "!mostrarCuentasEliminadas"
                     class="mb-2"
+                    style="font-size: 10px"
                     v-on="on"
                   >
                     Agregar Cuenta&nbsp;
@@ -55,12 +55,10 @@
 
                   <!-- MOSTRAR CUENTAS -->
                   <v-checkbox
-                    v-model="cuentasRemovidas"
-                    @change="fetchCuentasRemovidas()"
+                    v-model="mostrarCuentasEliminadas"
                     class="mx-10"
                     style="margin-top: 1.5rem"
                     label="Cuentas eliminadas"
-                    value="false"
                   />
                 </template>
                 <v-card>
@@ -113,6 +111,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
+                  v-show="!mostrarCuentasEliminadas"
                   color="success"
                   elevation="8"
                   small
@@ -129,6 +128,7 @@
             <v-tooltip top >
               <template v-slot:activator="{ on }" >
                 <v-btn
+                  v-show="!mostrarCuentasEliminadas"
                   color="info"
                   class="mx-1"
                   elevation="8"
@@ -136,12 +136,30 @@
                   dark
                   :disabled="item.id < 0"
                   v-on="on"
-                  @click="eliminar()"
+                  @click="eliminar( item )"
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
               <span>Eliminar</span>
+            </v-tooltip>
+            <v-tooltip top >
+              <template v-slot:activator="{ on }" >
+                <v-btn
+                  v-show=" mostrarCuentasEliminadas"
+                  color="teal"
+                  class="mx-1"
+                  elevation="8"
+                  small
+                  dark
+                  :disabled="item.id < 0"
+                  v-on="on"
+                  @click="restaurar( item )"
+                >
+                  <v-icon>mdi-restore</v-icon>
+                </v-btn>
+              </template>
+              <span>Restaurar</span>
             </v-tooltip>
           </template>
 
@@ -157,9 +175,10 @@ export default {
     return {
       loader: false,
       modal: false,
-      cuentasRemovidas: false,
       buscarCuentas: "",
       cuentas: [],
+      mostrarCuentasEliminadas: false,
+      cuentasEliminadas: [],
       cuenta: { id: null, cuenta: "" },
       validForm: true,
       TheadTable: [
@@ -174,7 +193,7 @@ export default {
           (v.length >= 2 && v.length <= 100) ||
           "Nombre de la cuenta debe ser mayor a 2 caracteres",
         expresion: (v) =>
-          /^[A-Za-z0-9 \s]+$/g.test(v) ||
+          /^[A-Za-z0-9- \s]+$/g.test(v) ||
           "Nombre de la cuenta no puede tener caracteres especiales",
       },
     };
@@ -192,10 +211,14 @@ export default {
   },
   methods: {
     obtenerCuentas() {
+      this.cuentas = [];
+      this.cuentasEliminadas = [];
       axios
         .get("/Api/cuentas")
-        .then(({ data: { cuentas } }) => {
-          this.cuentas = cuentas;
+        .then( ( { data: { cuentas } } ) => {
+          this.cuentas = cuentas.filter((r) => r.eliminado == false);
+          this.cuentasEliminadas = cuentas.filter((r) => r.eliminado == true);
+          console.log( [this.cuentas, this.cuentasEliminadas ] )
         })
         .catch(console.error);
     },
@@ -228,9 +251,59 @@ export default {
 
         });
     },
-    eliminar()
+    eliminar( { ...cuenta } )
     {
+      Swal.fire({
+        title: "INFORMACION",
+        text: `¿Estas seguro de eliminar la cuenta ${cuenta.cuenta} ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.isConfirmed) {
+              this.cambiarEstadoCuenta(cuenta);
+            }
+          });
 
+    },
+    restaurar ( {...cuenta} )
+    {
+        Swal.fire({
+        title: "INFORMACION",
+        text: `¿Quieres restaurar la cuenta ${cuenta.cuenta} ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.isConfirmed) {
+              this.cambiarEstadoCuenta(cuenta, false);
+            }
+          });
+    },
+    cambiarEstadoCuenta( cuenta, eliminar = true) {
+      axios
+            .get(`/Api/cuentas/${cuenta.id}/${eliminar}`)
+            .then((response) => {
+
+              if (response.status == 200) {
+              const { respuesta, mensaje } = response.data;
+
+              if (respuesta) {
+                this.alerta( mensaje, 'success', 'Buena hecho');                
+                this.obtenerCuentas();
+
+              } else {
+                this.alerta( mensaje, 'error', 'Importante');
+              }
+            }
+            })
+            .catch(console.error);
     },
     mostrarModal( cuenta )
     {

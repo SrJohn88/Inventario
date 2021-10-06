@@ -17,6 +17,7 @@ class CreateCuentasTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('cuenta', 200)->unique();
+
             $table->boolean('eliminado')->default(false);
             $table->timestamps();
         });

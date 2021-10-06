@@ -23,7 +23,7 @@ class RubroController extends Controller
     function getRubros ()
     {
         return response()->json([
-            'rubros' => Rubro::all()
+            'rubros' => Rubro::with('cuenta')->get()
         ]);
     }
 
@@ -32,7 +32,9 @@ class RubroController extends Controller
         if ($request->isMethod('POST')) {
             
             $validacion = Validator::make($request->all(), [
-                'rubro' => 'required|unique:rubros|min:2|max:100'
+                'rubro' => 'required|unique:rubros|min:2|max:100',
+                'cuenta.id' => 'required',
+                'cuenta.cuenta' => 'required'
             ], $this->mensajes);
 
             if ($validacion->fails()) {
@@ -45,6 +47,7 @@ class RubroController extends Controller
 
             $rubro = new Rubro();
             $rubro->rubro = $request->get('rubro');
+            $rubro->cuenta_id = $request->input('cuenta.id');
             $rubro->save();
 
             return response()->json([
@@ -78,14 +81,15 @@ class RubroController extends Controller
 
     }
 
-    function delete ( Rubro $rubro )
+    function delete ( Rubro $rubro, $accion )
     {
-        $rubro->eliminado = true;
+        $rubro->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
         $rubro->save();
 
+        $mensaje = $accion ? 'El rubro '. $rubro->rubro.' ha sido eliminada con exito' : 'El rubro '. $rubro->rubro.' ha sido restaurado con exito';
         return response()->json([
             'respuesta' => true,
-            'mensaje' => 'El rubro ha sido eliminada con exito'
+            'mensaje' => $mensaje
         ]);
 
     }

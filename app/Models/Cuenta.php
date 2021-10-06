@@ -10,4 +10,9 @@ class Cuenta extends Model
     protected $table = 'cuentas';
     
     protected $fillable = ['cuenta'];
+
+    public function rubros(){
+        
+        return $this->hasMany('App\Models\Rubro');
+    }
 }
