@@ -43,6 +43,10 @@ Vue.component('rubro', require('./components/Rubro.vue').default);
 Vue.component('cuentas', require('./components/Cuentas.vue').default);
 Vue.component('ubicaciones', require('./components/Ubicaciones.vue').default);
 
+// INVENTARIO
+Vue.component('inventario-crear', require('./components/Inventario/formularioCrear.vue').default);
+
+
 import auth from './mixins/auth';
 Vue.mixin(auth);
 

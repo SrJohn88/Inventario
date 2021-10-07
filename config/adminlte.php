@@ -242,6 +242,26 @@ return [
                     'route' => 'admin.marcas.index',
                     'icon'  => 'fas fw fa-registered',
                 ],
+                [
+                    'text' => 'Entidades',
+                    'route' => 'entidades.index',
+                    'icon'  => 'fas fw fa-registered',
+                ],
+                [
+                    'text' => 'Rubros',
+                    'route' => 'rubros.index',
+                    'icon'  => 'fas fw fa-registered',
+                ],                
+                [
+                    'text' => 'Cuentas',
+                    'route' => 'cuentas.index',
+                    'icon'  => 'fas fw fa-registered',
+                ],
+                [
+                    'text' => 'Inventario',
+                    'route' => 'inventario.crear',
+                    'icon'  => 'fas fw fa-registered',
+                ]
             ],
         ],
 

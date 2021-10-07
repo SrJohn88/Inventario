@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUbicacionsTable extends Migration
+class CreateInventariosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateUbicacionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ubicacions', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->increments('id');
-            $table->string('ubicacion', 300);
-            $table->boolean('eliminado')->default(false);
+        Schema::create('inventarios', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
         });
     }
@@ -29,6 +26,6 @@ class CreateUbicacionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ubicacions');
+        Schema::dropIfExists('inventarios');
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\EntidadController;
 use App\Http\Controllers\RubroController;
 use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\UbicacionController;
+use App\Http\Controllers\InventarioController;
 
 Auth::routes();
 Route::get('/',HomeController::class);
@@ -51,4 +52,10 @@ Route::get('/Api/cuentas/{cuenta}/{accion}',[CuentaController::class,'delete'])-
 
 //UBICACIONES
 Route::get('/ubicaciones',[UbicacionController::class,'index'])->name("ubicaciones.index");
+
+// UBICACIONES API
+Route::get('/Api/ubicaciones',[UbicacionController::class,'getUbicaciones'])->name("ubicaciones.get");
+
+//INVENTARIO
+Route::get('/inventario/crear',[InventarioController::class,'crear'])->name("inventario.crear");
 
