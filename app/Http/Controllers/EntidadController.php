@@ -18,7 +18,7 @@ class EntidadController extends Controller
     function obtenerEntidades()
     {
         $entidades = DB::table('entidades')
-            ->where('eliminado', false)
+            ->select('id', 'entidad', 'eliminado')
             ->get();
         return response()->json([
             'entidades' => $entidades
@@ -81,13 +81,16 @@ class EntidadController extends Controller
         ]);
     }
 
-    function delete ( Entidad $entidad ) {
-        $entidad->eliminado = true;
+    function delete ( Entidad $entidad, $accion ) {
+
+        $entidad->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
         $entidad->save();
+
+        $mensaje = $accion ? 'La entidad '.$entidad->entidad.' fue eliminada con exito' : 'La entidad '.$entidad->entidad.' fue restaurada con exito';
 
         return response()->json([
             'respuesta' => true,
-            'mensaje' => 'La entidad ha sido eliminada con exito'
+            'mensaje' => $mensaje
         ]);
     }
 }

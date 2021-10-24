@@ -17,12 +17,6 @@ class CreateRubrosTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('rubro', 200)->unique();
-
-            $table->unsignedInteger('cuenta_id');
-            $table->foreign('cuenta_id', 'fk_rubroCuenta')
-                    ->references('id')
-                    ->on('cuentas');
-
             $table->boolean('eliminado')->default(false);
             $table->timestamps();
         });

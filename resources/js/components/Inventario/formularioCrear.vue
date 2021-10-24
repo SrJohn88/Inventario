@@ -1,3 +1,4 @@
+
 <template>
     <div class="content">
         <div
@@ -35,7 +36,7 @@
                                         <v-col cols="6">
                                             <v-text-field
                                                     append-icon=""
-                                                    v-model="inventario.Serie"
+                                                    v-model="inventario.serie"
                                                     @keyup="errorsNombre = []"
                                                     label="Serie"
                                                     required
@@ -68,6 +69,21 @@
                                             ></v-autocomplete>
                                         </v-col>
 
+                                        <v-col cols="1" md="1" >
+                                            <Marca @saved="onSavedMarca" ref="marca" />
+                                            <v-btn
+                                            elevation="5"
+                                            class="mt-8"
+                                            text
+                                            icon
+                                            color="primary"
+                                            @click="mostrarModalMarca()"
+                                            dark
+                                            >
+                                            <v-icon>mdi-plus-circle</v-icon>
+                                            </v-btn>
+                                        </v-col>
+
                                         <v-col cols="6">
                                             <v-text-field
                                                 append-icon=""
@@ -79,23 +95,56 @@
                                             ></v-text-field>
                                         </v-col>
 
-                                        <v-col cols="5">
+                                        <v-col cols="6">
                                             <v-select
                                                 :items="procedencias"
                                                 v-model="inventario.procedencia"
-                                                item-text="nombre"
-                                                item-value="procedencia"
+                                                item-text="procedencia"
+                                                item-value="id"
                                                 label="Procedencia"
+                                                return-object                                        
+                                                :menu-props="{ closeOnClick: true }"
                                             ></v-select>
                                         </v-col>
 
-                                        <v-col cols="5">
+                                        <v-col cols="5" v-if="inventario.procedencia.id == 1 " >
+                                            <v-autocomplete
+                                                v-model="inventario.cuenta"
+                                                :items="cuentas"
+                                                required
+                                                :rules="[ v => !!v || 'Tipo cuenta del activo es requerido']"
+                                                label="Cuenta"
+                                                item-text="cuenta"
+                                                item-value="id"
+                                                return-object
+                                                clearable
+                                                :menu-props="{ closeOnClick: true }"
+                                            ></v-autocomplete>
+                                        </v-col>
+                                        
+                                        <v-col cols="1" md="1" v-if="inventario.procedencia.id == 1 " >
+                                            <Cuenta @saved="onSavedCuenta" ref="cuenta" />
+                                            <v-btn
+                                            elevation="5"
+                                            class="mt-8"
+                                            text
+                                            icon
+                                            color="primary"
+                                            @click="mostrarModalCuenta()"
+                                            dark
+                                            >
+                                            <v-icon>mdi-plus-circle</v-icon>
+                                            </v-btn>
+                                        </v-col>
+
+
+                                        <v-col cols="5" v-if="inventario.procedencia.id != 1" >
                                             <v-autocomplete
                                                 v-model="inventario.entidad"
                                                 :items="entidades"
                                                 required
-                                                :rules="[ v => !!v || 'Tipo entidad del activo es requerido']"
-                                                label="Entidad"
+                                                :rules="[ v => !!v || 'Tipo cuenta del activo es requerido']"
+                                                label="Entidad Donante"
                                                 item-text="entidad"
                                                 item-value="id"
                                                 return-object
@@ -104,7 +153,22 @@
                                             ></v-autocomplete>
                                         </v-col>
 
-                                        <v-col cols="5">
+                                        <v-col cols="1" md="1" v-if="inventario.procedencia.id != 1" >
+                                            <Entidad @saved="onSaveEntidad" ref="entidad" />
+                                            <v-btn
+                                            elevation="5"
+                                            class="mt-8"
+                                            text
+                                            icon
+                                            color="primary"
+                                            @click="mostrarModalEntidad()"
+                                            dark
+                                            >
+                                            <v-icon>mdi-plus-circle</v-icon>
+                                            </v-btn>
+                                        </v-col>
+
+                                        <v-col cols="6">
                                             <v-text-field
                                                 append-icon="fas fa-tags"
                                                 v-model="inventario.precio"
@@ -114,26 +178,10 @@
                                                 :error-messages="errorsNombre"
                                             ></v-text-field>
                                         </v-col>
-                                        
 
                                         <v-col cols="5">
                                             <v-autocomplete
-                                                v-model="inventario.cuenta"
-                                                :items="cuentas"
-                                                required
-                                                :rules="[ v => !!v || 'Tipo entidad del activo es requerido']"
-                                                label="Cuenta"
-                                                item-text="cuenta"
-                                                item-value="id"
-                                                return-object
-                                                clearable
-                                                :menu-props="{ closeOnClick: true }"
-                                            ></v-autocomplete>
-                                        </v-col>
-
-                                        <v-col cols="5">
-                                            <v-autocomplete
-                                                v-model="inventario.rubros"
+                                                v-model="inventario.rubro"
                                                 :items="rubros"
                                                 required
                                                 :rules="[ v => !!v || 'Tipo entidad del activo es requerido']"
@@ -146,6 +194,47 @@
                                             ></v-autocomplete>
                                         </v-col>
 
+                                        <v-col cols="1" md="1" >
+                                            <Rubro @saved="onSavedRubro" ref="rubro" />
+                                            <v-btn
+                                            elevation="5"
+                                            class="mt-8"
+                                            text
+                                            icon
+                                            color="primary"
+                                            @click="mostrarModalRubro()"
+                                            dark
+                                            >
+                                            <v-icon>mdi-plus-circle</v-icon>
+                                            </v-btn>
+                                        </v-col>
+
+                                        <v-col cols="6">
+                                                <v-menu
+                                                    v-model="menu"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    min-width="auto"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                    <v-text-field
+                                                        v-model="inventario.fecha"
+                                                        label="Selecciona la fecha"
+                                                        prepend-icon="mdi-calendar"
+                                                        readonly
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                    ></v-text-field>
+                                                    </template>
+                                                    <v-date-picker
+                                                    v-model="inventario.fecha"
+                                                    @input="menu = false"
+                                                    ></v-date-picker>
+                                                </v-menu>
+                                        </v-col>                                    
+
                                         <v-col cols="5">
                                             <v-autocomplete
                                                 append-icon="fas fa-map-marker-alt"
@@ -154,7 +243,7 @@
                                                 required
                                                 :rules="[ v => !!v || 'Ubicación del activo es requerido']"
                                                 label="Ubicación"
-                                                item-text="nombre"
+                                                item-text="ubicacion"
                                                 item-value="id"
                                                 return-object
                                                 clearable
@@ -162,9 +251,25 @@
                                             ></v-autocomplete>
                                         </v-col>
 
+                                        <v-col cols="1" md="1" >
+                                            <Ubicacion @saved="onSavedUbicacion" ref="ubicacion" />
+                                            <v-btn
+                                            elevation="5"
+                                            class="mt-8"
+                                            text
+                                            icon
+                                            color="primary"
+                                            @click="mostrarModalUbicacion()"
+                                            dark
+                                            >
+                                            <v-icon>mdi-plus-circle</v-icon>
+                                            </v-btn>
+                                        </v-col>
+
                                         <v-col cols="12">
                                             <v-textarea
                                                 label="Observación"
+                                                v-model="inventario.observaciones"
                                                 no-resize
                                                 rows="1"
                                                 row-height="10"
@@ -181,12 +286,14 @@
                         <v-btn
                             color="red darken-1"
                             text
+                            @click="cancelar()"
                             >Cancelar</v-btn>
                         <v-btn
                             color="info darken-1"
                             :disabled="false"
-                            text
-                        >Guardar</v-btn>
+                            @click="save()"
+                            v-text="textButton"
+                        ></v-btn>
                     </v-card-actions>
                 </v-card>
         </div>
@@ -194,24 +301,39 @@
 </template>
 
 <script>
+
+Vue.component('Entidad', require('.//Modals/Entidad.vue').default);
+Vue.component('Cuenta', require('.//Modals/Cuenta.vue').default);
+Vue.component('Marca', require('.//Modals/Marca.vue').default);
+Vue.component('Rubro', require('.//Modals/Rubro.vue').default);
+Vue.component('Ubicacion', require('.//Modals/Ubicacion.vue').default);
+
+
+
 export default {
+    name: 'inventario-crear',
     data() {
         return {
+            menu: false,
+            idPrueba: 0,
             loader: false,
             validForm: false,
             marcas: [], entidades: [], rubros: [], ubicaciones: [],
             cuentas: [],
             inventario: {
-                codigo: '', serie: '', descripcion: '', modelo: '', marca: { id: null, marca: '' }, cuenta: { id: null, cuenta: ''},
+                id: null, codigo: '', serie: '', descripcion: '', modelo: '', observaciones: '', marca: { id: null, marca: '' }, cuenta: { id: null, cuenta: ''},
                 rubro: { id: null, rubro: '' }, procedencia: { id: null, procedencia: ''}, precio: 0.00, ubicacion: {id: null, ubicacion: ''},
-                entidad: { id: null, entidad: '' }
+                entidad: { id: null, entidad: '' }, fecha: ''
             },
             errorsNombre: [],
-            procedencias: [
-                { procedencia: 1, nombre: 'COMPRA'},
-                { procedencia: 2, nombre: 'DONACION'},
-            ]
+            procedencias: []
         }
+    },
+    created () {
+        let uri = window.location.search.substring(1); 
+        let params = new URLSearchParams(uri);
+
+        this.idPrueba = params.has('id') ? params.get('id') : null; 
     },
     mounted ()
     {
@@ -219,8 +341,54 @@ export default {
         this.obtenerCuentas();
         this.obtenerRubros();
         this.obtenerEntidades();
+        this.obtenerUbicaciones();
+        this.obtenerProcedencias();
+
+        if ( this.idPrueba != null ) 
+        {
+            this.obtenerActivo();
+        }
     }, 
+    computed: {
+        textButton () {
+            return this.idPrueba != null ? 'Actualizar' : 'Guardar';
+        }
+    },
     methods: {
+        obtenerActivo() {
+            axios.get(`/Api/inventario/${ this.idPrueba }/activos`)
+                .then( ( { data: { activo } } ) => {
+                    let {id, codigo, descripcion, fecha_adquision, precio, serie, modelo, ubicacion, entidad, rubro, marca, procedencia, cuenta, observacion } = { ...activo };
+
+                    this.inventario.id = id;
+                    this.inventario.codigo = codigo;
+                    this.inventario.serie = serie;
+                    this.inventario.descripcion = descripcion;
+                    this.inventario.modelo = modelo;
+                    this.inventario.precio = precio;
+                    this.inventario.fecha = fecha_adquision;
+                    this.inventario.observaciones = observacion
+
+
+                    this.inventario.procedencia = procedencia;
+                    this.inventario.entidad = entidad;
+                    this.inventario.marca = marca;
+                    this.inventario.rubro = rubro;
+                    this.inventario.cuenta = cuenta;
+                    this.inventario.ubicacion = ubicacion;
+                    
+
+                    console.log( this.inventario );
+
+                }).catch(console.error)
+        },
+        obtenerProcedencias(){
+            axios.get(`/Api/procedencias`)
+                .then( ( { data: { procedencias } } ) => {
+                    console.log(procedencias );
+                    this.procedencias = procedencias ;
+                }).catch(console.error)
+        },
         obtenerMarcar () {
             axios.get(`/marcas/list?type=A`)
                 .then( ( {data: marcas} ) => {
@@ -248,6 +416,124 @@ export default {
                     console.log(rubros);
                     this.rubros = rubros;
                 }).catch(console.error)
+        },
+        obtenerUbicaciones () {
+              axios
+          .get("/Api/ubicaciones")
+          .then(({ data: { ubicaciones } }) => {
+            this.ubicaciones = ubicaciones.filter((r) => r.eliminado == false);
+          })
+          .catch(console.error);
+        },
+        save() {
+            const path = ( this.idPrueba != null ) ? `/Api/inventario/${ this.idPrueba }/edit` : `/Api/inventario/save`;
+
+            axios
+                .post(path, this.inventario)
+                .then( response => {
+
+                    if(response.status == 200 )
+                    {
+                        const { respuesta, mensaje } = response.data;
+
+                        if (respuesta) {
+                            this.alerta( mensaje, 'success', 'Buena hecho');
+                            
+                            if ( this.idPrueba != null ) 
+                            {
+                                window.location = '/inventario/index'; 
+                            } else 
+                            {
+                                Swal.fire({
+                                title: "INFORMACION",
+                                text: `Deseas agregar un nuevo producto al inventario`,
+                                icon: "info",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3698e3",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Si",
+                                cancelButtonText: 'No',
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if ( result.isConfirmed ) {
+                                    this.inventario = {                                        
+                                        codigo: '', serie: '', descripcion: '', modelo: '', observaciones: '', marca: { id: null, marca: '' }, cuenta: { id: null, cuenta: ''},
+                                        rubro: { id: null, rubro: '' }, procedencia: { id: null, procedencia: ''}, precio: 0.00, ubicacion: {id: null, ubicacion: ''},
+                                        entidad: { id: null, entidad: ''}
+                                    }
+                                    console.log('Limpiando')
+                                } else {
+                                    window.location = '/inventario/index';                                    
+                                }
+                            });
+
+                            }
+
+                        } else {
+                            this.alerta( mensaje, 'error', 'Importante');
+                        }
+                    }
+                })
+                .catch(console.error)
+        },
+        cancelar() {
+            Swal.fire({
+                title: "INFORMACION",
+                text: `¿Quieres cancelar el registro`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3698e3",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si",
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location = '/inventario/index';
+                }
+            });
+        },
+        alerta (mensaje, icono = 'info', titulo = '')
+        {
+            Swal.fire({
+                position: "top-end",
+                icon: icono,
+                title: titulo,
+                text: mensaje,
+                showConfirmButton: false,
+                timer: 1500,
+                });
+        },
+        mostrarModalEntidad() {
+            this.$refs.entidad.dialog = true;
+        },
+        mostrarModalCuenta() {
+            this.$refs.cuenta.dialog = true;
+        },
+        mostrarModalMarca() {
+            this.$refs.marca.dialog = true;
+        },
+        mostrarModalRubro () {
+            this.$refs.rubro.dialog = true;
+        },
+        mostrarModalUbicacion() {
+            this.$refs.ubicacion.dialog = true;
+        },
+        onSavedCuenta( value ) {
+            console.log( value )
+        },
+        onSaveEntidad ( value ) {
+            if ( value ) {
+                this.obtenerEntidades();
+            }
+        },
+        onSavedMarca ( value ) {
+            console.log( value )
+        },
+        onSavedRubro ( value ) {
+            console.log( value )
+        },
+        onSavedUbicacion ( value ) {
+            console.log( value )
         }
     }
 }

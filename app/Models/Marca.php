@@ -13,6 +13,6 @@ class Marca extends Model
 
     
     public function inventario(){
-        return $this->hasMany('App\models\Inventario');
+        return $this->hasMany('App\Models\Marca');
     }
 }

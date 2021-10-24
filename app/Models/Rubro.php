@@ -12,9 +12,4 @@ class Rubro extends Model
     
     protected $fillable = ['rubro'];
 
-    public function cuenta ()
-    {
-        return $this->belongsTo('App\Models\Cuenta');
-    }
-
 }

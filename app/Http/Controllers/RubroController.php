@@ -23,7 +23,7 @@ class RubroController extends Controller
     function getRubros ()
     {
         return response()->json([
-            'rubros' => Rubro::with('cuenta')->get()
+            'rubros' => Rubro::all()
         ]);
     }
 
@@ -32,9 +32,7 @@ class RubroController extends Controller
         if ($request->isMethod('POST')) {
             
             $validacion = Validator::make($request->all(), [
-                'rubro' => 'required|unique:rubros|min:2|max:100',
-                'cuenta.id' => 'required',
-                'cuenta.cuenta' => 'required'
+                'rubro' => 'required|unique:rubros|min:2|max:100'
             ], $this->mensajes);
 
             if ($validacion->fails()) {
@@ -47,7 +45,6 @@ class RubroController extends Controller
 
             $rubro = new Rubro();
             $rubro->rubro = $request->get('rubro');
-            $rubro->cuenta_id = $request->input('cuenta.id');
             $rubro->save();
 
             return response()->json([

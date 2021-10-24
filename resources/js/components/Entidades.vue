@@ -3,9 +3,20 @@
     <div
       class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
     >
+
+    <v-overlay :value="loader" :z-index="'99999999'">
+        <v-progress-circular
+          indeterminate
+          size="80"
+          color="grey darken-4"
+        ></v-progress-circular>
+      </v-overlay>
+
+
+
       <v-card>
         <v-card-title>
-          Entidades
+          Listado de entidades
           <div class="flex-grow-1"></div>
           <v-text-field
             v-model="buscarEntidad"
@@ -15,7 +26,7 @@
         </v-card-title>
         <v-data-table
           :headers="theadTable"
-          :items="entidades"
+          :items=" EstadoEntidad ? entidadesEliminadas : entidades"
           :footer-props="{
             'items-per-page-options': [5, 10, 20, 30, 40],
             'items-per-page-text': 'Registros Por Página',
@@ -29,6 +40,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
+                  v-show="!EstadoEntidad"
                   color="success"
                   elevation="8"
                   small
@@ -45,6 +57,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
+                  v-show="!EstadoEntidad"
                   color="info"
                   class="mx-1"
                   elevation="8"
@@ -59,6 +72,24 @@
               </template>
               <span>Eliminar Entidad</span>
             </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-show="EstadoEntidad"
+                  color="teal"
+                  class="mx-1"
+                  elevation="8"
+                  small
+                  dark
+                  :disabled="item.id < 0"
+                  v-on="on"
+                  @click="restaurarEntidad(item)"
+                >
+                  <v-icon>mdi-restore</v-icon>
+                </v-btn>
+              </template>
+              <span>Eliminar Entidad</span>
+            </v-tooltip>
           </template>
           <!-- MODAL -->
           <template v-slot:top>
@@ -67,6 +98,7 @@
               <v-dialog v-model="modalEntidad" persistent max-width="700px">
                 <template v-slot:activator="{ on }">
                   <v-btn
+                    v-show="!EstadoEntidad"
                     elevation="10"
                     color="blue  darken-3"
                     dark
@@ -76,6 +108,15 @@
                     Agregar Entidad&nbsp;
                     <v-icon>mdi-plus-box-multiple-outline</v-icon>
                   </v-btn>
+
+                  <v-checkbox 
+                        v-model="EstadoEntidad"
+                        class="mx-10"
+                        style="margin-top: 1.5rem;"
+                        label="Mostrar entidades eliminadas"
+                        value="false"
+                    />
+
                 </template>
                 <v-card>
                   <v-card-title class="headline grey lighten-2" primary-titles>
@@ -84,9 +125,9 @@
                   <v-card-text>
                     <v-container>
                       <v-form
-                        ref="formEntidad"
+                        ref="form"
                         v-model="formularioValido"
-                        :lazy-validation="true"
+                        lazy-validation
                       >
                         <v-text-field
                           append-icon="mdi-folder-outline"
@@ -132,13 +173,15 @@
 export default {
   data() {
     return {
+      loader: false,
+      EstadoEntidad: false,
       theadTable: [
         { text: "ID", value: "id" },
         { text: "Entidad", value: "entidad" },
         { text: "Acciones", value: "action", sortable: false, align: "center" },
       ],
       buscarEntidad: "",
-      entidades: [],
+      entidades: [], entidadesEliminadas : [],
       modalEntidad: false,
       entidad: { id: null, entidad: "" },
       formularioValido: false,
@@ -169,14 +212,19 @@ export default {
   },
   methods: {
     get() {
+      this.loader = true;
       axios
         .get("/Api/entidades")
         .then(({ data: { entidades } }) => {
-          this.entidades = entidades;
+          this.entidades = entidades.filter( ent => ent.eliminado == false);
+          this.entidadesEliminadas = entidades.filter( ent => ent.eliminado == true);
+
+          this.loader = false;
         })
         .catch(console.error);
     },
     save() {
+      this.loader = true;
       let path = this.entidad.id
         ? `/Api/entidades/${this.entidad.id}/edit`
         : "/Api/entidades";
@@ -199,10 +247,17 @@ export default {
               });
 
               this.cerrarModal();
+            } else {
+              const { entidad } = response.data
+              this.errores = entidad;
+              //this.alerta( entidad[0], 'warning', '¡INFORMACIÓN!')
+              console.log('La respuesta no fue 200');
             }
+            this.loader = false;
           }
         })
         .catch(() => {
+          this.loader = false;
           console.error("Error en la promesa de guardar");
         });
     },
@@ -218,24 +273,67 @@ export default {
         cancelButtonText: 'No'
       }).then((result) => {
         if (result.isConfirmed) {
-          axios
-        .delete(`/Api/entidades/${entidad.id}`)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch(console.error);
+          this.cambiarEstadoEntidad( entidad );
         }
       });
     },
+    restaurarEntidad( entidad )
+    {
+      Swal.fire({
+        title: "INFORMACION",
+        text: `¡Estas seguro de restaurar la entidad ${entidad.entidad}?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.cambiarEstadoEntidad( entidad, false );
+        }
+      });
+    },
+    cambiarEstadoEntidad ( {...entidad} , eliminar = true ) {
+      this.loader = true;
+      axios
+        .delete(`/Api/entidades/${entidad.id}/${eliminar}`)
+        .then( response => {
+          this.loader = false;
+          let { respuesta, mensaje } = response.data
+
+          if ( respuesta )
+          {
+            this.get();
+            this.alerta( mensaje, 'success', '¡Bien hecho!');
+          } else 
+          {
+            this.alerta( mensaje, 'warning', '¡Información!');
+          }
+        }).catch ( () => {
+          this.loader = false;
+          this.alerta('!Error del sistema¡', 'error', 'Error');
+        })
+    },
     mostrarModal(entidad) {
-      // console.log(entidad);
-      this.entidad = { ...entidad };
       this.modalEntidad = true;
     },
     cerrarModal() {
       this.entidad = { id: null, entidad: "" };
       this.modalEntidad = false;
+      
     },
+    alerta (mensaje, icono = 'info', titulo = '')
+    {
+        Swal.fire({
+              position: "top-end",
+              icon: icono,
+              title: titulo,
+              text: mensaje,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+    }
   },
 };
 </script>

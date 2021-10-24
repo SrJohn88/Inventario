@@ -10,6 +10,7 @@ use App\Http\Controllers\RubroController;
 use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\UbicacionController;
 use App\Http\Controllers\InventarioController;
+use App\Http\Controllers\ProcedenciaController;
 
 Auth::routes();
 Route::get('/',HomeController::class);
@@ -29,7 +30,7 @@ Route::get('/entidades',[EntidadController::class,'index'])->name("entidades.ind
 Route::get('/Api/entidades',[EntidadController::class,'obtenerEntidades'])->name("entidadesApi.obtener");
 Route::post('/Api/entidades',[EntidadController::class,'save'])->name("entidadesApi.save");
 Route::post('/Api/entidades/{entidad}/edit',[EntidadController::class,'update'])->name("entidadesApi.update");
-Route::delete('/Api/entidades/{entidad}',[EntidadController::class,'delete'])->name("entidadesApi.delete");
+Route::delete('/Api/entidades/{entidad}/{accion}',[EntidadController::class,'delete'])->name("entidadesApi.delete");
 
 //RUBROS
 Route::get('/rubros',[RubroController::class,'index'])->name("rubros.index");
@@ -55,7 +56,22 @@ Route::get('/ubicaciones',[UbicacionController::class,'index'])->name("ubicacion
 
 // UBICACIONES API
 Route::get('/Api/ubicaciones',[UbicacionController::class,'getUbicaciones'])->name("ubicaciones.get");
+Route::post('/Api/ubicaciones',[UbicacionController::class,'save'])->name("ubicaciones.save");
+Route::post('/Api/ubicaciones/{ubicacion}/edit',[UbicacionController::class,'update'])->name("ubicaciones.update");
+Route::delete('/Api/ubicaciones/{ubicacion}/{accion}',[UbicacionController::class,'delete'])->name("ubicaciones.delete");
+
+
+// PROCEDENCIAS
+Route::get('/Api/procedencias',[ProcedenciaController::class,'getProcedencias'])->name("procedencias.get");
 
 //INVENTARIO
 Route::get('/inventario/crear',[InventarioController::class,'crear'])->name("inventario.crear");
+Route::get('/inventario/index',[InventarioController::class,'index'])->name("inventario.index");
+
+
+//INVENTARIO API
+Route::get('Api/inventario/activos',[InventarioController::class,'getActivos'])->name("inventario.get");
+Route::get('Api/inventario/{id}/activos',[InventarioController::class,'getOneActivo'])->name("inventario.getOne");
+Route::post('Api/inventario/save',[InventarioController::class,'save'])->name("inventario.save");
+Route::post('Api/inventario/{inventario}/edit',[InventarioController::class,'update'])->name("inventario.update");
 

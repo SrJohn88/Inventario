@@ -134,26 +134,7 @@
                           label="Ingrese el nombre de la entidad"
                           required
                           :error-messages="errores"
-                        ></v-text-field>
-
-                        <v-row>
-                                <v-col cols="12">
-                                    <v-autocomplete
-                                        v-model="rubro.cuenta"
-                                        :items="cuentas"
-                                        required
-                                        label="Seleccione una cuenta"
-                                        item-text="cuenta"
-                                        item-value="id"
-                                        aling="center"
-                                        return-object
-                                        clearable
-                                        :menu-props="{ closeOnClick: true }"
-                                    ></v-autocomplete>
-                                </v-col>                                                          
-                          </v-row>
-
-
+                        ></v-text-field>                      
 
                       </v-form>
                     </v-container>
@@ -190,10 +171,9 @@ export default {
       encabezados: [
         { text: "ID", value: "id" },
         { text: "Rubro", value: "rubro" },
-        { text: 'Cuenta', value: 'cuenta.cuenta' },
         { text: "Acciones", value: "action", sortable: false, align: "center" },
       ],
-      rubro: { id: null, rubro: "", cuenta: { id: null, cuenta: ''}},
+      rubro: { id: null, rubro: "" },
       EstadoRubro: false,
       rubrosActivos: [],
       rubrosEliminado: [],
@@ -210,7 +190,6 @@ export default {
           /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
           "Nombre de la entidad no puede tener caracteres especiales",
       },
-      cuentas: [],
     };
   },
   computed: {
@@ -223,18 +202,8 @@ export default {
   },
   mounted() {
     this.obtenerRubros();
-    this.obtenerCuentas();
   },
   methods: {
-    obtenerCuentas ()
-    {
-      axios
-        .get("/Api/cuentas")
-        .then(({ data: { cuentas } }) => {
-          this.cuentas = cuentas;
-        })
-        .catch(console.error);
-    },
     obtenerRubros() {
       axios
         .get("/Api/rubros")

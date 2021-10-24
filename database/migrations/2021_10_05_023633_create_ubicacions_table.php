@@ -13,7 +13,7 @@ class CreateUbicacionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ubicacions', function (Blueprint $table) {
+        Schema::create('ubicaciones', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('ubicacion', 300);

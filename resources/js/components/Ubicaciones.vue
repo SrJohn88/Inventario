@@ -163,11 +163,11 @@ export default {
             buscarUbicacion: '',
             encabezados: [
                 { text: "ID", value: "id" },
-                { text: "ubicacion", value: "ubicacion" },
+                { text: "Ubicacion", value: "ubicacion" },
                 { text: "Acciones", value: "action", sortable: false, align: "center" },
             ],
             estadoUbicacion: false,
-            ubicacionesActivas: [ { id: 1, ubicacion: 'prueba '} ], ubicacionesEliminadas: [],
+            ubicacionesActivas: [], ubicacionesEliminadas: [],
             ubicacion: {id: null, ubicacion: ''}
         }
     },
@@ -180,16 +180,22 @@ export default {
         }
     },
     mounted() {
-
+      this.obtenerUbicaciones();
     },
     methods: {
         obtenerUbicaciones () {
-
+              axios
+          .get("/Api/ubicaciones")
+          .then(({ data: { ubicaciones } }) => {
+            this.ubicacionesActivas = ubicaciones.filter((r) => r.eliminado == false);
+            this.ubicacionesEliminadas = ubicaciones.filter((r) => r.eliminado == true);
+          })
+          .catch(console.error);
         },
         save() {
             console.log( this.ubicacion );
             const path =
-                this.rubro.id == null
+                this.ubicacion.id == null
                 ? "/Api/ubicaciones"
                 : `/Api/ubicaciones/${this.ubicacion.id}/edit`;
             axios.post(path, this.ubicacion ).then(( response) => {
@@ -208,15 +214,61 @@ export default {
             })
         },
         eliminarUbicacion ( {...ubicacion } ) {
-
+          Swal.fire({
+          title: "INFORMACION",
+          text: `¡Estas seguro de eliminar la ubicacion ${ubicacion.ubicacion} ?`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3698e3",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Si",
+          cancelButtonText: 'No'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.cambiarEstadoUbicacion( ubicacion );
+          }
+        });
         },
         restaurar ( {...ubicacion } ){
+            Swal.fire({
+              title: "INFORMACION",
+              text: `¡Estas seguro de restaurar la ubicacion ${ubicacion.ubicacion} ?`,
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3698e3",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Si",
+              cancelButtonText: 'No'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.cambiarEstadoUbicacion( ubicacion, false );
+              }
+            });
+        },
+        cambiarEstadoUbicacion( ubicacion, eliminar = true) {
+          axios
+            .delete(`/Api/ubicaciones/${ubicacion.id}/${eliminar}`)
+            .then((response) => {
+              if (response.status == 200) {
+              const { respuesta, mensaje } = response.data;
 
+              if (respuesta) {
+                this.obtenerUbicaciones();
+                this.alerta( mensaje, 'success', '¡Bien hecho!');
+              } else {
+                this.alerta( mensaje, 'error', '¡Importante!');
+              }
+            }
+            })
+            .catch(console.error);
         },
         mostrarModal( {...ubicacion} ) {
-
+          this.ubicacion = ubicacion;
+          this.modal = true;
         },
         cerrarModal() {
+          this.modal = false;
+          this.ubicacion = { id: null, ubicacion: '' };
 
         },
         alerta (mensaje, icono = 'info', titulo = '')

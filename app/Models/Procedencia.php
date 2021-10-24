@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cuenta extends Model
+class Procedencia extends Model
 {
-    protected $table = 'cuentas';
-    
-    protected $fillable = ['cuenta'];
+    use HasFactory;
+
+    protected $table = 'procedencias';
 }
