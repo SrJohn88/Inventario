@@ -2560,7 +2560,11 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
         _this5.alerta('!Error del sistema¡', 'error', 'Error');
       });
     },
-    mostrarModal: function mostrarModal(entidad) {
+    mostrarModal: function mostrarModal(_ref3) {
+      var entidad = _extends({}, _ref3);
+
+      console.log(entidad);
+      this.entidad = entidad;
       this.modalEntidad = true;
     },
     cerrarModal: function cerrarModal() {
@@ -3221,6 +3225,205 @@ __webpack_require__.r(__webpack_exports__);
         timer: 1500
       });
     }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      formularioValido: false,
+      movimiento: {
+        tipoMovimiento: {
+          id: null,
+          tipo: ''
+        },
+        empleados: {
+          id: null,
+          nombre: ''
+        },
+        fecha: '',
+        observaciones: ''
+      },
+      tiposMovimientos: [{
+        id: 1,
+        tipo: 'TIPO 1'
+      }, {
+        id: 2,
+        tipo: 'TIPO 2'
+      }],
+      empleados: [{
+        id: 1,
+        nombre: 'Jonathan Alfonso'
+      }, {
+        id: 2,
+        nombre: 'Leonel Messi'
+      }],
+      inventario: {
+        codigo: ''
+      },
+      buscarInventario: '',
+      headMovimientos: [{
+        text: "Codigo",
+        value: "codigo",
+        align: "left"
+      }, {
+        text: "Descripción",
+        value: "descripcion",
+        align: "left"
+      }, {
+        text: "Marca",
+        value: "marca",
+        align: "left"
+      }, {
+        text: "Modelo",
+        value: "modelo",
+        align: "left"
+      }, {
+        text: "Serie",
+        value: "serie",
+        align: "left"
+      }],
+      inventarios: [] // SEGUIR DISEÑANDO VISTA PARA EL MOVIMIENTO
+      // MODAL CON INVENTARIO, Y BOTONES PARA DISPARAR ACCIONES
+
+    };
   }
 });
 
@@ -5171,7 +5374,9 @@ vue__WEBPACK_IMPORTED_MODULE_2__.default.component('cuentas', __webpack_require_
 vue__WEBPACK_IMPORTED_MODULE_2__.default.component('ubicaciones', __webpack_require__(/*! ./components/Ubicaciones.vue */ "./resources/js/components/Ubicaciones.vue").default); // INVENTARIO
 
 vue__WEBPACK_IMPORTED_MODULE_2__.default.component('inventario-crear', __webpack_require__(/*! ./components/Inventario/formularioCrear.vue */ "./resources/js/components/Inventario/formularioCrear.vue").default);
-vue__WEBPACK_IMPORTED_MODULE_2__.default.component('inventario-index', __webpack_require__(/*! ./components/Inventario/inventario.vue */ "./resources/js/components/Inventario/inventario.vue").default);
+vue__WEBPACK_IMPORTED_MODULE_2__.default.component('inventario-index', __webpack_require__(/*! ./components/Inventario/inventario.vue */ "./resources/js/components/Inventario/inventario.vue").default); // MOVIMIENTOS DE INVENTARIO
+
+vue__WEBPACK_IMPORTED_MODULE_2__.default.component('movimiento-crear', __webpack_require__(/*! ./components/Inventario/Movimientos/formularioCrear.vue */ "./resources/js/components/Inventario/Movimientos/formularioCrear.vue").default);
 
 vue__WEBPACK_IMPORTED_MODULE_2__.default.mixin((_mixins_auth__WEBPACK_IMPORTED_MODULE_5___default()));
 vue__WEBPACK_IMPORTED_MODULE_2__.default.component('date-picker', vue2_datepicker__WEBPACK_IMPORTED_MODULE_1__.default);
@@ -44863,6 +45068,45 @@ component.options.__file = "resources/js/components/Inventario/Modals/Ubicacion.
 
 /***/ }),
 
+/***/ "./resources/js/components/Inventario/Movimientos/formularioCrear.vue":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Movimientos/formularioCrear.vue ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _formularioCrear_vue_vue_type_template_id_277c6991___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./formularioCrear.vue?vue&type=template&id=277c6991& */ "./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=template&id=277c6991&");
+/* harmony import */ var _formularioCrear_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./formularioCrear.vue?vue&type=script&lang=js& */ "./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _formularioCrear_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _formularioCrear_vue_vue_type_template_id_277c6991___WEBPACK_IMPORTED_MODULE_0__.render,
+  _formularioCrear_vue_vue_type_template_id_277c6991___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Inventario/Movimientos/formularioCrear.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/Inventario/formularioCrear.vue":
 /*!****************************************************************!*\
   !*** ./resources/js/components/Inventario/formularioCrear.vue ***!
@@ -45170,6 +45414,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioCrear_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./formularioCrear.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioCrear_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
 /***/ "./resources/js/components/Inventario/formularioCrear.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************!*\
   !*** ./resources/js/components/Inventario/formularioCrear.vue?vue&type=script&lang=js& ***!
@@ -45365,6 +45625,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Ubicacion_vue_vue_type_template_id_e35d620e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Ubicacion_vue_vue_type_template_id_e35d620e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Ubicacion.vue?vue&type=template&id=e35d620e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Modals/Ubicacion.vue?vue&type=template&id=e35d620e&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=template&id=277c6991&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=template&id=277c6991& ***!
+  \***********************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioCrear_vue_vue_type_template_id_277c6991___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioCrear_vue_vue_type_template_id_277c6991___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioCrear_vue_vue_type_template_id_277c6991___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./formularioCrear.vue?vue&type=template&id=277c6991& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=template&id=277c6991&");
 
 
 /***/ }),
@@ -47190,6 +47467,330 @@ var render = function() {
     ],
     1
   )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=template&id=277c6991&":
+/*!**************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Movimientos/formularioCrear.vue?vue&type=template&id=277c6991& ***!
+  \**************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "content" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+      },
+      [
+        _c(
+          "v-card",
+          [
+            _c(
+              "v-card-title",
+              {
+                domProps: { textContent: _vm._s("Movimientos de inventarios") }
+              },
+              [_c("div", { staticClass: "flex-row-1" })]
+            ),
+            _vm._v(" "),
+            _c(
+              "v-container",
+              { attrs: { fluid: "" } },
+              [
+                _c(
+                  "v-form",
+                  {
+                    ref: "formMovimiento",
+                    attrs: { "lazy-validation": true },
+                    model: {
+                      value: _vm.formularioValido,
+                      callback: function($$v) {
+                        _vm.formularioValido = $$v
+                      },
+                      expression: "formularioValido"
+                    }
+                  },
+                  [
+                    _c(
+                      "v-card-title",
+                      [
+                        _c(
+                          "v-row",
+                          [
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "6" } },
+                              [
+                                _c("v-autocomplete", {
+                                  attrs: {
+                                    items: _vm.tiposMovimientos,
+                                    required: "",
+                                    rules: [
+                                      function(v) {
+                                        return (
+                                          !!v ||
+                                          "Tipo cuenta del activo es requerido"
+                                        )
+                                      }
+                                    ],
+                                    label: "Tipo de movimientos",
+                                    "item-text": "tipo",
+                                    "item-value": "id",
+                                    "return-object": "",
+                                    clearable: "",
+                                    "menu-props": { closeOnClick: true }
+                                  },
+                                  model: {
+                                    value: _vm.movimiento.tipoInventario,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.movimiento,
+                                        "tipoInventario",
+                                        $$v
+                                      )
+                                    },
+                                    expression: "movimiento.tipoInventario"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "6" } },
+                              [
+                                _c("v-autocomplete", {
+                                  attrs: {
+                                    items: _vm.empleados,
+                                    required: "",
+                                    rules: [
+                                      function(v) {
+                                        return (
+                                          !!v ||
+                                          "Tipo cuenta del activo es requerido"
+                                        )
+                                      }
+                                    ],
+                                    label: "Recibe",
+                                    "item-text": "nombre",
+                                    "item-value": "id",
+                                    "return-object": "",
+                                    clearable: "",
+                                    "menu-props": { closeOnClick: true }
+                                  },
+                                  model: {
+                                    value: _vm.movimiento.empleados,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.movimiento, "empleados", $$v)
+                                    },
+                                    expression: "movimiento.empleados"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "6" } },
+                              [
+                                _c("v-autocomplete", {
+                                  attrs: {
+                                    items: _vm.empleados,
+                                    required: "",
+                                    rules: [
+                                      function(v) {
+                                        return (
+                                          !!v ||
+                                          "Tipo cuenta del activo es requerido"
+                                        )
+                                      }
+                                    ],
+                                    label: "Aprobado",
+                                    "item-text": "nombre",
+                                    "item-value": "id",
+                                    "return-object": "",
+                                    clearable: "",
+                                    "menu-props": { closeOnClick: true }
+                                  },
+                                  model: {
+                                    value: _vm.movimiento.empleados,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.movimiento, "empleados", $$v)
+                                    },
+                                    expression: "movimiento.empleados"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "6" } },
+                              [
+                                _c(
+                                  "v-menu",
+                                  {
+                                    attrs: {
+                                      "close-on-content-click": false,
+                                      "nudge-right": 40,
+                                      transition: "scale-transition",
+                                      "offset-y": "",
+                                      "min-width": "auto"
+                                    },
+                                    scopedSlots: _vm._u([
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-text-field",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    attrs: {
+                                                      label:
+                                                        "Seleccione fecha de reingreso",
+                                                      "prepend-icon":
+                                                        "mdi-calendar",
+                                                      readonly: ""
+                                                    },
+                                                    model: {
+                                                      value:
+                                                        _vm.movimiento.fecha,
+                                                      callback: function($$v) {
+                                                        _vm.$set(
+                                                          _vm.movimiento,
+                                                          "fecha",
+                                                          $$v
+                                                        )
+                                                      },
+                                                      expression:
+                                                        "movimiento.fecha"
+                                                    }
+                                                  },
+                                                  "v-text-field",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              )
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ]),
+                                    model: {
+                                      value: _vm.menu,
+                                      callback: function($$v) {
+                                        _vm.menu = $$v
+                                      },
+                                      expression: "menu"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(" "),
+                                    _c("v-date-picker", {
+                                      on: {
+                                        input: function($event) {
+                                          _vm.menu = false
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.movimiento.fecha,
+                                        callback: function($$v) {
+                                          _vm.$set(_vm.movimiento, "fecha", $$v)
+                                        },
+                                        expression: "movimiento.fecha"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "12" } },
+                              [
+                                _c("v-textarea", {
+                                  attrs: {
+                                    label: "Observacion",
+                                    rows: "2",
+                                    required: "",
+                                    "error-messages": _vm.errorsNombre
+                                  },
+                                  model: {
+                                    value: _vm.movimiento.observacion,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.movimiento,
+                                        "observacion",
+                                        $$v
+                                      )
+                                    },
+                                    expression: "movimiento.observacion"
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c("v-data-table", {
+                      attrs: {
+                        headers: _vm.headMovimientos,
+                        items: _vm.inventarios,
+                        "no-data-text": "No hay movimientos agregados",
+                        "items-per-page": 10,
+                        search: _vm.buscarMovimiento,
+                        "footer-props": {
+                          "item-per-page-options": [10, 20, 30],
+                          showFirstLastPage: true
+                        }
+                      }
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

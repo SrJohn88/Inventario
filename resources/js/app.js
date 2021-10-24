@@ -47,6 +47,9 @@ Vue.component('ubicaciones', require('./components/Ubicaciones.vue').default);
 Vue.component('inventario-crear', require('./components/Inventario/formularioCrear.vue').default);
 Vue.component('inventario-index', require('./components/Inventario/inventario.vue').default);
 
+// MOVIMIENTOS DE INVENTARIO
+Vue.component('movimiento-crear', require('./components/Inventario/Movimientos/formularioCrear.vue').default);
+
 
 import auth from './mixins/auth';
 Vue.mixin(auth);

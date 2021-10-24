@@ -12,6 +12,8 @@ use App\Http\Controllers\UbicacionController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\ProcedenciaController;
 
+use App\Http\Controllers\MovimientoController;
+
 Auth::routes();
 Route::get('/',HomeController::class);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -75,3 +77,6 @@ Route::get('Api/inventario/{id}/activos',[InventarioController::class,'getOneAct
 Route::post('Api/inventario/save',[InventarioController::class,'save'])->name("inventario.save");
 Route::post('Api/inventario/{inventario}/edit',[InventarioController::class,'update'])->name("inventario.update");
 
+
+//MOVIMIENTO DE INVENTARIO
+Route::get('/inventario/movimientos',[ MovimientoController::class, 'crear'])->name("movimiento.index");

@@ -47,7 +47,7 @@
                   dark
                   :disabled="item.id < 0"
                   v-on="on"
-                  @click="mostrarModal(item)"
+                  @click="mostrarModal( item )"
                 >
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
@@ -315,7 +315,9 @@ export default {
           this.alerta('!Error del sistema¡', 'error', 'Error');
         })
     },
-    mostrarModal(entidad) {
+    mostrarModal( {...entidad} ) {
+      console.log( entidad )
+      this.entidad = entidad;
       this.modalEntidad = true;
     },
     cerrarModal() {
