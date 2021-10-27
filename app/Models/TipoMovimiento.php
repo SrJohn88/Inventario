@@ -9,5 +9,5 @@ class TipoMovimiento extends Model
 {
     use HasFactory;
 
-    protected $table = 'movimientos';
+    protected $table = 'tipo_movimientos';
 }

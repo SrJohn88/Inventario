@@ -251,6 +251,11 @@ return [
                     'text' => 'Rubros',
                     'route' => 'rubros.index',
                     'icon'  => 'fas fw fa-registered',
+                ], 
+                [
+                    'text' => 'Ubicaciones',
+                    'route' => 'ubicaciones.index',
+                    'icon'  => 'fas fw fa-registered',
                 ],                
                 [
                     'text' => 'Cuentas',

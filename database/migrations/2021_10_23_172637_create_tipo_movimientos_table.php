@@ -14,9 +14,12 @@ class CreateTipoMovimientosTable extends Migration
     public function up()
     {
         Schema::create('tipo_movimientos', function (Blueprint $table) {
+            
+            $table->engine = 'InnoDb';
+
             $table->increments('id');
-            $table->String('tipo');
-            $table->Boolean('eliminado');
+            $table->String('tipo', 100);
+            $table->Boolean('eliminado')->default( false );
             $table->timestamps();
         });
     }

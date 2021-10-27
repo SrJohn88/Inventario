@@ -44,6 +44,10 @@ class CreateInventariosTable extends Migration
             $table->date('fecha_adquision')->nullable();
             $table->text('observacion',250)->nullable();
 
+            $table->unsignedInteger('estado_id')->default(1);
+            $table->foreign('estado_id')->references('id')->on('estados');
+
+            $table->Boolean('eliminado')->default( false );
             $table->timestamps();
         });
     }

@@ -15,12 +15,16 @@ class CreateEmpleadosTable extends Migration
     {
         Schema::create('empleados', function (Blueprint $table) {
             
+            $table->engine = 'InnoDb';
+
             $table->increments('id');
             $table->String('nombre');
             $table->String('apellido');
             
             $table->unsignedInteger('cargo_id');
             $table->foreign('cargo_id')->references('id')->on('cargos');
+            
+            $table->boolean('eliminado')->default( false );
             $table->timestamps();
         });
     }

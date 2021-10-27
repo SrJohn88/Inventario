@@ -13,6 +13,9 @@ use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\ProcedenciaController;
 
 use App\Http\Controllers\MovimientoController;
+use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\TipoMovimientoController;
+
 
 Auth::routes();
 Route::get('/',HomeController::class);
@@ -78,5 +81,19 @@ Route::post('Api/inventario/save',[InventarioController::class,'save'])->name("i
 Route::post('Api/inventario/{inventario}/edit',[InventarioController::class,'update'])->name("inventario.update");
 
 
+// TIPOS DE MOVIMIENTOS
+Route::get('Api/movimientos/tipos',[ TipoMovimientoController::class,'obtenerTiposMovimientos'])->name("tipoMovimientos.get");
+
+
+// EMPLEADOS
+Route::get('Api/empleados',[EmpleadoController::class,'obtenerEmpleados'])->name("empleados.get");
+
 //MOVIMIENTO DE INVENTARIO
 Route::get('/inventario/movimientos',[ MovimientoController::class, 'crear'])->name("movimiento.index");
+
+Route::get('/inventario/movimientos/save',[ MovimientoController::class, 'save'])->name("movimiento.save");
+
+
+
+
+

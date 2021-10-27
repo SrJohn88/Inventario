@@ -32,12 +32,12 @@
 
                                 <v-col cols="6">
                                     <v-autocomplete
-                                        v-model="movimiento.empleados"
+                                        v-model="movimiento.recibe"
                                         :items="empleados"
                                         required
                                         :rules="[ v => !!v || 'Tipo cuenta del activo es requerido']"
                                         label="Recibe"
-                                        item-text="nombre"
+                                        :item-text="EmpleadoNombreCompleto"
                                         item-value="id"
                                         return-object
                                         clearable
@@ -47,12 +47,12 @@
 
                                 <v-col cols="6">
                                     <v-autocomplete
-                                        v-model="movimiento.empleados"
+                                        v-model="movimiento.aprueba"
                                         :items="empleados"
                                         required
                                         :rules="[ v => !!v || 'Tipo cuenta del activo es requerido']"
                                         label="Aprobado"
-                                        item-text="nombre"
+                                        :item-text="EmpleadoNombreCompleto"
                                         item-value="id"
                                         return-object
                                         clearable
@@ -87,8 +87,8 @@
 
                                 <v-col cols="12" v-if= "movimiento.tipoMovimiento.id == 2">
                                     <v-textarea
-                                        v-model="movimiento.observacion"
-                                        label="Se envia a: "
+                                        v-model="movimiento.seTransalada"
+                                        label="Se transalada a: "
                                         rows="2"
                                         required
                                         :error-messages="errors"
@@ -97,7 +97,7 @@
 
                                 <v-col cols="12" v-if= "movimiento.tipoMovimiento.id == 1">
                                     <v-textarea
-                                        v-model="movimiento.observacion"
+                                        v-model="movimiento.sePresta"
                                         label="Se presta a:"
                                         rows="2"
                                         required
@@ -190,7 +190,8 @@
                     >
                     <v-btn
                       color="info darken-1"
-                      text                     
+                      text
+                      @click="guardarMovimiento"                     
                     >Guardar</v-btn>
                   </v-card-actions>
             </v-card>
@@ -213,18 +214,13 @@ export default {
             formularioValido: false,
             modalNMovimientos: false,
             movimiento: {
-                tipoMovimiento: { id: null, tipo: '' }, empleados: {id: null, nombre: ''},
+                tipoMovimiento: { id: null, tipo: '' }, recibe: {id: null, nombre: ''},  aprueba: {id: null, nombre: ''},
+                seTransalada: '', sePresta: '',
                 fecha: '', observaciones: '',
                 activos: this.inventarios
             },
-            tiposMovimientos: [
-                { id: 1, tipo: 'TIPO 1' },
-                { id: 2, tipo: 'TIPO 2' }
-            ],
-            empleados: [
-                { id: 1, nombre: 'Jonathan Alfonso'},
-                { id: 2, nombre: 'Leonel Messi' }
-            ],
+            tiposMovimientos: [],
+            empleados: [],
             buscarInventario: '',
             headMovimientos: [
                 { text: "Codigo", value: "codigo", align: "left" },
@@ -235,14 +231,44 @@ export default {
                 { text: "Falla", value: "falla", align: "left" },
             ],
             inventarios: []
-            // SEGUIR DISEÑANDO VISTA PARA EL MOVIMIENTO
-            // MODAL CON INVENTARIO, Y BOTONES PARA DISPARAR ACCIONES
         }
     },
+    computed: {
+        
+    },
+    mounted () 
+    {
+        this.getEmpleados();
+        this.getTiposMovimientos();
+    },
     methods: {
+        EmpleadoNombreCompleto( empleado )
+        {
+            return empleado.nombre + ' ' + empleado.apellido;
+        },
         getInventario() {
             console.log('creando desde movimiento')
             this.$refs.activo = [];
+        },
+        getEmpleados ()
+        {
+            axios
+                .get("/Api/empleados")
+                .then(({ data: { empleados } }) => {
+                    this.empleados = empleados ;                  
+                    console.log( this.empleados )
+                })
+                .catch(console.error);
+        },
+        getTiposMovimientos()
+        {
+            axios
+                .get("/Api/movimientos/tipos")
+                .then(({ data: { tiposMovimientos } }) => {
+                    this.tiposMovimientos = tiposMovimientos; 
+                    console.log( this.tiposMovimientos )                 
+                })
+                .catch(console.error);
         },
         onAddedItem( valores ) {
             this.inventarios = valores;
@@ -250,6 +276,11 @@ export default {
         },
         getProductFromChild () {
 
+        },
+        guardarMovimiento()
+        {
+            this.movimiento.activos = {...this.inventarios};
+            console.log( this.movimiento )
         }
     }
 }

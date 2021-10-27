@@ -27,14 +27,14 @@ class InventarioController extends Controller
     function getActivos() 
     {
         return response()->json([
-            'activos' => Inventario::with('ubicacion', 'marca')->get()
+            'activos' => Inventario::with('ubicacion', 'marca', 'estado')->get()
         ]);
     }
 
     function getOneActivo ( $id )
     {        
         return response()->json([
-            'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad')->where('id', $id)->firstOrFail()
+            'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')->where('id', $id)->firstOrFail()
         ]);
     }
 
@@ -68,6 +68,7 @@ class InventarioController extends Controller
             $inventario->ubicacion_id = $request->input('ubicacion.id');
             $inventario->fecha_adquision = $request->get('fecha');
             $inventario->observacion = $request->get('observaciones');
+            $inventario->estado_id = 1;
             $inventario->save();
 
             //return $request->all();

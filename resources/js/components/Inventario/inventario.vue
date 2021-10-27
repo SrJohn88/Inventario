@@ -93,7 +93,7 @@ export default {
                 { text: "Precio", value: "precio" },
                 { text: "Ubicacion", value: "ubicacion.ubicacion" },
                 { text: "Fecha adquisicion", value: "fecha_adquision" },
-                { text: "observaciones", value: "observacion" },
+                { text: "Estado", value: "estado.estado" },
                 { text: "Acciones", value: "action", sortable: false, align: "center" },
             ],
             activos: [], buscarActivo:'',

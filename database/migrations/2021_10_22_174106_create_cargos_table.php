@@ -14,6 +14,9 @@ class CreateCargosTable extends Migration
     public function up()
     {
         Schema::create('cargos', function (Blueprint $table) {
+            
+            $table->engine = 'InnoDb';
+
             $table->increments('id');
             $table->String('cargo');
             $table->Boolean('eliminado')->default(false);

@@ -3336,6 +3336,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
 //
 //
 //
@@ -3552,28 +3559,22 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
           id: null,
           tipo: ''
         },
-        empleados: {
+        recibe: {
           id: null,
           nombre: ''
         },
+        aprueba: {
+          id: null,
+          nombre: ''
+        },
+        seTransalada: '',
+        sePresta: '',
         fecha: '',
         observaciones: '',
         activos: this.inventarios
       },
-      tiposMovimientos: [{
-        id: 1,
-        tipo: 'TIPO 1'
-      }, {
-        id: 2,
-        tipo: 'TIPO 2'
-      }],
-      empleados: [{
-        id: 1,
-        nombre: 'Jonathan Alfonso'
-      }, {
-        id: 2,
-        nombre: 'Leonel Messi'
-      }],
+      tiposMovimientos: [],
+      empleados: [],
       buscarInventario: '',
       headMovimientos: [{
         text: "Codigo",
@@ -3600,21 +3601,49 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
         value: "falla",
         align: "left"
       }],
-      inventarios: [] // SEGUIR DISEÑANDO VISTA PARA EL MOVIMIENTO
-      // MODAL CON INVENTARIO, Y BOTONES PARA DISPARAR ACCIONES
-
+      inventarios: []
     };
   },
+  computed: {},
+  mounted: function mounted() {
+    this.getEmpleados();
+    this.getTiposMovimientos();
+  },
   methods: {
+    EmpleadoNombreCompleto: function EmpleadoNombreCompleto(empleado) {
+      return empleado.nombre + ' ' + empleado.apellido;
+    },
     getInventario: function getInventario() {
       console.log('creando desde movimiento');
       this.$refs.activo = [];
+    },
+    getEmpleados: function getEmpleados() {
+      var _this = this;
+
+      axios.get("/Api/empleados").then(function (_ref) {
+        var empleados = _ref.data.empleados;
+        _this.empleados = empleados;
+        console.log(_this.empleados);
+      })["catch"](console.error);
+    },
+    getTiposMovimientos: function getTiposMovimientos() {
+      var _this2 = this;
+
+      axios.get("/Api/movimientos/tipos").then(function (_ref2) {
+        var tiposMovimientos = _ref2.data.tiposMovimientos;
+        _this2.tiposMovimientos = tiposMovimientos;
+        console.log(_this2.tiposMovimientos);
+      })["catch"](console.error);
     },
     onAddedItem: function onAddedItem(valores) {
       this.inventarios = valores;
       console.log(this.inventarios);
     },
-    getProductFromChild: function getProductFromChild() {}
+    getProductFromChild: function getProductFromChild() {},
+    guardarMovimiento: function guardarMovimiento() {
+      this.movimiento.activos = _objectSpread({}, this.inventarios);
+      console.log(this.movimiento);
+    }
   }
 });
 
@@ -4372,8 +4401,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
         text: "Fecha adquisicion",
         value: "fecha_adquision"
       }, {
-        text: "observaciones",
-        value: "observacion"
+        text: "Estado",
+        value: "estado.estado"
       }, {
         text: "Acciones",
         value: "action",
@@ -47930,18 +47959,18 @@ var render = function() {
                                       }
                                     ],
                                     label: "Recibe",
-                                    "item-text": "nombre",
+                                    "item-text": _vm.EmpleadoNombreCompleto,
                                     "item-value": "id",
                                     "return-object": "",
                                     clearable: "",
                                     "menu-props": { closeOnClick: true }
                                   },
                                   model: {
-                                    value: _vm.movimiento.empleados,
+                                    value: _vm.movimiento.recibe,
                                     callback: function($$v) {
-                                      _vm.$set(_vm.movimiento, "empleados", $$v)
+                                      _vm.$set(_vm.movimiento, "recibe", $$v)
                                     },
-                                    expression: "movimiento.empleados"
+                                    expression: "movimiento.recibe"
                                   }
                                 })
                               ],
@@ -47965,18 +47994,18 @@ var render = function() {
                                       }
                                     ],
                                     label: "Aprobado",
-                                    "item-text": "nombre",
+                                    "item-text": _vm.EmpleadoNombreCompleto,
                                     "item-value": "id",
                                     "return-object": "",
                                     clearable: "",
                                     "menu-props": { closeOnClick: true }
                                   },
                                   model: {
-                                    value: _vm.movimiento.empleados,
+                                    value: _vm.movimiento.aprueba,
                                     callback: function($$v) {
-                                      _vm.$set(_vm.movimiento, "empleados", $$v)
+                                      _vm.$set(_vm.movimiento, "aprueba", $$v)
                                     },
-                                    expression: "movimiento.empleados"
+                                    expression: "movimiento.aprueba"
                                   }
                                 })
                               ],
@@ -48079,21 +48108,21 @@ var render = function() {
                                   [
                                     _c("v-textarea", {
                                       attrs: {
-                                        label: "Se envia a: ",
+                                        label: "Se transalada a: ",
                                         rows: "2",
                                         required: "",
                                         "error-messages": _vm.errors
                                       },
                                       model: {
-                                        value: _vm.movimiento.observacion,
+                                        value: _vm.movimiento.seTransalada,
                                         callback: function($$v) {
                                           _vm.$set(
                                             _vm.movimiento,
-                                            "observacion",
+                                            "seTransalada",
                                             $$v
                                           )
                                         },
-                                        expression: "movimiento.observacion"
+                                        expression: "movimiento.seTransalada"
                                       }
                                     })
                                   ],
@@ -48114,15 +48143,15 @@ var render = function() {
                                         "error-messages": _vm.errors
                                       },
                                       model: {
-                                        value: _vm.movimiento.observacion,
+                                        value: _vm.movimiento.sePresta,
                                         callback: function($$v) {
                                           _vm.$set(
                                             _vm.movimiento,
-                                            "observacion",
+                                            "sePresta",
                                             $$v
                                           )
                                         },
-                                        expression: "movimiento.observacion"
+                                        expression: "movimiento.sePresta"
                                       }
                                     })
                                   ],
@@ -48334,9 +48363,14 @@ var render = function() {
                   _vm._v("Cerrar")
                 ]),
                 _vm._v(" "),
-                _c("v-btn", { attrs: { color: "info darken-1", text: "" } }, [
-                  _vm._v("Guardar")
-                ])
+                _c(
+                  "v-btn",
+                  {
+                    attrs: { color: "info darken-1", text: "" },
+                    on: { click: _vm.guardarMovimiento }
+                  },
+                  [_vm._v("Guardar")]
+                )
               ],
               1
             )

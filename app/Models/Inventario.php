@@ -38,4 +38,14 @@ class Inventario extends Model
     {
         return $this->belongsTo('App\Models\Entidad');
     }
+
+    function estado()
+    {
+        return $this->belongsTo('App\Models\Estado');
+    }
+
+    function movimiento() 
+    {
+        return $this->belongsToMany('App\Models\Movimiento');
+    }
 }

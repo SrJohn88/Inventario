@@ -22,10 +22,10 @@ class CreateMovimientosTable extends Migration
             $table->unsignedInteger('tipo_id');
             $table->foreign('tipo_id')->references('id')->on('tipo_movimientos');
             
-            $table->unsignedIntener('recibido_por');
+            $table->unsignedInteger('recibido_por');
             $table->foreign('recibido_por')->references('id')->on('empleados');
 
-            $table->unsignedIntener('aprobado_por');
+            $table->unsignedInteger('aprobado_por');
             $table->foreign('aprobado_por')->references('id')->on('empleados');
             
             $table->unsignedInteger('user_id');
