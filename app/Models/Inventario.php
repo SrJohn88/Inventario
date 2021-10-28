@@ -46,6 +46,6 @@ class Inventario extends Model
 
     function movimiento() 
     {
-        return $this->belongsToMany('App\Models\Movimiento');
+        return $this->belongsToMany('App\Models\Movimiento')->withTimestamps();;
     }
 }

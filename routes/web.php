@@ -89,9 +89,15 @@ Route::get('Api/movimientos/tipos',[ TipoMovimientoController::class,'obtenerTip
 Route::get('Api/empleados',[EmpleadoController::class,'obtenerEmpleados'])->name("empleados.get");
 
 //MOVIMIENTO DE INVENTARIO
-Route::get('/inventario/movimientos',[ MovimientoController::class, 'crear'])->name("movimiento.index");
+Route::get('/inventario/movimientos',[ MovimientoController::class, 'index'])->name("movimiento.index");
+Route::get('/inventario/movimientos/crear',[ MovimientoController::class, 'crear'])->name("movimiento.crear");
 
-Route::get('/inventario/movimientos/save',[ MovimientoController::class, 'save'])->name("movimiento.save");
+
+//MOVIMIENTO API
+Route::get('/Api/inventario/movimientos',[ MovimientoController::class, 'obtenerMovimientos'])->name("movimiento.get");
+
+
+Route::post('/Api/inventario/movimientos/save',[ MovimientoController::class, 'save'])->name("movimiento.save");
 
 
 

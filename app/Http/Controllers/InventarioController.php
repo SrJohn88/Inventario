@@ -27,7 +27,7 @@ class InventarioController extends Controller
     function getActivos() 
     {
         return response()->json([
-            'activos' => Inventario::with('ubicacion', 'marca', 'estado')->get()
+            'activos' => Inventario::with('ubicacion', 'estado', 'marca', 'estado')->get()
         ]);
     }
 

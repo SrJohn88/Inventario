@@ -186,6 +186,7 @@
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
                     <v-btn color="red darken-1" text
+                    @click="cancelar"
                       >Cerrar</v-btn
                     >
                     <v-btn
@@ -217,7 +218,7 @@ export default {
                 tipoMovimiento: { id: null, tipo: '' }, recibe: {id: null, nombre: ''},  aprueba: {id: null, nombre: ''},
                 seTransalada: '', sePresta: '',
                 fecha: '', observaciones: '',
-                activos: this.inventarios
+                activos: []
             },
             tiposMovimientos: [],
             empleados: [],
@@ -279,8 +280,68 @@ export default {
         },
         guardarMovimiento()
         {
-            this.movimiento.activos = {...this.inventarios};
-            console.log( this.movimiento )
+            let activosTemp = [...this.inventarios ];
+
+            //console.log( activosTemp );
+
+            activosTemp.forEach( activo => {
+                this.movimiento.activos.push( 
+                    { inventario_id: activo.id, falla: activo.falla, observaciones: activo.observaciones  } )
+            });
+
+            const path = `/Api/inventario/movimientos/save`;
+
+            axios
+                .post( path, this.movimiento )
+                .then( response => {
+
+                    console.log( response );
+
+                    if ( response.status == 200 )
+                    {
+                        const { respuesta, mensaje } = response.data
+
+                        if ( respuesta )
+                        {
+                            this.alerta( mensaje, 'success', '¡Bien hecho!')
+
+                            Swal.fire({
+                                title: 'INFORMACION',
+                                text: "¿Quieres agregar otro movimiento?",
+                                icon: 'info',
+                                icon: "info",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3698e3",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Si",
+                                cancelButtonText: 'No',
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if ( result.isConfirmed ) {
+                                    this.movimiento = {}
+                                                                        
+                                } else {
+                                    window.location = '/inventario/movimientos';                                    
+                                }
+                            });
+                        }
+                    }
+                })
+                .catch ( console.error )
+        },
+        cancelar() {
+            window.location = '/inventario/movimientos'
+        },
+        alerta (mensaje, icono = 'info', titulo = '')
+        {
+            Swal.fire({
+                position: "top-end",
+                icon: icono,
+                title: titulo,
+                text: mensaje,
+                showConfirmButton: false,
+                timer: 1500,
+            });
         }
     }
 }

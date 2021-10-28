@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inventario;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Movimiento;
@@ -58,6 +59,28 @@ class MovimientoController extends Controller
 
                 $detalleMovimiento = $request->input('activos');               
                 $movimiento->inventario()->attach( $detalleMovimiento  );
+
+                foreach ( $request->input('activos') as $value )
+                {
+                    if ( $movimiento->tipo_id == 1 ) 
+                    {
+                        $inv = Inventario::find( $value['inventario_id'] );
+                        $inv->estado_id = 3;
+                        $inv->save();
+
+                    } else if (  $movimiento->tipo_id == 2 )
+                    {
+                        $inv = Inventario::find( $value['inventario_id'] );
+                        $inv->ubicacion_id =2;
+                        $inv->save();
+
+                    } else if ( $movimiento->tipo_id == 3 )
+                    {
+                        $inv = Inventario::find( $value['inventario_id'] );
+                        $inv->estado_id = 2;
+                        $inv->save();
+                    }
+                }
 
                 DB::commit();
 

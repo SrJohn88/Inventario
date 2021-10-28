@@ -37,6 +37,7 @@ export default {
                 { text: "Marca", value: "marca.nombre", align: "left" },
                 { text: "Modelo", value: "modelo", align: "left" },
                 { text: "Serie", value: "serie", align: "left" },
+                { text: "Estado", value: "estado.estado", align: "left" },
             ],
             activosInventario: [],
             activo: {  },
@@ -57,7 +58,14 @@ export default {
                 .get("/Api/inventario/activos")
                 .then( ( { data: { activos } } ) => {
                     //console.log( activos );
-                    this.activosInventario = activos;
+                    activos = activos.filter( c => c.estado_id == 1)
+                    activos.forEach( activo => {
+                        this.activosInventario.push(
+                            { ...activo, falla: '', observaciones: '' }
+                        )
+                    })
+
+                    //this.activosInventario = activos;
                 })
                 .catch(console.error);
         },
