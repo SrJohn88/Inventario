@@ -14,30 +14,67 @@ class MovimientoController extends Controller
         return view('Inventario.movimientos.crear');
     }
 
-    function save (  ) 
+    function index()
+    {
+        return view( 'Inventario.movimientos.index' );
+    }
+
+    function obtenerMovimientos()
+    {
+        return response()->json([
+            'movimientos' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'user')->get()
+        ]);
+    }
+
+    function save ( Request $request ) 
     {
         try {
 
-            DB::beginTransaction();
+            if( $request->isMethod('POST') )
+            {   
+                DB::beginTransaction();
 
-            $movimiento = new Movimiento();
-            $movimiento->tipo_id = 1;
-            $movimiento->recibido_por = 1;
-            $movimiento->aprobado_por = 1;
-            $movimiento->user_id = 1;
-            $movimiento->descripcion = 'PRUEBA DESDE LARAVEL new';
-            $movimiento->save();
+                $validacion = Validator::make($request->all(), [
+                    
+                ]);
 
-            $movimiento->inventario()->attach( 1, [
-                'fallas' => 'Sin fallas', 'observaciones' => 'sin observacions'
-            ]);
+                if ($validacion->fails()) {
+                    return response()->json([
+                        'respuesta' => false,
+                        'mensaje' => '',
+                        'inventario' => $validacion->errors()->get('codigo')
+                    ]);
+                }
 
-            DB::commit();
+                $movimiento = new Movimiento();
+                $movimiento->tipo_id = $request->input('tipoMovimiento.id');
+                $movimiento->recibido_por = $request->input('recibe.id');
+                $movimiento->aprobado_por = $request->input('aprueba.id');
+                $movimiento->user_id = \Auth::user()->id;
+                $movimiento->descripcion = $request->input('observacion');
+                $movimiento->save();
+
+                // [ { inventario_id : 1, falla: 'sin fallar', obervaciones: 'sin observaciones' } ]
+
+                $detalleMovimiento = $request->input('activos');               
+                $movimiento->inventario()->attach( $detalleMovimiento  );
+
+                DB::commit();
+
+                return response()->json([
+                    'respuesta' => true,
+                    'mensaje' => 'Movimiento registrado con exito'
+                ]);
+
+            }        
 
         } catch ( \Exception $e )
         {
             DB::rollBack();
-            return $e->getMessage();
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Ocurrio un error en el servidor'
+            ]);
         }
         //}
     }
