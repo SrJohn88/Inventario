@@ -92,6 +92,7 @@ Route::get('Api/empleados',[EmpleadoController::class,'obtenerEmpleados'])->name
 Route::get('/inventario/movimientos',[ MovimientoController::class, 'index'])->name("movimiento.index");
 Route::get('/inventario/movimientos/crear',[ MovimientoController::class, 'crear'])->name("movimiento.crear");
 
+//ok prueba
 
 //MOVIMIENTO API
 Route::get('/Api/inventario/movimientos',[ MovimientoController::class, 'obtenerMovimientos'])->name("movimiento.get");
