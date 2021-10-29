@@ -85,14 +85,19 @@
                                     </v-menu>
                                 </v-col> 
 
-                                <v-col cols="12" v-if= "movimiento.tipoMovimiento.id == 2">
-                                    <v-textarea
+                                <v-col cols="12" v-if= "movimiento.tipoMovimiento.id == 2">                                    
+                                    <v-autocomplete
                                         v-model="movimiento.seTransalada"
-                                        label="Se transalada a: "
-                                        rows="2"
+                                        :items="ubicaciones"
                                         required
-                                        :error-messages="errors"
-                                    ></v-textarea>
+                                        :rules="[ v => !!v || 'Tipo cuenta del activo es requerido']"
+                                        label="Se translada a: "
+                                        item-text="ubicacion"
+                                        item-value="id"
+                                        return-object
+                                        clearable
+                                        :menu-props="{ closeOnClick: true }"
+                                    ></v-autocomplete>
                                 </v-col>
 
                                 <v-col cols="12" v-if= "movimiento.tipoMovimiento.id == 1">
@@ -178,6 +183,34 @@
                                 </v-dialog>
                                 </v-toolbar>
                             </template>
+
+                            <template v-slot:item.falla="props">
+                                <v-edit-dialog
+                                    :return-value.sync="props.item.falla"
+                                    large
+                                    persistent
+                                    @save="guardarFallar( props.item )"
+                                    @cancel="cancelarFalla"
+                                    >
+                                        {{ props.item.falla }}
+                                    <template v-slot:input>
+                                        <div class="mt-4 text-h6">
+                                            Falla:
+                                        </div>
+                                        <v-text-field
+                                        v-model="props.item.falla"
+                                        :rules="[]"                                        
+                                        label="Descripción"
+                                        single-line
+                                        counter
+                                        autofocus
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+
+
+
                         </v-data-table>
 
                     </v-form>
@@ -216,11 +249,12 @@ export default {
             modalNMovimientos: false,
             movimiento: {
                 tipoMovimiento: { id: null, tipo: '' }, recibe: {id: null, nombre: ''},  aprueba: {id: null, nombre: ''},
-                seTransalada: '', sePresta: '',
+                seTransalada: { id: null, ubicacion: '' }, sePresta: '',
                 fecha: '', observaciones: '',
                 activos: []
             },
             tiposMovimientos: [],
+            ubicaciones: [],
             empleados: [],
             buscarInventario: '',
             headMovimientos: [
@@ -241,11 +275,19 @@ export default {
     {
         this.getEmpleados();
         this.getTiposMovimientos();
+        this.getUbicaciones();
     },
     methods: {
         EmpleadoNombreCompleto( empleado )
         {
             return empleado.nombre + ' ' + empleado.apellido;
+        },
+        getUbicaciones() 
+        {
+            axios.get(`/Api/ubicaciones`)
+                .then ( ( { data: { ubicaciones } } ) => {
+                    this.ubicaciones = ubicaciones;
+                });
         },
         getInventario() {
             console.log('creando desde movimiento')
@@ -280,9 +322,10 @@ export default {
         },
         guardarMovimiento()
         {
-            let activosTemp = [...this.inventarios ];
+            console.log ( this.inventarios );
+            
 
-            //console.log( activosTemp );
+            let activosTemp = [...this.inventarios ];
 
             activosTemp.forEach( activo => {
                 this.movimiento.activos.push( 
@@ -304,26 +347,27 @@ export default {
                         if ( respuesta )
                         {
                             this.alerta( mensaje, 'success', '¡Bien hecho!')
-
-                            Swal.fire({
-                                title: 'INFORMACION',
-                                text: "¿Quieres agregar otro movimiento?",
-                                icon: 'info',
-                                icon: "info",
-                                showCancelButton: true,
-                                confirmButtonColor: "#3698e3",
-                                cancelButtonColor: "#d33",
-                                confirmButtonText: "Si",
-                                cancelButtonText: 'No',
-                                allowOutsideClick: false
-                            }).then((result) => {
-                                if ( result.isConfirmed ) {
-                                    this.movimiento = {}
-                                                                        
-                                } else {
-                                    window.location = '/inventario/movimientos';                                    
-                                }
-                            });
+                                .then( () => {
+                                    Swal.fire({
+                                        title: 'INFORMACION',
+                                        text: "¿Quieres agregar otro movimiento?",
+                                        icon: 'info',
+                                        icon: "info",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#3698e3",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Si",
+                                        cancelButtonText: 'No',
+                                        allowOutsideClick: false
+                                    }).then((result) => {
+                                        if ( result.isConfirmed ) {
+                                            this.movimiento = {}
+                                                                                
+                                        } else {
+                                            window.location = '/inventario/movimientos';                                    
+                                        }
+                                    });
+                                });                
                         }
                     }
                 })
@@ -334,15 +378,24 @@ export default {
         },
         alerta (mensaje, icono = 'info', titulo = '')
         {
-            Swal.fire({
+            return new Promise( ( resolve, reject ) => {
+                Swal.fire({
                 position: "top-end",
                 icon: icono,
                 title: titulo,
                 text: mensaje,
                 showConfirmButton: false,
                 timer: 1500,
+                }).then( resolve );
             });
-        }
+            
+        },
+        guardarFallar( item ) {
+            
+        },
+        cancelarFalla() {
+
+        },
     }
 }
 </script>

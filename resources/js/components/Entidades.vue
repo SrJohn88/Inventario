@@ -250,8 +250,6 @@ export default {
             } else {
               const { entidad } = response.data
               this.errores = entidad;
-              //this.alerta( entidad[0], 'warning', '¡INFORMACIÓN!')
-              console.log('La respuesta no fue 200');
             }
             this.loader = false;
           }
@@ -321,9 +319,15 @@ export default {
       this.modalEntidad = true;
     },
     cerrarModal() {
-      this.entidad = { id: null, entidad: "" };
       this.modalEntidad = false;
-      
+      setTimeout(() => {
+        this.entidad = { id: null, entidad: "" };
+        this.resetValidation();
+      }, 300);
+    },
+    resetValidation() {
+      this.errores = [];
+      this.$refs.form.resetValidation();
     },
     alerta (mensaje, icono = 'info', titulo = '')
     {

@@ -2109,9 +2109,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
             _this2.cerrarModal();
           } else {
-            _this2.alerta(_mensaje, 'info', '¡Información!');
-
-            _this2.cerrarModal();
+            var cuenta = response.data.cuenta;
+            _this2.errorCuenta = cuenta;
           }
         }
       })["catch"](function () {
@@ -2185,11 +2184,21 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       this.modal = true;
     },
     cerrarModal: function cerrarModal() {
-      this.cuenta = {
-        id: null,
-        cuenta: ''
-      };
+      var _this6 = this;
+
       this.modal = false;
+      setTimeout(function () {
+        _this6.cuenta = {
+          id: null,
+          cuenta: ""
+        };
+
+        _this6.resetValidation();
+      }, 300);
+    },
+    resetValidation: function resetValidation() {
+      this.errorCuenta = [];
+      this.$refs.formCuenta.resetValidation();
     },
     alerta: function alerta(mensaje) {
       var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
@@ -2485,9 +2494,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
             _this2.cerrarModal();
           } else {
             var entidad = response.data.entidad;
-            _this2.errores = entidad; //this.alerta( entidad[0], 'warning', '¡INFORMACIÓN!')
-
-            console.log('La respuesta no fue 200');
+            _this2.errores = entidad;
           }
 
           _this2.loader = false;
@@ -2568,11 +2575,21 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       this.modalEntidad = true;
     },
     cerrarModal: function cerrarModal() {
-      this.entidad = {
-        id: null,
-        entidad: ""
-      };
+      var _this6 = this;
+
       this.modalEntidad = false;
+      setTimeout(function () {
+        _this6.entidad = {
+          id: null,
+          entidad: ""
+        };
+
+        _this6.resetValidation();
+      }, 300);
+    },
+    resetValidation: function resetValidation() {
+      this.errores = [];
+      this.$refs.form.resetValidation();
     },
     alerta: function alerta(mensaje) {
       var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
@@ -3571,6 +3588,39 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue */ "./resources/js/components/Inventario/Modals/Movimiento.vue").default);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'movimiento-crear',
@@ -3594,13 +3644,17 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
           id: null,
           nombre: ''
         },
-        seTransalada: '',
+        seTransalada: {
+          id: null,
+          ubicacion: ''
+        },
         sePresta: '',
         fecha: '',
         observaciones: '',
         activos: []
       },
       tiposMovimientos: [],
+      ubicaciones: [],
       empleados: [],
       buscarInventario: '',
       headMovimientos: [{
@@ -3635,31 +3689,40 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
   mounted: function mounted() {
     this.getEmpleados();
     this.getTiposMovimientos();
+    this.getUbicaciones();
   },
   methods: {
     EmpleadoNombreCompleto: function EmpleadoNombreCompleto(empleado) {
       return empleado.nombre + ' ' + empleado.apellido;
+    },
+    getUbicaciones: function getUbicaciones() {
+      var _this = this;
+
+      axios.get("/Api/ubicaciones").then(function (_ref) {
+        var ubicaciones = _ref.data.ubicaciones;
+        _this.ubicaciones = ubicaciones;
+      });
     },
     getInventario: function getInventario() {
       console.log('creando desde movimiento');
       this.$refs.activo = [];
     },
     getEmpleados: function getEmpleados() {
-      var _this = this;
+      var _this2 = this;
 
-      axios.get("/Api/empleados").then(function (_ref) {
-        var empleados = _ref.data.empleados;
-        _this.empleados = empleados;
-        console.log(_this.empleados);
+      axios.get("/Api/empleados").then(function (_ref2) {
+        var empleados = _ref2.data.empleados;
+        _this2.empleados = empleados;
+        console.log(_this2.empleados);
       })["catch"](console.error);
     },
     getTiposMovimientos: function getTiposMovimientos() {
-      var _this2 = this;
+      var _this3 = this;
 
-      axios.get("/Api/movimientos/tipos").then(function (_ref2) {
-        var tiposMovimientos = _ref2.data.tiposMovimientos;
-        _this2.tiposMovimientos = tiposMovimientos;
-        console.log(_this2.tiposMovimientos);
+      axios.get("/Api/movimientos/tipos").then(function (_ref3) {
+        var tiposMovimientos = _ref3.data.tiposMovimientos;
+        _this3.tiposMovimientos = tiposMovimientos;
+        console.log(_this3.tiposMovimientos);
       })["catch"](console.error);
     },
     onAddedItem: function onAddedItem(valores) {
@@ -3668,13 +3731,14 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
     },
     getProductFromChild: function getProductFromChild() {},
     guardarMovimiento: function guardarMovimiento() {
-      var _this3 = this;
+      var _this4 = this;
 
-      var activosTemp = _toConsumableArray(this.inventarios); //console.log( activosTemp );
+      console.log(this.inventarios);
 
+      var activosTemp = _toConsumableArray(this.inventarios);
 
       activosTemp.forEach(function (activo) {
-        _this3.movimiento.activos.push({
+        _this4.movimiento.activos.push({
           inventario_id: activo.id,
           falla: activo.falla,
           observaciones: activo.observaciones
@@ -3690,20 +3754,20 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
               mensaje = _response$data.mensaje;
 
           if (respuesta) {
-            var _Swal$fire;
+            _this4.alerta(mensaje, 'success', '¡Bien hecho!').then(function () {
+              var _Swal$fire;
 
-            _this3.alerta(mensaje, 'success', '¡Bien hecho!');
-
-            Swal.fire((_Swal$fire = {
-              title: 'INFORMACION',
-              text: "¿Quieres agregar otro movimiento?",
-              icon: 'info'
-            }, _defineProperty(_Swal$fire, "icon", "info"), _defineProperty(_Swal$fire, "showCancelButton", true), _defineProperty(_Swal$fire, "confirmButtonColor", "#3698e3"), _defineProperty(_Swal$fire, "cancelButtonColor", "#d33"), _defineProperty(_Swal$fire, "confirmButtonText", "Si"), _defineProperty(_Swal$fire, "cancelButtonText", 'No'), _defineProperty(_Swal$fire, "allowOutsideClick", false), _Swal$fire)).then(function (result) {
-              if (result.isConfirmed) {
-                _this3.movimiento = {};
-              } else {
-                window.location = '/inventario/movimientos';
-              }
+              Swal.fire((_Swal$fire = {
+                title: 'INFORMACION',
+                text: "¿Quieres agregar otro movimiento?",
+                icon: 'info'
+              }, _defineProperty(_Swal$fire, "icon", "info"), _defineProperty(_Swal$fire, "showCancelButton", true), _defineProperty(_Swal$fire, "confirmButtonColor", "#3698e3"), _defineProperty(_Swal$fire, "cancelButtonColor", "#d33"), _defineProperty(_Swal$fire, "confirmButtonText", "Si"), _defineProperty(_Swal$fire, "cancelButtonText", 'No'), _defineProperty(_Swal$fire, "allowOutsideClick", false), _Swal$fire)).then(function (result) {
+                if (result.isConfirmed) {
+                  _this4.movimiento = {};
+                } else {
+                  window.location = '/inventario/movimientos';
+                }
+              });
             });
           }
         }
@@ -3715,15 +3779,19 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
     alerta: function alerta(mensaje) {
       var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
       var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-      Swal.fire({
-        position: "top-end",
-        icon: icono,
-        title: titulo,
-        text: mensaje,
-        showConfirmButton: false,
-        timer: 1500
+      return new Promise(function (resolve, reject) {
+        Swal.fire({
+          position: "top-end",
+          icon: icono,
+          title: titulo,
+          text: mensaje,
+          showConfirmButton: false,
+          timer: 1500
+        }).then(resolve);
       });
-    }
+    },
+    guardarFallar: function guardarFallar(item) {},
+    cancelarFalla: function cancelarFalla() {}
   }
 });
 
@@ -3740,22 +3808,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -4203,11 +4255,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
 Vue.component('Entidad', __webpack_require__(/*! .//Modals/Entidad.vue */ "./resources/js/components/Inventario/Modals/Entidad.vue").default);
 Vue.component('Cuenta', __webpack_require__(/*! .//Modals/Cuenta.vue */ "./resources/js/components/Inventario/Modals/Cuenta.vue").default);
 Vue.component('Marca', __webpack_require__(/*! .//Modals/Marca.vue */ "./resources/js/components/Inventario/Modals/Marca.vue").default);
@@ -4217,6 +4264,20 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
   name: 'inventario-crear',
   data: function data() {
     return {
+      reglas: {
+        requerido: function requerido(v) {
+          return !!v || "Nombre de la entidad es requerido";
+        },
+        min: function min(v) {
+          return v.length >= 2 && v.length <= 100 || "Nombre de la entidad debe ser mayor a 2 caracteres";
+        },
+        expresion: function expresion(v) {
+          return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
+        },
+        precio: function precio(v) {
+          return /^[0-9. \s]+$/g.test(v) || 'No parece formato de dinero';
+        }
+      },
       menu: false,
       idPrueba: 0,
       loader: false,
@@ -4448,7 +4509,9 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
               });
             }
           } else {
-            _this8.alerta(mensaje, 'error', 'Importante');
+            var inventario = response.data.inventario;
+            _this8.errorsNombre['codigo'] = inventario.codigo[0];
+            console.log(_this8.errorsNombre['codigo']);
           }
         }
       })["catch"](console.error);
@@ -5336,7 +5399,6 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
     save: function save() {
       var _this2 = this;
 
-      console.log(this.rubro);
       var path = this.rubro.id == null ? "/Api/rubros" : "/Api/rubros/".concat(this.rubro.id, "/edit");
       axios.post(path, this.rubro).then(function (response) {
         if (response.status == 200) {
@@ -5351,7 +5413,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
             _this2.cerrarModal();
           } else {
-            _this2.alerta(mensaje, 'error', 'Importante');
+            var rubro = response.data.rubro;
+            _this2.errores = rubro;
           }
         }
       });
@@ -5423,11 +5486,21 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       this.modalRubro = true;
     },
     cerrarModal: function cerrarModal() {
-      this.rubro = {
-        id: null,
-        rubro: ""
-      };
+      var _this6 = this;
+
       this.modalRubro = false;
+      setTimeout(function () {
+        _this6.rubro = {
+          id: null,
+          rubro: ""
+        };
+
+        _this6.resetValidation();
+      }, 300);
+    },
+    resetValidation: function resetValidation() {
+      this.errores = [];
+      this.$refs.formRubro.resetValidation();
     },
     alerta: function alerta(mensaje) {
       var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
@@ -5613,6 +5686,10 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5639,6 +5716,17 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       ubicacion: {
         id: null,
         ubicacion: ''
+      },
+      reglas: {
+        requerido: function requerido(v) {
+          return !!v || "Ubicacion requerida";
+        },
+        min: function min(v) {
+          return v && v.length >= 2 && v.length <= 100 || "El detalle debe ser mayor a 2 caracteres";
+        },
+        expresion: function expresion(v) {
+          return /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) || "La ubicacion no puede tener caracteres especiales";
+        }
       }
     };
   },
@@ -5685,7 +5773,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
             _this2.cerrarModal();
           } else {
-            _this2.alerta(mensaje, 'error', 'Importante');
+            var ubicacion = response.data.ubicacion;
+            _this2.errorsNombre = ubicacion;
           }
         }
       });
@@ -5757,11 +5846,21 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       this.modal = true;
     },
     cerrarModal: function cerrarModal() {
+      var _this6 = this;
+
       this.modal = false;
-      this.ubicacion = {
-        id: null,
-        ubicacion: ''
-      };
+      setTimeout(function () {
+        _this6.ubicacion = {
+          id: null,
+          ubicacion: ''
+        };
+
+        _this6.resetValidation();
+      }, 300);
+    },
+    resetValidation: function resetValidation() {
+      this.errorsNombre = [];
+      this.$refs.formUbicacion.resetValidation();
     },
     alerta: function alerta(mensaje) {
       var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
@@ -48419,12 +48518,24 @@ var render = function() {
                                   "v-col",
                                   { attrs: { cols: "12" } },
                                   [
-                                    _c("v-textarea", {
+                                    _c("v-autocomplete", {
                                       attrs: {
-                                        label: "Se transalada a: ",
-                                        rows: "2",
+                                        items: _vm.ubicaciones,
                                         required: "",
-                                        "error-messages": _vm.errors
+                                        rules: [
+                                          function(v) {
+                                            return (
+                                              !!v ||
+                                              "Tipo cuenta del activo es requerido"
+                                            )
+                                          }
+                                        ],
+                                        label: "Se translada a: ",
+                                        "item-text": "ubicacion",
+                                        "item-value": "id",
+                                        "return-object": "",
+                                        clearable: "",
+                                        "menu-props": { closeOnClick: true }
                                       },
                                       model: {
                                         value: _vm.movimiento.seTransalada,
@@ -48657,6 +48768,94 @@ var render = function() {
                             ]
                           },
                           proxy: true
+                        },
+                        {
+                          key: "item.falla",
+                          fn: function(props) {
+                            return [
+                              _c(
+                                "v-edit-dialog",
+                                {
+                                  attrs: {
+                                    "return-value": props.item.falla,
+                                    large: "",
+                                    persistent: ""
+                                  },
+                                  on: {
+                                    "update:returnValue": function($event) {
+                                      return _vm.$set(
+                                        props.item,
+                                        "falla",
+                                        $event
+                                      )
+                                    },
+                                    "update:return-value": function($event) {
+                                      return _vm.$set(
+                                        props.item,
+                                        "falla",
+                                        $event
+                                      )
+                                    },
+                                    save: function($event) {
+                                      return _vm.guardarFallar(props.item)
+                                    },
+                                    cancel: _vm.cancelarFalla
+                                  },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "input",
+                                        fn: function() {
+                                          return [
+                                            _c(
+                                              "div",
+                                              { staticClass: "mt-4 text-h6" },
+                                              [
+                                                _vm._v(
+                                                  "\n                                        Falla:\n                                    "
+                                                )
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                rules: [],
+                                                label: "Descripción",
+                                                "single-line": "",
+                                                counter: "",
+                                                autofocus: ""
+                                              },
+                                              model: {
+                                                value: props.item.falla,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    props.item,
+                                                    "falla",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression: "props.item.falla"
+                                              }
+                                            })
+                                          ]
+                                        },
+                                        proxy: true
+                                      }
+                                    ],
+                                    null,
+                                    true
+                                  )
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                    " +
+                                      _vm._s(props.item.falla) +
+                                      "\n                                "
+                                  )
+                                ]
+                              )
+                            ]
+                          }
                         }
                       ])
                     })
@@ -48756,7 +48955,7 @@ var render = function() {
                 [
                   _c(
                     "div",
-                    { staticClass: "text-center ma-4" },
+                    { staticClass: "text-center ma-2" },
                     [
                       _c(
                         "v-btn",
@@ -48775,7 +48974,7 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                          Nueva movimiento\n                          "
+                            "\n                          Nuevo movimiento\n                          "
                           )
                         ]
                       )
@@ -48864,53 +49063,9 @@ var render = function() {
                                       "v-btn",
                                       _vm._g(
                                         {
-                                          attrs: {
-                                            color: "success",
-                                            elevation: "8",
-                                            small: "",
-                                            dark: "",
-                                            disabled: item.id < 0
-                                          },
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.detalle(item)
-                                            }
-                                          }
-                                        },
-                                        on
-                                      ),
-                                      [_c("v-icon", [_vm._v("mdi-pencil")])],
-                                      1
-                                    )
-                                  ]
-                                }
-                              }
-                            ],
-                            null,
-                            true
-                          )
-                        },
-                        [_vm._v(" "), _c("span", [_vm._v("Actualizar Datos")])]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-tooltip",
-                        {
-                          attrs: { top: "" },
-                          scopedSlots: _vm._u(
-                            [
-                              {
-                                key: "activator",
-                                fn: function(ref) {
-                                  var on = ref.on
-                                  return [
-                                    _c(
-                                      "v-btn",
-                                      _vm._g(
-                                        {
                                           staticClass: "mx-1",
                                           attrs: {
-                                            color: "info",
+                                            color: "success",
                                             elevation: "8",
                                             small: "",
                                             dark: "",
@@ -49036,11 +49191,11 @@ var render = function() {
                                     ],
                                     label: "Código",
                                     required: "",
-                                    "error-messages": _vm.errorsNombre
+                                    "error-messages": _vm.errorsNombre["codigo"]
                                   },
                                   on: {
                                     keyup: function($event) {
-                                      _vm.errorsNombre = []
+                                      _vm.errorsNombre["codigo"] = null
                                     }
                                   },
                                   model: {
@@ -49063,13 +49218,7 @@ var render = function() {
                                   attrs: {
                                     "append-icon": "",
                                     label: "Serie",
-                                    required: "",
-                                    "error-messages": _vm.errorsNombre
-                                  },
-                                  on: {
-                                    keyup: function($event) {
-                                      _vm.errorsNombre = []
-                                    }
+                                    required: ""
                                   },
                                   model: {
                                     value: _vm.inventario.serie,
@@ -49091,8 +49240,7 @@ var render = function() {
                                   attrs: {
                                     label: "Descripcion",
                                     rows: "2",
-                                    required: "",
-                                    "error-messages": _vm.errorsNombre
+                                    required: ""
                                   },
                                   model: {
                                     value: _vm.inventario.descripcion,
@@ -49179,13 +49327,7 @@ var render = function() {
                                   attrs: {
                                     "append-icon": "",
                                     label: "Modelo",
-                                    required: "",
-                                    "error-messages": _vm.errorsNombre
-                                  },
-                                  on: {
-                                    keyup: function($event) {
-                                      _vm.errorsNombre = []
-                                    }
+                                    required: ""
                                   },
                                   model: {
                                     value: _vm.inventario.modelo,
@@ -49395,14 +49537,10 @@ var render = function() {
                                 _c("v-text-field", {
                                   attrs: {
                                     "append-icon": "fas fa-tags",
+                                    rules: [_vm.reglas.precio],
                                     label: "Precio",
                                     required: "",
                                     "error-messages": _vm.errorsNombre
-                                  },
-                                  on: {
-                                    keyup: function($event) {
-                                      _vm.errorsNombre = []
-                                    }
                                   },
                                   model: {
                                     value: _vm.inventario.precio,
@@ -50726,7 +50864,7 @@ var render = function() {
                                           _c(
                                             "v-form",
                                             {
-                                              ref: "formEntidad",
+                                              ref: "formRubro",
                                               attrs: {
                                                 "lazy-validation": true
                                               },
@@ -50749,7 +50887,7 @@ var render = function() {
                                                     _vm.reglas.expresion
                                                   ],
                                                   label:
-                                                    "Ingrese el nombre de la entidad",
+                                                    "Ingrese el nombre del rubro",
                                                   required: "",
                                                   "error-messages": _vm.errores
                                                 },
@@ -50943,31 +51081,33 @@ var render = function() {
                                   fn: function(ref) {
                                     var on = ref.on
                                     return [
-                                      _c(
-                                        "v-btn",
-                                        _vm._g(
-                                          {
-                                            staticClass: "mb-2",
-                                            attrs: {
-                                              elevation: "10",
-                                              color: "blue  darken-3",
-                                              dark: ""
-                                            }
-                                          },
-                                          on
-                                        ),
-                                        [
-                                          _vm._v(
-                                            "\n                    Agregar Ubicación \n                    "
-                                          ),
-                                          _c("v-icon", [
-                                            _vm._v(
-                                              "mdi-plus-box-multiple-outline"
-                                            )
-                                          ])
-                                        ],
-                                        1
-                                      ),
+                                      !_vm.estadoUbicacion
+                                        ? _c(
+                                            "v-btn",
+                                            _vm._g(
+                                              {
+                                                staticClass: "mb-2",
+                                                attrs: {
+                                                  elevation: "10",
+                                                  color: "blue  darken-3",
+                                                  dark: ""
+                                                }
+                                              },
+                                              on
+                                            ),
+                                            [
+                                              _vm._v(
+                                                "\n                    Agregar Ubicación \n                    "
+                                              ),
+                                              _c("v-icon", [
+                                                _vm._v(
+                                                  "mdi-plus-box-multiple-outline"
+                                                )
+                                              ])
+                                            ],
+                                            1
+                                          )
+                                        : _vm._e(),
                                       _vm._v(" "),
                                       _c("v-checkbox", {
                                         staticClass: "mx-10",
@@ -51045,14 +51185,11 @@ var render = function() {
                                                   "append-icon":
                                                     "mdi-folder-outline",
                                                   rules: [
-                                                    function(v) {
-                                                      return (
-                                                        !!v ||
-                                                        "Ubicacion Es Requerido"
-                                                      )
-                                                    }
+                                                    _vm.reglas.requerido,
+                                                    _vm.reglas.min,
+                                                    _vm.reglas.expresion
                                                   ],
-                                                  label: "Nombre",
+                                                  label: "Ubicación",
                                                   required: "",
                                                   "error-messages":
                                                     _vm.errorsNombre

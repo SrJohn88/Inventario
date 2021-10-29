@@ -50,7 +50,7 @@ class InventarioController extends Controller
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => '',
-                    'inventario' => $validacion->errors()->get('codigo')
+                    'inventario' => $validacion->errors()
                 ]);
             }
 

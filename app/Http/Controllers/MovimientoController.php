@@ -71,7 +71,7 @@ class MovimientoController extends Controller
                     } else if (  $movimiento->tipo_id == 2 )
                     {
                         $inv = Inventario::find( $value['inventario_id'] );
-                        $inv->ubicacion_id =2;
+                        $inv->ubicacion_id = $request->input('seTransalada.id');
                         $inv->save();
 
                     } else if ( $movimiento->tipo_id == 3 )

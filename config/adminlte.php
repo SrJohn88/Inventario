@@ -264,7 +264,7 @@ return [
                 ],
                 [
                     'text' => 'Inventario',
-                    'route' => 'inventario.crear',
+                    'route' => 'inventario.index',
                     'icon'  => 'fas fw fa-registered',
                 ]
             ],

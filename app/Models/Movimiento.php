@@ -38,11 +38,11 @@ class Movimiento extends Model
 
     public function getCreatedAtAttribute( $date )
     {        
-        return Carbon::createFromDate( $date )->format('d-m-Y h:m') ;
+        return Carbon::createFromDate( $date )->format('d-m-Y') ;
     }
 
     public function getUpdatedAtAttribute( $date )
     {        
-        return Carbon::createFromDate( $date )->format('d-m-Y h:m') ;
+        return Carbon::createFromDate( $date )->format('d-m-Y') ;
     }
 }

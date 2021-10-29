@@ -23,13 +23,13 @@
                                             <v-text-field
                                                 append-icon="fas fa-barcode"
                                                 v-model="inventario.codigo"
-                                                @keyup="errorsNombre = []"
+                                                @keyup="errorsNombre['codigo'] = null "
                                                 :rules="[
                                                     v => !!v || 'Codigo Es Requerido'
                                                 ]"
                                                 label="Código"
                                                 required
-                                                :error-messages="errorsNombre"
+                                                :error-messages="errorsNombre['codigo']"
                                             ></v-text-field>
                                         </v-col>
 
@@ -37,10 +37,8 @@
                                             <v-text-field
                                                     append-icon=""
                                                     v-model="inventario.serie"
-                                                    @keyup="errorsNombre = []"
                                                     label="Serie"
                                                     required
-                                                    :error-messages="errorsNombre"
                                             ></v-text-field>
                                         </v-col>
 
@@ -50,7 +48,6 @@
                                                 label="Descripcion"
                                                 rows="2"
                                                 required
-                                                :error-messages="errorsNombre"
                                             ></v-textarea>
                                         </v-col>
 
@@ -88,10 +85,8 @@
                                             <v-text-field
                                                 append-icon=""
                                                 v-model="inventario.modelo"
-                                                @keyup="errorsNombre = []"
                                                 label="Modelo"
                                                 required
-                                                :error-messages="errorsNombre"
                                             ></v-text-field>
                                         </v-col>
 
@@ -172,7 +167,7 @@
                                             <v-text-field
                                                 append-icon="fas fa-tags"
                                                 v-model="inventario.precio"
-                                                @keyup="errorsNombre = []"
+                                                :rules=" [ reglas.precio ]"
                                                 label="Precio"
                                                 required
                                                 :error-messages="errorsNombre"
@@ -314,6 +309,16 @@ export default {
     name: 'inventario-crear',
     data() {
         return {
+            reglas: {
+                requerido: (v) => !!v || "Nombre de la entidad es requerido",
+                min: (v) =>
+                (v.length >= 2 && v.length <= 100) ||
+                "Nombre de la entidad debe ser mayor a 2 caracteres",
+                expresion: (v) =>
+                /^[A-Za-z0-9- \s]+$/g.test(v) ||
+                "Nombre de la entidad no puede tener caracteres especiales",
+                precio: (v) => /^[0-9. \s]+$/g.test(v) || 'No parece formato de dinero'
+            },
             menu: false,
             idPrueba: 0,
             loader: false,
@@ -470,7 +475,11 @@ export default {
                             }
 
                         } else {
-                            this.alerta( mensaje, 'error', 'Importante');
+                            
+                            const { inventario } = response.data;
+
+                            this.errorsNombre['codigo'] = inventario.codigo[0];
+                            console.log(this.errorsNombre['codigo'])
                         }
                     }
                 })

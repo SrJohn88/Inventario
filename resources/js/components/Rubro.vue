@@ -118,7 +118,7 @@
                   <v-card-text>
                     <v-container>
                       <v-form
-                        ref="formEntidad"
+                        ref="formRubro"
                         v-model="formularioValido"
                         :lazy-validation="true"
                       >
@@ -131,7 +131,7 @@
                             reglas.min,
                             reglas.expresion,
                           ]"
-                          label="Ingrese el nombre de la entidad"
+                          label="Ingrese el nombre del rubro"
                           required
                           :error-messages="errores"
                         ></v-text-field>                      
@@ -214,7 +214,7 @@ export default {
         .catch(console.error);
     },
     save() {
-      console.log( this.rubro );
+  
       const path =
         this.rubro.id == null
           ? "/Api/rubros"
@@ -228,7 +228,8 @@ export default {
             this.alerta( mensaje, 'success', 'Buena hecho');
             this.cerrarModal();
           } else {
-            this.alerta( mensaje, 'error', 'Importante');
+            const { rubro } = response.data;
+            this.errores = rubro
           }
         }
       });
@@ -290,8 +291,15 @@ export default {
       this.modalRubro = true;
     },
     cerrarModal() {
-      this.rubro = { id: null, rubro:"" };
       this.modalRubro = false;
+      setTimeout(() => {
+        this.rubro = { id: null, rubro:"" };
+        this.resetValidation();
+      }, 300);
+    },
+    resetValidation() {
+      this.errores = [];
+      this.$refs.formRubro.resetValidation();
     },
     alerta (mensaje, icono = 'info', titulo = '')
     {

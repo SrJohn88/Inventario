@@ -35,7 +35,7 @@
               <div class="flex-grow-1"></div>
               <v-dialog v-model="modal" persistent max-width="700px">
                 <template v-slot:activator="{ on }">
-                  <v-btn elevation="10" color="blue  darken-3" dark class="mb-2" v-on="on">
+                  <v-btn elevation="10" v-if="!estadoUbicacion" color="blue  darken-3" dark class="mb-2" v-on="on">
                     Agregar Ubicación&nbsp;
                     <v-icon>mdi-plus-box-multiple-outline</v-icon>
                   </v-btn>
@@ -60,8 +60,12 @@
                           append-icon="mdi-folder-outline"
                           v-model="ubicacion.ubicacion"
                           @keyup="errorsNombre = []"
-                          :rules="[v => !!v || 'Ubicacion Es Requerido']"
-                          label="Nombre"
+                          :rules="[
+                            reglas.requerido,
+                            reglas.min,
+                            reglas.expresion,
+                          ]"
+                          label="Ubicación"
                           required
                           :error-messages="errorsNombre"
                         ></v-text-field>
@@ -168,7 +172,16 @@ export default {
             ],
             estadoUbicacion: false,
             ubicacionesActivas: [], ubicacionesEliminadas: [],
-            ubicacion: {id: null, ubicacion: ''}
+            ubicacion: {id: null, ubicacion: ''},
+            reglas: {
+            requerido: (v) => !!v || "Ubicacion requerida",
+            min: (v) =>
+              (v && v.length >= 2 && v.length <= 100) ||
+              "El detalle debe ser mayor a 2 caracteres",
+            expresion: (v) =>
+              /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
+              "La ubicacion no puede tener caracteres especiales",
+          },
         }
     },
     computed: {
@@ -208,7 +221,9 @@ export default {
                         this.alerta( mensaje, 'success', 'Buena hecho');
                         this.cerrarModal();
                     } else {
-                        this.alerta( mensaje, 'error', 'Importante');
+                        const { ubicacion } = response.data;
+
+                        this.errorsNombre = ubicacion;
                     }
                 }
             })
@@ -268,8 +283,15 @@ export default {
         },
         cerrarModal() {
           this.modal = false;
-          this.ubicacion = { id: null, ubicacion: '' };
+          setTimeout(() => {
+            this.ubicacion = { id: null, ubicacion: '' };
+            this.resetValidation();
+          }, 300);
 
+        },
+        resetValidation() {
+          this.errorsNombre = [];
+          this.$refs.formUbicacion.resetValidation();
         },
         alerta (mensaje, icono = 'info', titulo = '')
         {

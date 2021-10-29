@@ -38,7 +38,8 @@ class CuentaController extends Controller
             if ($validacion->fails()) {
                 return response()->json([
                     'respuesta' => false,
-                    'mensaje' => $validacion->errors()->get('cuenta')
+                    'mensaje' => '',
+                    'cuenta' => $validacion->errors()->get('cuenta')
                 ]);
             }
 
@@ -62,7 +63,8 @@ class CuentaController extends Controller
         if ($validacion->fails()) {
             return response()->json([
                 'respuesta' => false,
-                'mensaje' => $validacion->errors()->get('cuenta')
+                'mensaje' => '',
+                'cuenta' => $validacion->errors()->get('cuenta')
             ]);
         } else 
         {

@@ -8,7 +8,7 @@
                     <v-text-field v-model="buscarMovimiento" label="Buscar Movimiento" hide-details></v-text-field>
                     
                     <template>
-                        <div class="text-center ma-4">
+                        <div class="text-center ma-2">
                             <v-btn
                             
                             color="primary"
@@ -17,7 +17,7 @@
                             small
                             @click="formMovimiento()"                        
                             >
-                            Nueva movimiento
+                            Nuevo movimiento
                             </v-btn>
                         </div>
                     </template>
@@ -48,26 +48,10 @@
                     </template>
 
                     <template v-slot:item.action="{item}" v-slot:activator="{ on }">
-                    <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                        <v-btn
-                        color="success"
-                        elevation="8"
-                        small
-                        dark
-                        :disabled="item.id < 0"
-                        v-on="on"
-                        @click="detalle( item )"
-                        >
-                        <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                    </template>
-                    <span>Actualizar Datos</span>
-                    </v-tooltip>
                     <v-tooltip top >
                     <template v-slot:activator="{ on }" >
                         <v-btn
-                        color="info"
+                        color="success"
                         class="mx-1"
                         elevation="8"
                         small

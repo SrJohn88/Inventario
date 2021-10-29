@@ -239,9 +239,8 @@ export default {
               this.cerrarModal();
             } else
             {
-                this.alerta( mensaje, 'info', '¡Información!');
-
-              this.cerrarModal();
+              const { cuenta } = response.data;
+              this.errorCuenta = cuenta;
             }
           }
         })
@@ -313,8 +312,15 @@ export default {
     },
     cerrarModal()
     {
-        this.cuenta = { id: null, cuenta: '' };
         this.modal = false;
+        setTimeout(() => {
+          this.cuenta = { id: null, cuenta: "" };
+          this.resetValidation();
+        }, 300);
+    },
+    resetValidation() {
+      this.errorCuenta = [];
+      this.$refs.formCuenta.resetValidation();
     },
     alerta (mensaje, icono = 'info', titulo = '')
     {
