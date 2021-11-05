@@ -24,6 +24,11 @@ class InventarioController extends Controller
         return view('Inventario.crear');
     }
 
+    function detalle()
+    {
+        return view('Inventario.detalle');
+    }
+
     function getActivos() 
     {
         return response()->json([
@@ -32,9 +37,13 @@ class InventarioController extends Controller
     }
 
     function getOneActivo ( $id )
-    {        
+    {   
+        // return response()->json([
+        //    'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado', 'movimiento')->where('id', $id)->firstOrFail()
+        //]);
+
         return response()->json([
-            'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')->where('id', $id)->firstOrFail()
+            'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado', 'historial')->where('id', $id)->firstOrFail()
         ]);
     }
 
@@ -119,5 +128,10 @@ class InventarioController extends Controller
                 'procedencia' => $inventario
             ]);
 
+    }
+
+    function obtenerHistorialMovimientos()
+    {
+        return Inventario::with('historial')->get();
     }
 }

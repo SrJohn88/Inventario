@@ -74,6 +74,7 @@ Route::get('/Api/procedencias',[ProcedenciaController::class,'getProcedencias'])
 //INVENTARIO
 Route::get('/inventario/crear',[InventarioController::class,'crear'])->name("inventario.crear");
 Route::get('/inventario/index',[InventarioController::class,'index'])->name("inventario.index");
+Route::get('/inventario/detalle',[ InventarioController::class, 'detalle'])->name("movimiento.detalle");
 
 
 //INVENTARIO API
@@ -81,6 +82,8 @@ Route::get('Api/inventario/activos',[InventarioController::class,'getActivos'])-
 Route::get('Api/inventario/{id}/activos',[InventarioController::class,'getOneActivo'])->name("inventario.getOne");
 Route::post('Api/inventario/save',[InventarioController::class,'save'])->name("inventario.save");
 Route::post('Api/inventario/{inventario}/edit',[InventarioController::class,'update'])->name("inventario.update");
+
+Route::get('Api/inventario/obtenerMovimientos',[InventarioController::class,'obtenerHistorialMovimientos'])->name("inventarioMovimiento.get");
 
 
 // TIPOS DE MOVIMIENTOS
@@ -96,6 +99,7 @@ Route::get('Api/empleados',[EmpleadoController::class,'obtenerEmpleados'])->name
 //MOVIMIENTO DE INVENTARIO
 Route::get('/inventario/movimientos',[ MovimientoController::class, 'index'])->name("movimiento.index");
 Route::get('/inventario/movimientos/crear',[ MovimientoController::class, 'crear'])->name("movimiento.crear");
+
 
 //ok prueba
 

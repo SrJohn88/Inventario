@@ -29,6 +29,7 @@
                                                 ]"
                                                 label="Código"
                                                 required
+                                                :disabled="detalle"
                                                 :error-messages="errorsNombre['codigo']"
                                             ></v-text-field>
                                         </v-col>
@@ -38,6 +39,7 @@
                                                     append-icon=""
                                                     v-model="inventario.serie"
                                                     label="Serie"
+                                                    :disabled="detalle"
                                                     required
                                             ></v-text-field>
                                         </v-col>
@@ -50,6 +52,7 @@
                                                 :rules="[
                                                     v => !!v || 'Codigo Es Requerido'
                                                 ]"
+                                                :disabled="detalle"
                                                 required
                                             ></v-textarea>
                                         </v-col>
@@ -65,6 +68,7 @@
                                                 aling="center"
                                                 return-object
                                                 clearable
+                                                :disabled="detalle"
                                                 :menu-props="{ closeOnClick: true }"
                                             ></v-autocomplete>
                                         </v-col>
@@ -76,6 +80,7 @@
                                             class="mt-8"
                                             text
                                             icon
+                                            v-show="!detalle"
                                             color="primary"
                                             @click="mostrarModalMarca()"
                                             dark
@@ -90,6 +95,7 @@
                                                 v-model="inventario.modelo"
                                                 label="Modelo"
                                                 required
+                                                :disabled="detalle"
                                             ></v-text-field>
                                         </v-col>
 
@@ -100,14 +106,15 @@
                                                 item-text="procedencia"
                                                 item-value="id"
                                                 label="Procedencia"
-                                                return-object                                        
+                                                return-object  
+                                                :disabled="detalle"                                      
                                                 :menu-props="{ closeOnClick: true }"
                                                 :rules="[ v => !!v || 'Procedencia es campo obligatorio']"
                                                 required
                                             ></v-select>
                                         </v-col>
 
-                                        <v-col cols="5" v-show="inventario.procedencia.id == 1 " >
+                                        <v-col cols="5" v-show="inventario.procedencia.id == 1" >
                                             <v-autocomplete
                                                 v-model="inventario.cuenta"
                                                 :items="cuentas"
@@ -117,6 +124,7 @@
                                                 item-text="cuenta"
                                                 item-value="id"
                                                 return-object
+                                                :disabled="detalle"
                                                 clearable
                                                 :menu-props="{ closeOnClick: true }"
                                             ></v-autocomplete>
@@ -128,6 +136,7 @@
                                             elevation="5"
                                             class="mt-8"
                                             text
+                                            :disabled="detalle"
                                             icon
                                             color="primary"
                                             @click="mostrarModalCuenta()"
@@ -140,6 +149,7 @@
 
                                         <v-col cols="5" v-if="inventario.procedencia.id != 1" >
                                             <v-autocomplete
+                                                :disabled="detalle"
                                                 v-model="inventario.entidad"
                                                 :items="entidades"
                                                 required
@@ -163,6 +173,7 @@
                                             color="primary"
                                             @click="mostrarModalEntidad()"
                                             dark
+                                            :disabled="detalle"
                                             >
                                             <v-icon>mdi-plus-circle</v-icon>
                                             </v-btn>
@@ -170,6 +181,7 @@
 
                                         <v-col cols="6">
                                             <v-text-field
+                                                :disabled="detalle"
                                                 append-icon="fas fa-tags"
                                                 v-model="inventario.precio"
                                                 :rules=" [ reglas.precio ]"
@@ -181,6 +193,7 @@
 
                                         <v-col cols="5">
                                             <v-autocomplete
+                                                :disabled="detalle"
                                                 v-model="inventario.rubro"
                                                 :items="rubros"
                                                 required
@@ -197,6 +210,7 @@
                                         <v-col cols="1" md="1" >
                                             <Rubro @saved="onSavedRubro" ref="rubro" />
                                             <v-btn
+                                            :disabled="detalle"
                                             elevation="5"
                                             class="mt-8"
                                             text
@@ -220,6 +234,7 @@
                                                 >
                                                     <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field
+                                                        :disabled="detalle"
                                                         v-model="inventario.fecha"
                                                         label="Selecciona la fecha"
                                                         prepend-icon="mdi-calendar"
@@ -238,6 +253,7 @@
 
                                         <v-col cols="5">
                                             <v-autocomplete
+                                                :disabled="detalle"
                                                 append-icon="fas fa-map-marker-alt"
                                                 v-model="inventario.ubicacion"
                                                 :items="ubicaciones"
@@ -255,6 +271,7 @@
                                         <v-col cols="1" md="1" >
                                             <Ubicacion @saved="onSavedUbicacion" ref="ubicacion" />
                                             <v-btn
+                                            :disabled="detalle"
                                             elevation="5"
                                             class="mt-8"
                                             text
@@ -269,6 +286,7 @@
 
                                         <v-col cols="12">
                                             <v-textarea
+                                                :disabled="detalle"
                                                 label="Observación"
                                                 v-model="inventario.observaciones"
                                                 no-resize
@@ -282,7 +300,7 @@
                     </v-card-text>
 
                     <v-divider></v-divider>
-                    <v-card-actions>
+                    <v-card-actions v-if="!detalle">
                         <div class="flex-grow-1"></div>
                         <v-btn
                             color="red darken-1"
@@ -297,6 +315,29 @@
                         ></v-btn>
                     </v-card-actions>
                 </v-card>
+
+                <v-card>
+                    <v-card-title>
+                        Historial de activo
+                        <div class="flex-grow-1"></div>                    
+                    </v-card-title>
+
+                    <v-data-table
+                        :headers="headerMovimiento"
+                        :items="historial"
+                        :footer-props="{
+                            'items-per-page-options': [10, 15, 25, 35, 45],
+                            'items-per-page-text': 'Registros Por Página'
+                        }"
+                        :items-per-page="10"
+                        :search="buscarMovimiento"
+                        multi-sort
+                        class="elevation-1"
+                    >
+
+                    </v-data-table>
+                </v-card>
+                
         </div>
     </div>
 </template>
@@ -315,6 +356,9 @@ export default {
     name: 'inventario-crear',
     data() {
         return {
+            buscarMovimiento: '',
+            detalle: false,
+            historial: [],
             limitFecha: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
             reglas: {
                 requerido: (v) => !!v || "Nombre de la entidad es requerido",
@@ -338,14 +382,22 @@ export default {
                 entidad: { id: null, entidad: '' }, fecha: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
             },
             errorsNombre: [],
-            procedencias: []
+            procedencias: [],
+
+            headerMovimiento: [
+                { text: 'Campo', value: 'campo'},
+                { text: "Valor Anterior", value: "valor_anterior" },
+                { text: "Valor Nuevo", value: "valor_nuevo" },
+                { text: "Fecha creación", value: "created_at" }                
+            ]
         }
     },
     created () {
         let uri = window.location.search.substring(1); 
         let params = new URLSearchParams(uri);
 
-        this.idPrueba = params.has('id') ? params.get('id') : null; 
+        this.idPrueba = params.has('id') ? params.get('id') : null;
+        this.detalle = params.has('detalle') ?  Boolean(params.get('detalle'))  : false 
     },
     mounted ()
     {
@@ -356,9 +408,12 @@ export default {
         this.obtenerUbicaciones();
         this.obtenerProcedencias();
 
+        //console.log( this.detalle )
+
         if ( this.idPrueba != null ) 
         {
             this.obtenerActivo();
+            console.log( this.historial )
         }
     }, 
     computed: {
@@ -368,9 +423,10 @@ export default {
     },
     methods: {
         obtenerActivo() {
+            this.loader = true
             axios.get(`/Api/inventario/${ this.idPrueba }/activos`)
                 .then( ( { data: { activo } } ) => {
-                    let {id, codigo, descripcion, fecha_adquision, precio, serie, modelo, ubicacion, entidad, rubro, marca, procedencia, cuenta, observacion } = { ...activo };
+                    let {id, codigo, descripcion, fecha_adquision, precio, serie, modelo, ubicacion, entidad, rubro, marca, procedencia, cuenta, observacion, historial } = { ...activo };
 
                     this.inventario.id = id;
                     this.inventario.codigo = codigo;
@@ -389,8 +445,9 @@ export default {
                     this.inventario.cuenta = cuenta;
                     this.inventario.ubicacion = ubicacion;
                     
-
-                    console.log( this.inventario );
+                    console.log( historial )
+                    this.historial = [... historial ]
+                    this.loader = false
 
                 }).catch(console.error)
         },

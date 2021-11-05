@@ -48,4 +48,8 @@ class Inventario extends Model
     {
         return $this->belongsToMany('App\Models\Movimiento')->withTimestamps();;
     }
+
+    public function historial(){
+        return $this->hasMany('App\Models\HistorialMovimiento');
+    }
 }

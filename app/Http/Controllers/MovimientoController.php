@@ -54,6 +54,7 @@ class MovimientoController extends Controller
                 $movimiento->aprobado_gerencia = $request->input('gerencia.id');
                 $movimiento->aprobado_por = $request->input('aprueba.id');
                 $movimiento->user_id = \Auth::user()->id;
+                $movimiento->seTranslada = $request->input('ubicacion.id');
                 $movimiento->descripcion = $request->input('observacion');
                 $movimiento->save();
 
@@ -67,20 +68,49 @@ class MovimientoController extends Controller
                     if ( $movimiento->tipo_id == 1 ) 
                     {
                         $inv = Inventario::find( $value['inventario_id'] );
+
+                        $valorAnterior = $inv->estado->estado;
+
                         $inv->estado_id = 3;
                         $inv->save();
+
+                        $historial = new HistorialMovimiento();
+                        $historial->inventario_id = $inv->id;
+                        $historial->campo = 'Estado';
+                        $historial->valor_anterior = $valorAnterior;
+                        $historial->valor_nuevo = 'A PRESTAMO';
+                        $historial->save();
+
 
                     } else if (  $movimiento->tipo_id == 2 )
                     {
                         $inv = Inventario::find( $value['inventario_id'] );
-                        $inv->ubicacion_id = $request->input('seTransalada.id');
+                        
+                        $valorAnterior = $inv->ubicacion->ubicacion;
+
+                        $inv->ubicacion_id = $request->input('ubicacion.id');
                         $inv->save();
+
+                        $historial = new HistorialMovimiento();
+                        $historial->inventario_id = $inv->id;
+                        $historial->campo = 'Ubicacion';
+                        $historial->valor_anterior = $valorAnterior;
+                        $historial->valor_nuevo = $request->input('ubicacion.ubicacion');
+                        $historial->save();
 
                     } else if ( $movimiento->tipo_id == 3 )
                     {
                         $inv = Inventario::find( $value['inventario_id'] );
+                        $valorAnterior = $inv->estado->estado;
                         $inv->estado_id = 2;
                         $inv->save();
+
+                        $historial = new HistorialMovimiento();
+                        $historial->inventario_id = $inv->id;
+                        $historial->campo = 'Estado';
+                        $historial->valor_anterior = $valorAnterior;
+                        $historial->valor_nuevo = 'EN MANTENIMIENTO';
+                        $historial->save();
                     }
                 }
 

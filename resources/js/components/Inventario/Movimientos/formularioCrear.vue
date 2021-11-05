@@ -100,7 +100,7 @@
                                     </v-menu>
                                 </v-col> 
 
-                                <v-col cols="5" v-if="movimiento.tipoMovimiento.id == 2">
+                                <v-col cols="5" v-if="movimiento.tipoMovimiento.id == 2 || movimiento.tipoMovimiento.id == 3 ">
                                     <v-autocomplete
                                         append-icon="fas fa-map-marker-alt"
                                         v-model="movimiento.ubicacion"
@@ -116,7 +116,7 @@
                                     ></v-autocomplete>
                                 </v-col>
 
-                                <v-col cols="1" md="1" v-if ="movimiento.tipoMovimiento.id == 2">
+                                <v-col cols="1" md="1" v-if ="movimiento.tipoMovimiento.id == 2 || movimiento.tipoMovimiento.id == 3">
                                     <Ubicacion @saved="onSavedUbicacion" ref="ubicacion" />
                                     <v-btn
                                         elevation="5"
@@ -129,17 +129,7 @@
                                     >
                                     <v-icon>mdi-plus-circle</v-icon>
                                     </v-btn>
-                                </v-col>                    
-
-                                <v-col cols="6" v-if= "movimiento.tipoMovimiento.id == 3">
-                                    <v-textarea
-                                        v-model="movimiento.seTranslada"
-                                        label="Se translada a:"
-                                        rows="1"
-                                        required
-                                        :error-messages="errors"
-                                    ></v-textarea>
-                                </v-col>
+                                </v-col>                                 
 
                                 <v-col cols="12">
                                     <v-textarea
@@ -281,7 +271,7 @@ export default {
             movimiento: {
                 tipoMovimiento: { id: null, tipo: '' }, recibe: {id: null, nombre: ''},  aprueba: {id: null, nombre: ''},
                 gerencia : {id: null, nombre: ''},
-                ubicacion: { id: null, ubicacion: '' }, seTranslada: '',
+                ubicacion: { id: null, ubicacion: '' },
                 fecha: '', observaciones: '',
                 activos: []
             },

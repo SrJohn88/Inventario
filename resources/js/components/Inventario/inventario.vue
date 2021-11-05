@@ -87,7 +87,7 @@ export default {
             TheadTable: [
                 { text: 'Codigo', value: 'codigo'},
                 { text: "Descripcion", value: "descripcion" },
-                { text: "Marca", value: "marca.nombre" },
+                { text: "Marca", value: "marca.marca" },
                 { text: "Modelo", value: "modelo" },
                 { text: "Serie", value: "serie" },
                 { text: "Precio", value: "precio" },

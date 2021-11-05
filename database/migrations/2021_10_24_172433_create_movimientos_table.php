@@ -28,13 +28,16 @@ class CreateMovimientosTable extends Migration
             $table->unsignedInteger('aprobado_por');
             $table->foreign('aprobado_por')->references('id')->on('empleados');
 
-            $table->unsignedInteger('aprobado_gerencia');
+            $table->unsignedInteger('aprobado_gerencia')->nullable();
             $table->foreign('aprobado_gerencia')->references('id')->on('empleados');
+            
+            $table->unsignedInteger('seTranslada')->nullable();
+            $table->foreign('seTranslada')->references('id')->on('ubicaciones');
             
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             
-            $table->string('descripcion', 200 )->nullable();
+            $table->string('descripcion', 500 )->nullable();
 
             $table->timestamps();
         });
