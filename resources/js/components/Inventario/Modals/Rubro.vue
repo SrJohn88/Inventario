@@ -16,7 +16,7 @@
                 <v-card-text>
                     <v-container>
                         <v-form
-                            ref="formCuenta"
+                            ref="formRubro"
                             v-model="validForm"
                             :lazy-validation="true"
                             >
@@ -54,7 +54,6 @@
 export default {
     data() {
         return {
-            cerrarModal: false,
             loader: false,
             validForm: false,
             dialog: false,
@@ -66,7 +65,7 @@ export default {
                 (v.length >= 2 && v.length <= 100) ||
                 "Nombre de la cuenta debe ser mayor a 2 caracteres",
                 expresion: (v) =>
-                /^[A-Za-z0-9- \s]+$/g.test(v) ||
+                /^[A-Za-z0-9-ñ \s]+$/g.test(v) ||
                 "Nombre de la cuenta no puede tener caracteres especiales",
             },
         }
@@ -78,16 +77,20 @@ export default {
     },
     methods: {
         save() {
-        let path = this.rubro.id
-            ? `/Api/entidades/${this.rubro.id}/edit`
-            : "/Api/entidades";
-        axios
+            
+            this.loader = true;
+
+            let path = this.rubro.id
+                ? `/Api/rubros/${this.rubro.id}/edit`
+                : "/Api/rubros";
+            axios
             .post(path, this.rubro)
-            .then((response) => {
-                if (response.status == 200) {
-                    console.log(response);
+            .then( response => {
+                this.loader = false
+
+                if (response.status == 200) {                
                     
-                    let { respuesta, mensaje } = response.data;
+                    let { respuesta, mensaje, rubro } = response.data;
 
                     if (respuesta) {
 
@@ -99,19 +102,38 @@ export default {
                         showConfirmButton: false,
                         timer: 1500,
                     });
-                        this.$emit("saved", this.rubro); 
-                        this.dialog = false;
+                        this.$emit("saved", {...rubro} ); 
+                        this.cancelar()
+                    } else 
+                    {
+                        let { rubro } = response.data
+                        this.errors = rubro
                     }
                 }
             })
             .catch( () => {
-                console.error("Error en la promesa de guardar");
+                this.loader = false
+                Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "INFORMACIÓN",
+                        text: 'Ocurrio un error en el sistema',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
             });
         },
+        mostrarModal()
+        {
+            setTimeout(() => {
+                this.rubro = { id: null, rubro: '' }
+                this.$refs.formRubro.resetValidation()
+            }, 100);
+            this.dialog = true;
+        },
         cancelar() {
+            this.errors = []
             this.dialog = false;
-            this.validForm = false;
-            this.rubro = { id: null, rubro: '' }
         }
     }
 }

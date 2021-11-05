@@ -16,8 +16,8 @@ class CreateMarcasTable extends Migration
         Schema::create('marcas', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('nombre',200);
-            $table->string('estado',1)->default('R');
+            $table->string('marca',200);
+            $table->boolean('eliminado')->default(false);
             $table->timestamps();
         });
     }

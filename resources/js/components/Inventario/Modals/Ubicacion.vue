@@ -16,17 +16,16 @@
                 <v-card-text>
                     <v-container>
                         <v-form
-                            ref="formCuenta"
+                            ref="formUbicacion"
                             v-model="validForm"
                             :lazy-validation="true"
                             >
-
                             <v-text-field
                                 append-icon="md-home"
                                 v-model="ubicacion.ubicacion"
                                 @keyup="errors = []"
-                                :rules="[(v) => !!v || 'Nombre es requerido']"
-                                label="Nombre"
+                                :rules="[(v) => !!v || 'La ubicación es requerido']"
+                                label="Detalle de la ubicación"
                                 required
                                 :error-messages="errors"
                             >
@@ -54,7 +53,6 @@
 export default {
     data() {
         return {
-            cerrarModal: false,
             loader: false,
             validForm: false,
             dialog: false,
@@ -69,24 +67,44 @@ export default {
     },
     methods: {
         save() {
+            this.loader = true
             const path =
                 this.ubicacion.id == null
                 ? "/Api/ubicaciones"
                 : `/Api/ubicaciones/${this.ubicacion.id}/edit`;
-            axios.post(path, this.ubicacion ).then(( response) => {
+            axios.post(path, this.ubicacion ).then( response => {
                 if (response.status == 200) {
-                    const { respuesta, mensaje } = response.data;
+                    this.loader = false
+
+                    const { respuesta, mensaje, ubicacion } = response.data;
 
                     if (respuesta) {
-                        this.obtenerUbicaciones();
-
                         this.alerta( mensaje, 'success', 'Buena hecho');
+                        this.$emit("saved", {...ubicacion} ); 
                         this.cerrarModal();
                     } else {
-                        this.alerta( mensaje, 'error', 'Importante');
+                        let { ubicacion } = response.data
+
+                        this.errors = ubicacion
                     }
                 }
+            }).catch( () => {
+                this.loader = false
+                this.alerta( 'Ocurrio un error', 'error', 'INFORMACION')
             })
+        },
+        mostrarModal()
+        {
+            setTimeout(() => {
+                this.ubicacion = { id: null, ubicacion: '' }
+                this.$refs.formUbicacion.resetValidation()
+            }, 50);
+            this.dialog = true;
+        },
+        cerrarModal() {
+            this.errors = []
+            this.ubicacion = { id: null, ubicacion: '' }
+            this.dialog = false;
         },
         alerta (mensaje, icono = 'info', titulo = '')
         {
@@ -97,7 +115,7 @@ export default {
                 text: mensaje,
                 showConfirmButton: false,
                 timer: 1500,
-                });
+            });
         }
     }
 }

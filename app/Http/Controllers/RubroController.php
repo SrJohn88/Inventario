@@ -49,7 +49,8 @@ class RubroController extends Controller
 
             return response()->json([
                 'respuesta' => true,
-                'mensaje' => 'El rubro ha sido agregado exitosamente'
+                'mensaje' => 'El rubro ha sido agregado exitosamente',
+                'rubro' => [ 'id' => $rubro->id, 'rubro' => $rubro->rubro, 'eliminado' => 0 ]
             ]);
         }
     }

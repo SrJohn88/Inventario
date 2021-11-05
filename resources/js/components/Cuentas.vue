@@ -58,7 +58,7 @@
                     v-model="mostrarCuentasEliminadas"
                     class="mx-10"
                     style="margin-top: 1.5rem"
-                    label="Cuentas eliminadas"
+                    label="Cuentas desactivadas"
                   />
                 </template>
                 <v-card>
@@ -141,7 +141,7 @@
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
-              <span>Eliminar</span>
+              <span>Desactivar Cuenta</span>
             </v-tooltip>
             <v-tooltip top >
               <template v-slot:activator="{ on }" >
@@ -159,7 +159,7 @@
                   <v-icon>mdi-restore</v-icon>
                 </v-btn>
               </template>
-              <span>Restaurar</span>
+              <span>Activar Cuenta</span>
             </v-tooltip>
           </template>
 
@@ -182,8 +182,7 @@ export default {
       cuenta: { id: null, cuenta: "" },
       validForm: true,
       TheadTable: [
-        { text: 'N°', value: 'id'},
-        { text: "Cuenta", value: "cuenta" },
+        { text: "Cuenta", value: "cuenta", align: 'center', },
         { text: "Acciones", value: "action", sortable: false, align: "center" },
       ],
       errorCuenta: [],
@@ -254,7 +253,7 @@ export default {
     {
       Swal.fire({
         title: "INFORMACION",
-        text: `¿Estas seguro de eliminar la cuenta ${cuenta.cuenta} ?`,
+        text: `¿Estas seguro de desactivar la cuenta ${cuenta.cuenta} ?`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3698e3",
@@ -272,7 +271,7 @@ export default {
     {
         Swal.fire({
         title: "INFORMACION",
-        text: `¿Quieres restaurar la cuenta ${cuenta.cuenta} ?`,
+        text: `¿Quieres activar la cuenta ${cuenta.cuenta} ?`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3698e3",

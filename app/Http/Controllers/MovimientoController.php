@@ -6,6 +6,7 @@ use App\Models\Inventario;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Movimiento;
+use App\Models\HistorialMovimiento;
 use Illuminate\Support\Facades\DB;
 
 class MovimientoController extends Controller
@@ -50,6 +51,7 @@ class MovimientoController extends Controller
                 $movimiento = new Movimiento();
                 $movimiento->tipo_id = $request->input('tipoMovimiento.id');
                 $movimiento->recibido_por = $request->input('recibe.id');
+                $movimiento->aprobado_gerencia = $request->input('gerencia.id');
                 $movimiento->aprobado_por = $request->input('aprueba.id');
                 $movimiento->user_id = \Auth::user()->id;
                 $movimiento->descripcion = $request->input('observacion');

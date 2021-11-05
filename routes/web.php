@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Admin\MarcaController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\EntidadController;
 use App\Http\Controllers\RubroController;
 use App\Http\Controllers\CuentaController;
@@ -23,10 +23,12 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 //RUTAS PARA MARCAS
 Route::get('/marcas',[MarcaController::class,'index'])->name("admin.marcas");
-Route::get('/marcas/list',[MarcaController::class,'getMarca']);
-Route::post('/marcas/save',[MarcaController::class,'store']);
-Route::put('/marcas/update',[MarcaController::class,'update']);
-Route::put('/marcas/change',[MarcaController::class,'change']);
+
+// API MARCAS
+Route::get('/Api/marcas',[MarcaController::class,'obtenerMarcas'])->name("MarcaApi.obtener");
+Route::post('Api/marcas',[MarcaController::class,'save']);
+Route::post('/Api/marcas/{marca}/edit', [MarcaController::class,'update']);
+Route::delete('/Api/marcas/{marca}/{accion}', [ MarcaController::class, 'delete'])->name('marcasApi.delete');
 
 // ENTIDADES
 Route::get('/entidades',[EntidadController::class,'index'])->name("entidades.index");
@@ -35,7 +37,7 @@ Route::get('/entidades',[EntidadController::class,'index'])->name("entidades.ind
 Route::get('/Api/entidades',[EntidadController::class,'obtenerEntidades'])->name("entidadesApi.obtener");
 Route::post('/Api/entidades',[EntidadController::class,'save'])->name("entidadesApi.save");
 Route::post('/Api/entidades/{entidad}/edit',[EntidadController::class,'update'])->name("entidadesApi.update");
-Route::delete('/Api/entidades/{entidad}/{accion}',[EntidadController::class,'delete'])->name("entidadesApi.delete");
+Route::delete('/Api/entidades/{entidad}/{accion}',[EntidadController::class, 'delete' ])->name("entidadesApi.delete");
 
 //RUBROS
 Route::get('/rubros',[RubroController::class,'index'])->name("rubros.index");
@@ -86,6 +88,9 @@ Route::get('Api/movimientos/tipos',[ TipoMovimientoController::class,'obtenerTip
 
 
 // EMPLEADOS
+Route::get('/empleados',[ EmpleadoController::class, 'index'])->name("movimiento.index");
+
+// API EMPLEADOS
 Route::get('Api/empleados',[EmpleadoController::class,'obtenerEmpleados'])->name("empleados.get");
 
 //MOVIMIENTO DE INVENTARIO
@@ -96,6 +101,7 @@ Route::get('/inventario/movimientos/crear',[ MovimientoController::class, 'crear
 
 //MOVIMIENTO API
 Route::get('/Api/inventario/movimientos',[ MovimientoController::class, 'obtenerMovimientos'])->name("movimiento.get");
+
 
 
 Route::post('/Api/inventario/movimientos/save',[ MovimientoController::class, 'save'])->name("movimiento.save");

@@ -16,7 +16,7 @@
                 <v-card-text>
                     <v-container>
                         <v-form
-                            ref="formCuenta"
+                            ref="form"
                             v-model="validForm"
                             :lazy-validation="true"
                             >
@@ -41,7 +41,7 @@
 
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
-                    <v-btn color="red darken-1" text @click="cancelar">Cerrar</v-btn>
+                    <v-btn color="red darken-1" text @click="cerrarModal">Cerrar</v-btn>
                     <v-btn
                         color="info darken-1"
                         :disabled="!validForm"
@@ -58,7 +58,6 @@
 export default {
     data() {
         return {
-            cerrarModal: false,
             loader: false,
             validForm: false,
             dialog: false,
@@ -82,41 +81,67 @@ export default {
     },
     methods: {
         save() {
+            this.loader = true
         let path = this.entidad.id
             ? `/Api/entidades/${this.entidad.id}/edit`
             : "/Api/entidades";
         axios
             .post(path, this.entidad)
             .then((response) => {
+                this.loader = false
+
                 if (response.status == 200) {
-                    console.log(response);
                     
                     let { respuesta, mensaje } = response.data;
 
                     if (respuesta) {
 
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "Buen trabajo",
-                        text: mensaje,
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-                        this.$emit("saved", respuesta ); 
-                        this.dialog = false;
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "Buen trabajo",
+                            text: mensaje,
+                            showConfirmButton: false,
+                            timer: 1500,
+                        }).then( () => {
+                            this.$emit("saved", this.entidad ); 
+                            this.cerrarModal()
+                        });   
+                    } else 
+                    {
+                        let { entidad } = response.data
+                        this.errors = entidad
                     }
                 }
             })
             .catch( () => {
+                this.loader = false
+                Swal.fire({
+                            position: "top-end",
+                            icon: "error",
+                            title: "INFORMACIÓN",
+                            text: 'Ocurrio un error en el sistema',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
                 this.$emit("saved", false ); 
-                console.error("Error en la promesa de guardar");
             });
         },
-        cancelar() {
+        mostrarModal()
+        {
+            this.entidad = { id: null, entidad: ''}
+            setTimeout(() => {
+                this.resetValidation();
+            }, 50);
+            this.dialog = true
+        },
+        cerrarModal() {
             this.dialog = false;
-            this.entidad = { id: null, entidad: '' }
-        }
+        },  
+        resetValidation() {
+            this.errors = [];
+            this.$refs.form.resetValidation();
+        },
     }
 }
 </script>

@@ -45,7 +45,7 @@
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </template>
-              <span>Actualizar Entidad</span>
+              <span>Actualizar rubro</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -63,7 +63,7 @@
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
-              <span>Eliminar Entidad</span>
+              <span>Desactivar rubro</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -81,7 +81,7 @@
                   <v-icon>mdi-restore</v-icon>
                 </v-btn>
               </template>
-              <span>Eliminar Entidad</span>
+              <span>Activar rubro</span>
             </v-tooltip>
           </template>
 
@@ -182,13 +182,13 @@ export default {
       formularioValido: false,
       errores: [],
       reglas: {
-        requerido: (v) => !!v || "Nombre de la entidad es requerido",
+        requerido: (v) => !!v || "Nombre del rubro es requerido",
         min: (v) =>
           (v && v.length >= 2 && v.length <= 100) ||
-          "Nombre de la entidad debe ser mayor a 2 caracteres",
+          "Nombre de la rubro debe ser mayor a 2 caracteres",
         expresion: (v) =>
           /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
-          "Nombre de la entidad no puede tener caracteres especiales",
+          "Nombre de la rubro no puede tener caracteres especiales",
       },
     };
   },
@@ -214,12 +214,15 @@ export default {
         .catch(console.error);
     },
     save() {
-  
+      this.loader = false
+
       const path =
         this.rubro.id == null
           ? "/Api/rubros"
           : `/Api/rubros/${this.rubro.id}/edit`;
       axios.post(path, this.rubro ).then(( response) => {
+        this.loader = false
+        
         if (response.status == 200) {
           const { respuesta, mensaje } = response.data;
 

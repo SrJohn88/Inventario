@@ -61,6 +61,21 @@
                                 </v-col>
 
                                 <v-col cols="6">
+                                    <v-autocomplete
+                                        v-model="movimiento.gerencia"
+                                        :items="empleados"
+                                        required
+                                        :rules="[ v => !!v || 'Tipo cuenta del activo es requerido']"
+                                        label="Aprobado por gerencia"
+                                        :item-text="EmpleadoNombreCompleto"
+                                        item-value="id"
+                                        return-object
+                                        clearable
+                                        :menu-props="{ closeOnClick: true }"
+                                    ></v-autocomplete>
+                                </v-col>
+
+                                <v-col cols="6">
                                     <v-menu
                                         v-model="menu"
                                         :close-on-content-click="false"
@@ -85,13 +100,14 @@
                                     </v-menu>
                                 </v-col> 
 
-                                <v-col cols="12" v-if= "movimiento.tipoMovimiento.id == 2">                                    
+                                <v-col cols="5" v-if="movimiento.tipoMovimiento.id == 2">
                                     <v-autocomplete
-                                        v-model="movimiento.seTransalada"
+                                        append-icon="fas fa-map-marker-alt"
+                                        v-model="movimiento.ubicacion"
                                         :items="ubicaciones"
                                         required
-                                        :rules="[ v => !!v || 'Tipo cuenta del activo es requerido']"
-                                        label="Se translada a: "
+                                        :rules="[ v => !!v || 'Ubicación del activo es requerido']"
+                                        label="Se translado a:"
                                         item-text="ubicacion"
                                         item-value="id"
                                         return-object
@@ -100,11 +116,26 @@
                                     ></v-autocomplete>
                                 </v-col>
 
-                                <v-col cols="12" v-if= "movimiento.tipoMovimiento.id == 1">
+                                <v-col cols="1" md="1" v-if ="movimiento.tipoMovimiento.id == 2">
+                                    <Ubicacion @saved="onSavedUbicacion" ref="ubicacion" />
+                                    <v-btn
+                                        elevation="5"
+                                        class="mt-8"
+                                        text
+                                        icon
+                                        color="primary"
+                                        @click="mostrarModalUbicacion()"
+                                        dark
+                                    >
+                                    <v-icon>mdi-plus-circle</v-icon>
+                                    </v-btn>
+                                </v-col>                    
+
+                                <v-col cols="6" v-if= "movimiento.tipoMovimiento.id == 3">
                                     <v-textarea
-                                        v-model="movimiento.sePresta"
-                                        label="Se presta a:"
-                                        rows="2"
+                                        v-model="movimiento.seTranslada"
+                                        label="Se translada a:"
+                                        rows="1"
                                         required
                                         :error-messages="errors"
                                     ></v-textarea>
@@ -249,7 +280,8 @@ export default {
             modalNMovimientos: false,
             movimiento: {
                 tipoMovimiento: { id: null, tipo: '' }, recibe: {id: null, nombre: ''},  aprueba: {id: null, nombre: ''},
-                seTransalada: { id: null, ubicacion: '' }, sePresta: '',
+                gerencia : {id: null, nombre: ''},
+                ubicacion: { id: null, ubicacion: '' }, seTranslada: '',
                 fecha: '', observaciones: '',
                 activos: []
             },
@@ -396,6 +428,14 @@ export default {
         cancelarFalla() {
 
         },
+        mostrarModalUbicacion()
+        {
+
+        },
+        onSavedUbicacion( value )
+        {
+
+        }
     }
 }
 </script>

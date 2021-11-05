@@ -27,6 +27,9 @@ class CreateMovimientosTable extends Migration
 
             $table->unsignedInteger('aprobado_por');
             $table->foreign('aprobado_por')->references('id')->on('empleados');
+
+            $table->unsignedInteger('aprobado_gerencia');
+            $table->foreign('aprobado_gerencia')->references('id')->on('empleados');
             
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

@@ -49,7 +49,8 @@ class CuentaController extends Controller
 
             return response()->json([
                 'respuesta' => true,
-                'mensaje' => 'La cuenta ha sido agregado exitosamente'
+                'mensaje' => 'La cuenta ha sido agregado exitosamente',
+                'cuenta' => ['id' => $cuenta->id , 'cuenta' => $cuenta->cuenta, 'eliminado' => 0 ]
             ]);
         }
     }
@@ -84,9 +85,13 @@ class CuentaController extends Controller
         $cuenta->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
         $cuenta->save();
 
+        $mensaje = filter_var($accion, FILTER_VALIDATE_BOOLEAN) 
+                        ? 'La cuenta ha sido desactivada con exito' 
+                        : 'La cuenta ha sido activada con exito';
+
         return response()->json([
             'respuesta' => true,
-            'mensaje' => 'La cuenta ha sido eliminada con exito'
+            'mensaje' => $mensaje
         ]);
 
     }

@@ -12,7 +12,7 @@
         </v-card-title>
         <v-data-table
           :headers="hTBMarcas"
-          :items="arrayMarcas"
+          :items=" estadoMarca ? marcarEliminadas : marcas"
           :footer-props="{
             'items-per-page-options': [5,10, 20, 30,40],
             'items-per-page-text' : 'Registros Por Página'
@@ -29,15 +29,14 @@
               <div class="flex-grow-1"></div>
               <v-dialog v-model="modalMarca" persistent max-width="700px">
                 <template v-slot:activator="{ on }">
-                  <v-btn elevation="10" color="blue  darken-3" dark class="mb-2" v-on="on">
+                  <v-btn v-show="!estadoMarca" elevation="10" color="blue  darken-3" dark class="mb-2" v-on="on">
                     Agregar Marca&nbsp;
                     <v-icon>mdi-plus-box-multiple-outline</v-icon>
                   </v-btn>
                   
                   <!-- MOSTRAR MARCAS -->
                     <v-checkbox 
-                        v-model="marcasRemovidas"
-                        @change="fetchMarcasRemovidas()"
+                        v-model="estadoMarca"
                         class="mx-10"
                         style="margin-top: 1.5rem;"
                         label="Mostrar Las Marcas Removidas"
@@ -53,9 +52,9 @@
                       <v-form ref="formMarca" v-model="validForm" :lazy-validation="true">
                         <v-text-field
                           append-icon="mdi-folder-outline"
-                          v-model="marca.nombre"
+                          v-model="marca.marca"
                           @keyup="errorsNombre = []"
-                          :rules="[v => !!v || 'Nombre Es Requerido']"
+                          :rules="[reglas.min, reglas.requerido, reglas.expresion]"
                           label="Nombre"
                           required
                           :error-messages="errorsNombre"
@@ -71,7 +70,7 @@
                     <v-btn
                       color="info darken-1"
                       :disabled="!validForm"
-                      @click="saveMarca()"
+                      @click="save()"
                       text
                       v-text="btnTitle"
                     ></v-btn>
@@ -87,13 +86,14 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
+                  v-show="!estadoMarca"
                   color="success"
                   elevation="8"
                   small
                   dark
                   :disabled="item.id < 0"
                   v-on="on"
-                  @click="showModalEditar(item)"
+                  @click="mostrarModal(item)"
                 >
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
@@ -103,6 +103,7 @@
             <v-tooltip top >
               <template v-slot:activator="{ on }" >
                 <v-btn
+                  v-show="!estadoMarca"
                   color="info"
                   class="mx-1"
                   elevation="8"
@@ -110,19 +111,33 @@
                   dark
                   :disabled="item.id < 0"
                   v-on="on"
-                  @click="cambiarEstado(item,'R')"
+                  @click="deleteMarca( item )"
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
               <span>Remover Marca</span>
             </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-show="estadoMarca"
+                  color="teal"
+                  class="mx-1"
+                  elevation="8"
+                  small
+                  dark
+                  :disabled="item.id < 0"
+                  v-on="on"
+                  @click="restaurar(item)"
+                >
+                  <v-icon>mdi-restore</v-icon>
+                </v-btn>
+              </template>
+              <span>Activar marca</span>
+            </v-tooltip>
           </template>
         </v-data-table>
-        <v-snackbar v-model="snackbar">
-          {{ msjSnackBar }}
-          <v-btn color="red" text @click="snackbar = false">Cerrar</v-btn>
-        </v-snackbar>
       </v-card>
     </div>
   </div>
@@ -131,272 +146,167 @@
 export default {
   data() {
     return {
-      arrayMarcas: [],
+      estadoMarca: false,
+      marcas: [],
       hTBMarcas: [
-        { text: "Nombre", value: "nombre" },
-        /* { text: "Fecha de Removido", value: "fecha_removida" }, */
+        { text: "Nombre", value: "marca" },
         { text: "Acciones", value: "action", sortable: false, align: "center" },
       ],
-      
+      reglas: {
+        requerido: (v) => !!v || "Nombre de la marca es requerido",
+        min: (v) => (v && v.length >= 2 && v.length <= 100) ||
+                "Nombre de la marca debe ser mayor a 2 caracteres",
+        expresion: (v) =>
+                /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
+                "Nombre de la marca no puede tener caracteres especiales",
+      },
       loader: false,
       searchMarcas: "",
-      marcasRemovidas: false,
+      marcarEliminadas: false,
       modalMarca: false,
-      marca: {
-        id: null,
-        nombre: ""
-      },
+      marca: { id: null, nombre: "" },
       validForm: true,
-      snackbar: false,
-      msjSnackBar: "",
-      errorsNombre: [],
-      editedMarca:-1,
+      errorsNombre: []
     };
   },
   watch: {},
   computed: {
     formTitle() {
-      return this.marca.id === null
-        ? "Agregar Marca"
-        : "Actualizar Marca";
+      return this.marca.id === null ? "Agregar Marca" : "Actualizar Marca";
     },
     btnTitle() {
       return this.marca.id === null ? "Guardar" : "Actualizar";
     },
   },
   methods: {
-    fetchMarcas() {
-      let me = this;
-      me.loader = true;
-      
-      axios.get(`/marcas/list?type=A`)
-        .then(function(response) {
-          me.arrayMarcas = response.data;
-          me.loader = false;
+    obtenerMarcar () 
+    {
+      this.loader = true
+      axios.get(`/Api/marcas`)
+        .then( ({ data: {marcas } } ) => {
+          this.loader = false
+          this.marcas = marcas.filter((r) => r.eliminado == false );
+          this.marcarEliminadas = marcas.filter((r) => r.eliminado == true);
         })
-        .catch(function(error) {
-          me.loader = false;
-          console.log(error);
+        .catch( (e) => {
+          this.loader = false;
         });
     },
-    
-    fetchMarcasRemovidas() {
-            let me = this;
-            me.loader = true;
-            if(me.marcasRemovidas){
-              axios.get(`/marcas/list?type=R`).then(function(response) {
-                   // console.log(response.data);
-                    me.arrayMarcas = response.data;
-                    me.loader = false;
-                })
-                .catch(function(error) {
-                    me.loader = false;
-                    console.log(error);
-                });
-             }else{     
-                me.fetchMarcas();
-            }
+    save()
+    {
+      this.loader = true
 
-    },
-      
-    cambiarEstado(marca,accion) {
-      let me = this;
+      const path = this.marca.id == null ? '/Api/marcas' : `/Api/marcas/${ this.marca.id }/edit`
 
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: true,
-        timer: 3000
-        });
-        var question,request,state='';
-        if(accion=='R'){
-            question = "¿Está seguro de remover marca?";
-            request = "La marca se ha removido"
-            state="R"; 
+      axios.post(path, this.marca )
+          .then( response => {
+            this.loader = false
+
+            if (response.status == 200) 
+            {
+              const { respuesta, mensaje } = response.data;
+
+              if ( respuesta ) 
+              {                  
+                const { marca } = response.data
+                this.obtenerMarcar()
+                this.alerta( mensaje, 'success', 'Buena hecho');
+
+                this.cerrarModal();
+
+              } else {
+                const { marca } = response.data;
+                this.errorsNombre = marca
           }
+            }
+          })
+    },
+    deleteMarca( {... marca } ) {
         Swal.fire({
-          title: question,
-          text: "Una ves realizada la acción no podra revertir !",
-          type: 'question',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Si, remover marca!',
-          cancelButtonText: 'Cancelar'
-        }).then(result => {
-          if (result.value) {
-              me.loader = true;
-              axios.put(`/marcas/change`,{id:marca.id,estado:state}).then(function(response) {
-                console.log(response.data);
-                me.loader = false;
-                if (response.status == 200) {
-                    Swal.fire(
-                      "Resultado",
-                      request,
-                      "success"
-                    );
-                    var index = me.arrayMarcas.indexOf(marca);
-                                me.arrayMarcas.splice(index,1);
-                }
-              })
-              .catch(function(error){
-                me.loader = false;
-                Toast.fire({
-                  type:"error",
-                  tittle: "Ocurrio un errror intente nuevamente"
-                });
-              });
-          }
-        });
-    },
-     verificarAccionDato(marca, statusCode, accion) {
-      let me = this;
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        onOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        title: "INFORMACION",
+        text: `¡Estas seguro de desactivar la marca ${marca.marca} ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.cambiarEstadoMarca( marca )
         }
-        });
-      switch (accion) {
-        case "add":
-          //Agrego al array de categorias el objecto que devuelve el Backend
-          //me.arrayCategorias.unshift(categoria);
-          this.fetchMarcas(); 
-          Toast.fire({
-            icon: 'success',
-            title: 'Marca Registrada con Exito'
-           });
-          me.loader = false;
-          break;
-        case "upd":
-          //Actualizo al array de categorias el objecto que devuelve el Backend ya con los datos actualizados
-          //Object.assign(me.arrayCategorias[me.editedCategoria], categoria);
-          this.fetchMarcas(); 
-           Toast.fire({
-            icon: 'success',
-            title: 'Marcas Actualizada con Exito'
-           });
-          me.loader = false;
-          break;
-        case "cha":
-          if (statusCode == 200) {
-            try {
-              //Se remueve del array de Categorias Activos si todo esta bien en el backend
-              me.arrayMarcas.splice(me.editedMarca, 1);
-              //Se Lanza mensaje Final
-              Toast.fire({
-                icon: 'success',
-                title: 'Marca Removida...!!!'
-              });
-            } catch (error) {
-              console.log(error);
-            }
+      });
+    },
+    restaurar ( {...marca} )
+    {
+      Swal.fire({
+        title: "INFORMACION",
+        text: `¿Estas que quieres activar la marca ${marca.marca} ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.cambiarEstadoMarca( marca, false )
+        }
+      });
+
+    },
+    cambiarEstadoMarca( marca, eliminar = true) 
+    {
+      axios
+        .delete(`/Api/marcas/${marca.id}/${eliminar}`)
+        .then((response) => {
+
+          if (response.status == 200) {
+          const { respuesta, mensaje } = response.data;
+
+          if (respuesta) {
+            this.obtenerMarcar()
+            this.alerta( mensaje, 'success', '¡Bien hecho!');
           } else {
-             Toast.fire({
-                icon: 'error',
-                title: 'Ocurrió un error, intente de nuevo'
-              });
+            this.alerta( mensaje, 'error', '¡Importante!');
           }
-          break;
-      }
-      
+        }
+        })
+        .catch(console.error);
     },
-
-    setMessageToSnackBar(msj, estado) {
-            let me = this;
-            me.snackbar = estado;
-            me.msjSnackBar = msj;
-        
-    },
-
     cerrarModal() {
-      let me = this;
-      me.modalMarca = false;
+      this.modalMarca = false;
       setTimeout(() => {
-        me.marca = {
+        this.marca = {
           id: null,
           nombre: ""
         };
-        me.resetValidation();
+        this.resetValidation();
       }, 300);
     },
     resetValidation() {
-      let me = this;
-      me.errorsNombre = [];
-      me.$refs.formMarca.resetValidation();
+      this.errorsNombre = [];
+      this.$refs.formMarca.resetValidation();
     },
-    showModalEditar(marca) {
-      let me = this;
-      me.editedMarca = me.arrayMarcas.indexOf(marca);
-      me.marca = Object.assign({}, marca);
-      me.modalMarca = true;
+    mostrarModal( {...marca })
+    {
+      this.marca = marca
+      this.modalMarca = true
     },
-    saveMarca() {
-      let me = this;
-      if (me.$refs.formMarca.validate()) {
-        let accion = me.marca.id == null ? "add" : "upd";
-        me.loader = true;
-        if(accion=="add"){
-           axios.post('/marcas/save', me.marca)
-            .then(function(response) {
-            me.verificarAccionDato(response.data, response.status, accion);
-            me.cerrarModal();
-          })
-         .catch(function(error) {
-            console.log(error);
-            //409 Conflicts Error (Proveedor Ya Existente En la BD)
-            if (error.response.status == 409) {
-              me.setMessageToSnackBar("Marca Ya Existe", true);
-              me.errorsNombre = ["Nombre De Marca Existente"];
-            } else {
-                  Swal.fire({
-                  title: '¡PRECAUCIÓN!',
-                  text: 'Ingrese una diferente',
-                  icon: 'error',
-                  confirmButtonText: 'Aceptar'
-                })            }
-            me.loader = false;
-          });
-
-        }else{
-            //para actualizar
-            axios.put('/marcas/update', me.marca)
-               .then(function(response) {
-                   //console.log(response.data);
-                    me.verificarAccionDato(response.data, response.status, accion);
-                    me.cerrarModal();
-            })
-          .catch(function(error) {
-            console.log(error);
-            //409 Conflicts Error (Proveedor Ya Existente En la BD)
-            if (error.response.status == 409) {
-              me.setMessageToSnackBar("Marca ya existe", true);
-              me.errorsNombre = ["Nombre de marca existente"];
-            } else {
-                  Swal.fire({
-                  title: '¡PRECAUCIÓN!',
-                  text: 'Por favor ingrese una diferente',
-                  icon: 'error',
-                  confirmButtonText: 'Aceptar'
-                })            }
-            me.loader = false;
-          });
-        }
-      
-      }
-    },
-
-
+    alerta (mensaje, icono = 'info', titulo = '')
+    {
+        Swal.fire({
+              position: "top-end",
+              icon: icono,
+              title: titulo,
+              text: mensaje,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+    }
   },
   mounted() {
-    let me = this;
-    me.fetchMarcas();
+    this.obtenerMarcar()
   }
 };
 </script>

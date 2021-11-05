@@ -47,7 +47,8 @@ class UbicacionController extends Controller
 
             return response()->json([
                 'respuesta' => true,
-                'mensaje' => 'La ubicacion ha sido agregado exitosamente'
+                'mensaje' => 'La ubicacion ha sido agregado exitosamente',
+                'ubicacion' => [ 'id' => $ubicacion->id, 'ubicacion' => $ubicacion->ubicacion, 'eliminado' => 0 ]
             ]);
         }
     }
@@ -61,7 +62,8 @@ class UbicacionController extends Controller
         if ($validacion->fails()) {
             return response()->json([
                 'respuesta' => false,
-                'mensaje' => $validacion->errors()->get('ubicacion')
+                'mensaje' => '',
+                'ubicacion' => $validacion->errors()->get('ubicacion')
             ]);
         } else 
         {

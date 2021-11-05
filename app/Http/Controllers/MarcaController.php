@@ -4,79 +4,94 @@ namespace App\Http\Controllers;
 
 use App\Models\Marca;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MarcaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $mensajes = [
+        'required' => 'El :attribute es requerido',
+        'min' => 'El :attribute debe tener al menos :min caracteres.',
+        'unique' => 'La :attribute ya existe',
+    ];
+
     public function index()
     {
         return view('admin.marcas');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    function obtenerMarcas()
     {
-        try{
+        return response()->json([
+            'marcas' => Marca::all()
+        ]);
+    }
+
+    function save( Request $request ) 
+    {
+        if ($request->isMethod('POST')) 
+        {
+            $validacion = Validator::make($request->all(), [
+                'marca' => 'required|unique:marcas|min:2|max:100'
+            ], $this->mensajes);
+
+            if ($validacion->fails()) {
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => '',
+                    'marca' => $validacion->errors()->get('marca')
+                ]);
+            }
+
             $marca = new Marca();
-            $marca->nombre = $request->nombre;
+            $marca->marca = $request->input('marca');
             $marca->save();
-        }catch(\Exception $e){
-            return $e->getMessage();
+
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'La marca ha sido agregado exitosamente',
+                'marca' => ['id' => $marca->id , 'marca' => $marca->marca, 'eliminado' => 0 ]
+            ]);
         }
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Request $request)
+    function update( Request $request, Marca $marca) 
     {
-        try{
-            $marca = Marca::findOrFail($request->id);
-            $marca->edit();
-        }catch(\Exception $e){
-            return $e->getMessage();
+        $validacion = Validator::make($request->all(), [
+            'marca' => 'required|unique:marcas,marca,'.$marca->id.'|min:2|max:100'
+        ], $this->mensajes);
+
+        if ($validacion->fails()) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => '',
+                'marca' => $validacion->errors()->get('marca')
+            ]);
         }
+
+        $marca->marca = $request->input('marca');
+        $marca->save();
+
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'La marca ha sido actualizada con exito',
+            'marca' => ['id' => $marca->id , 'marca' => $marca->marca, 'eliminado' => 0 ]
+        ]);
+
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    function delete( Marca $marca, $accion )
     {
-        try{
-            $marca = Marca::findOrFail($request->id);
-            $marca->nombre = $request->nombre;
-            $marca->save();
-        }catch(\Exception $e){
-            return $e->getMessage();
-        }
+        $marca->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
+        $marca->save();
+
+        $mensaje = filter_var($accion, FILTER_VALIDATE_BOOLEAN) 
+                        ? 'La marca ha sido desactivada con exito' 
+                        : 'La marca ha sido activada con exito';
+        
+        return response()->json([
+                'respuesta' => true,
+                'mensaje' => $mensaje
+            ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

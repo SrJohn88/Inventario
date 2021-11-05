@@ -47,6 +47,9 @@
                                                 v-model="inventario.descripcion"
                                                 label="Descripcion"
                                                 rows="2"
+                                                :rules="[
+                                                    v => !!v || 'Codigo Es Requerido'
+                                                ]"
                                                 required
                                             ></v-textarea>
                                         </v-col>
@@ -57,7 +60,7 @@
                                                 :items="marcas"
                                                 required
                                                 label="Marca"
-                                                item-text="nombre"
+                                                item-text="marca"
                                                 item-value="id"
                                                 aling="center"
                                                 return-object
@@ -99,10 +102,12 @@
                                                 label="Procedencia"
                                                 return-object                                        
                                                 :menu-props="{ closeOnClick: true }"
+                                                :rules="[ v => !!v || 'Procedencia es campo obligatorio']"
+                                                required
                                             ></v-select>
                                         </v-col>
 
-                                        <v-col cols="5" v-if="inventario.procedencia.id == 1 " >
+                                        <v-col cols="5" v-show="inventario.procedencia.id == 1 " >
                                             <v-autocomplete
                                                 v-model="inventario.cuenta"
                                                 :items="cuentas"
@@ -117,7 +122,7 @@
                                             ></v-autocomplete>
                                         </v-col>
                                         
-                                        <v-col cols="1" md="1" v-if="inventario.procedencia.id == 1 " >
+                                        <v-col cols="1" md="1" v-show="inventario.procedencia.id == 1 " >
                                             <Cuenta @saved="onSavedCuenta" ref="cuenta" />
                                             <v-btn
                                             elevation="5"
@@ -226,6 +231,7 @@
                                                     <v-date-picker
                                                     v-model="inventario.fecha"
                                                     @input="menu = false"
+                                                    :max="limitFecha"
                                                     ></v-date-picker>
                                                 </v-menu>
                                         </v-col>                                    
@@ -309,6 +315,7 @@ export default {
     name: 'inventario-crear',
     data() {
         return {
+            limitFecha: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
             reglas: {
                 requerido: (v) => !!v || "Nombre de la entidad es requerido",
                 min: (v) =>
@@ -328,7 +335,7 @@ export default {
             inventario: {
                 id: null, codigo: '', serie: '', descripcion: '', modelo: '', observaciones: '', marca: { id: null, marca: '' }, cuenta: { id: null, cuenta: ''},
                 rubro: { id: null, rubro: '' }, procedencia: { id: null, procedencia: ''}, precio: 0.00, ubicacion: {id: null, ubicacion: ''},
-                entidad: { id: null, entidad: '' }, fecha: ''
+                entidad: { id: null, entidad: '' }, fecha: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
             },
             errorsNombre: [],
             procedencias: []
@@ -390,36 +397,31 @@ export default {
         obtenerProcedencias(){
             axios.get(`/Api/procedencias`)
                 .then( ( { data: { procedencias } } ) => {
-                    console.log(procedencias );
                     this.procedencias = procedencias ;
                 }).catch(console.error)
         },
         obtenerMarcar () {
-            axios.get(`/marcas/list?type=A`)
-                .then( ( {data: marcas} ) => {
-                    console.log(marcas);
-                    this.marcas = marcas;
+            axios.get(`/Api/marcas`)
+                .then( ( {data: {marcas} } ) => {
+                    this.marcas = marcas.filter((r) => r.eliminado == false );
                 }).catch(console.error)
         },
         obtenerEntidades() {
             axios.get(`/Api/entidades`)
                 .then( ( { data: { entidades }} ) => {
-                    console.log(entidades);
-                    this.entidades = entidades;
+                    this.entidades = entidades.filter((r) => r.eliminado == false );
                 }).catch(console.error)
         },
         obtenerCuentas() {
             axios.get(`/Api/cuentas`)
-                .then( ( { data: { cuentas }} ) => {
-                    console.log(cuentas);
-                    this.cuentas = cuentas;
+                .then( ( { data: { cuentas }} ) => {                    
+                    this.cuentas = cuentas.filter((r) => r.eliminado == false );
                 }).catch(console.error)
         },
         obtenerRubros () {
             axios.get(`/Api/rubros`)
                 .then( ( { data: { rubros }} ) => {
-                    console.log(rubros);
-                    this.rubros = rubros;
+                    this.rubros = rubros.filter((r) => r.eliminado == false );
                 }).catch(console.error)
         },
         obtenerUbicaciones () {
@@ -431,18 +433,31 @@ export default {
           .catch(console.error);
         },
         save() {
-            const path = ( this.idPrueba != null ) ? `/Api/inventario/${ this.idPrueba }/edit` : `/Api/inventario/save`;
 
+            Swal.fire({
+                title: '¡Importante!',
+                text: "Estas seguro/as que los datos son correctos ¿Deseas guardarlo?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Guardar',
+                cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    this.loader = true;
+            const path = ( this.idPrueba != null ) ? `/Api/inventario/${ this.idPrueba }/edit` : `/Api/inventario/save`;
             axios
                 .post(path, this.inventario)
                 .then( response => {
 
+                    this.loader = false
                     if(response.status == 200 )
                     {
                         const { respuesta, mensaje } = response.data;
 
                         if (respuesta) {
-                            this.alerta( mensaje, 'success', 'Buena hecho');
+                            this.alerta( mensaje, 'success', 'Bien hecho');
                             
                             if ( this.idPrueba != null ) 
                             {
@@ -483,7 +498,12 @@ export default {
                         }
                     }
                 })
-                .catch(console.error)
+                .catch( () => {
+                    this.loader = false;
+                    this.alerta('Ocurrio un error en el sistema');
+                })
+                }
+            })
         },
         cancelar() {
             Swal.fire({
@@ -513,36 +533,50 @@ export default {
                 });
         },
         mostrarModalEntidad() {
-            this.$refs.entidad.dialog = true;
+            this.$refs.entidad.mostrarModal()
         },
         mostrarModalCuenta() {
-            this.$refs.cuenta.dialog = true;
+            this.$refs.cuenta.mostrarModal();
         },
         mostrarModalMarca() {
-            this.$refs.marca.dialog = true;
+            this.$refs.marca.mostrarModal()
         },
         mostrarModalRubro () {
-            this.$refs.rubro.dialog = true;
+            this.$refs.rubro.mostrarModal();
         },
         mostrarModalUbicacion() {
-            this.$refs.ubicacion.dialog = true;
+            this.$refs.ubicacion.mostrarModal();
         },
         onSavedCuenta( value ) {
-            console.log( value )
+            if ( value )
+            {
+                this.cuentas.push( value )
+            }
         },
         onSaveEntidad ( value ) {
-            if ( value ) {
-                this.obtenerEntidades();
+            
+            if ( value )
+            {
+                this.entidades.push( { ...value } )
             }
         },
         onSavedMarca ( value ) {
-            console.log( value )
+            if ( value )
+            {
+                this.marcas.push( {... value })
+            }
         },
         onSavedRubro ( value ) {
-            console.log( value )
+            if ( value )
+            {
+                this.rubros.push( { ...value })
+            }
         },
         onSavedUbicacion ( value ) {
-            console.log( value )
+            if ( value )
+            {
+                this.ubicaciones.push( {...value } )
+            }
         }
     }
 }

@@ -51,6 +51,8 @@ Vue.component('inventario-index', require('./components/Inventario/inventario.vu
 Vue.component('movimiento-index', require('./components/Inventario/Movimientos/movimientoIndex.vue').default);
 Vue.component('movimiento-crear', require('./components/Inventario/Movimientos/formularioCrear.vue').default);
 
+//EMPLEADOS
+Vue.component('empleados', require('./components/Empleados.vue').default);
 
 
 import auth from './mixins/auth';

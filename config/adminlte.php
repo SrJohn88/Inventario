@@ -266,6 +266,11 @@ return [
                     'text' => 'Inventario',
                     'route' => 'inventario.index',
                     'icon'  => 'fas fw fa-registered',
+                ],
+                [
+                    'text' => 'Movimientos',
+                    'route' => 'movimiento.index',
+                    'icon'  => 'fas fw fa-registered',
                 ]
             ],
         ],
