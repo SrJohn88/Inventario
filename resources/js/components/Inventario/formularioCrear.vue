@@ -13,11 +13,14 @@
                 </v-overlay>
 
                 <v-card>
+                    <v-card-title>
+                        {{ cardTitle }}
+                    </v-card-title>
                     <v-card-text>
                         <v-container>
                             <v-form ref="formInventario"
-                                v-model="validForm"
-                                :lazy-validation="true">
+                                v-model="inventarioValido"
+                                :lazy-validation="true" >
                                     <v-row>
                                         <v-col cols="6">
                                             <v-text-field
@@ -61,7 +64,6 @@
                                             <v-autocomplete
                                                 v-model="inventario.marca"
                                                 :items="marcas"
-                                                required
                                                 label="Marca"
                                                 item-text="marca"
                                                 item-value="id"
@@ -94,7 +96,6 @@
                                                 append-icon=""
                                                 v-model="inventario.modelo"
                                                 label="Modelo"
-                                                required
                                                 :disabled="detalle"
                                             ></v-text-field>
                                         </v-col>
@@ -117,8 +118,7 @@
                                         <v-col cols="5" v-show="inventario.procedencia.id == 1" >
                                             <v-autocomplete
                                                 v-model="inventario.cuenta"
-                                                :items="cuentas"
-                                                required
+                                                :items="cuentas"                                                
                                                 :rules="[ v => !!v || 'Tipo cuenta del activo es requerido']"
                                                 label="Cuenta"
                                                 item-text="cuenta"
@@ -151,8 +151,7 @@
                                             <v-autocomplete
                                                 :disabled="detalle"
                                                 v-model="inventario.entidad"
-                                                :items="entidades"
-                                                required
+                                                :items="entidades"                                                
                                                 :rules="[ v => !!v || 'Tipo cuenta del activo es requerido']"
                                                 label="Entidad Donante"
                                                 item-text="entidad"
@@ -185,8 +184,7 @@
                                                 append-icon="fas fa-tags"
                                                 v-model="inventario.precio"
                                                 :rules=" [ reglas.precio ]"
-                                                label="Precio"
-                                                required
+                                                label="Precio"                                        
                                                 :error-messages="errorsNombre"
                                             ></v-text-field>
                                         </v-col>
@@ -271,6 +269,7 @@
                                         <v-col cols="1" md="1" >
                                             <Ubicacion @saved="onSavedUbicacion" ref="ubicacion" />
                                             <v-btn
+                                            required
                                             :disabled="detalle"
                                             elevation="5"
                                             class="mt-8"
@@ -302,21 +301,28 @@
                     <v-divider></v-divider>
                     <v-card-actions v-if="!detalle">
                         <div class="flex-grow-1"></div>
+                        <v-checkbox v-if="this.idPrueba != null && !detalle"
+                            v-model="inventario.guardarHistorial"
+                            class="mx-10"
+                            style="margin-top: 1.5rem"
+                            label="¿Desea guardar una copia de los cambios?"
+                        />
                         <v-btn
                             color="red darken-1"
                             text
                             @click="cancelar()"
                             >Cancelar</v-btn>
                         <v-btn
+                            ref="btnGuardarInventario"
                             color="info darken-1"
-                            :disabled="false"
+                            :disabled="!inventarioValido"
                             @click="save()"
                             v-text="textButton"
                         ></v-btn>
                     </v-card-actions>
                 </v-card>
 
-                <v-card>
+                <v-card v-if="detalle">
                     <v-card-title>
                         Historial de activo
                         <div class="flex-grow-1"></div>                    
@@ -331,6 +337,28 @@
                         }"
                         :items-per-page="10"
                         :search="buscarMovimiento"
+                        multi-sort
+                        class="elevation-1"
+                    >
+
+                    </v-data-table>
+                </v-card>
+
+                <v-card v-if="detalle">
+                    <v-card-title>
+                        Copias del activo
+                        <div class="flex-grow-1"></div>                    
+                    </v-card-title>
+
+                    <v-data-table
+                        :headers="headCopias"
+                        :items="copias"
+                        :footer-props="{
+                            'items-per-page-options': [10, 15, 25, 35, 45],
+                            'items-per-page-text': 'Registros Por Página'
+                        }"
+                        :items-per-page="10"
+                        :search="buscarCopia"
                         multi-sort
                         class="elevation-1"
                     >
@@ -368,28 +396,42 @@ export default {
                 expresion: (v) =>
                 /^[A-Za-z0-9- \s]+$/g.test(v) ||
                 "Nombre de la entidad no puede tener caracteres especiales",
-                precio: (v) => /^[0-9. \s]+$/g.test(v) || 'No parece formato de dinero'
+                precio: (v) => v.length == 0 || /^[0-9. \s]+$/g.test(v) || 'No parece formato de dinero'
             },
             menu: false,
             idPrueba: 0,
             loader: false,
-            validForm: false,
+            inventarioValido: true,
             marcas: [], entidades: [], rubros: [], ubicaciones: [],
             cuentas: [],
             inventario: {
                 id: null, codigo: '', serie: '', descripcion: '', modelo: '', observaciones: '', marca: { id: null, marca: '' }, cuenta: { id: null, cuenta: ''},
                 rubro: { id: null, rubro: '' }, procedencia: { id: null, procedencia: ''}, precio: 0.00, ubicacion: {id: null, ubicacion: ''},
-                entidad: { id: null, entidad: '' }, fecha: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
+                entidad: { id: null, entidad: '' }, fecha: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+                guardarHistorial: false
             },
             errorsNombre: [],
             procedencias: [],
-
             headerMovimiento: [
                 { text: 'Campo', value: 'campo'},
                 { text: "Valor Anterior", value: "valor_anterior" },
                 { text: "Valor Nuevo", value: "valor_nuevo" },
                 { text: "Fecha creación", value: "created_at" }                
-            ]
+            ],
+            esperando: false,
+            copias: [],
+            headCopias: [
+                { text: 'Codigo', value: 'codigo'},
+                { text: "Descripcion", value: "descripcion" },
+                { text: "Marca", value: "marca.marca" },
+                { text: "Modelo", value: "modelo" },
+                { text: "Serie", value: "serie" },
+                { text: "Precio", value: "precio" },
+                { text: "Ubicacion", value: "ubicacion.ubicacion" },
+                { text: "Fecha adquisicion", value: "fecha_adquision" },
+                { text: "Acciones", value: "action", sortable: false, align: "center" },
+            ],
+            buscarCopia: ''
         }
     },
     created () {
@@ -417,6 +459,10 @@ export default {
         }
     }, 
     computed: {
+        cardTitle ()
+        {
+            return this.idPrueba != null ?  this.idPrueba != null && this.detalle ? 'Detalle del activo' : 'Actualizar Inventario' : 'Guardar Inventario'
+        },
         textButton () {
             return this.idPrueba != null ? 'Actualizar' : 'Guardar';
         }
@@ -426,27 +472,28 @@ export default {
             this.loader = true
             axios.get(`/Api/inventario/${ this.idPrueba }/activos`)
                 .then( ( { data: { activo } } ) => {
-                    let {id, codigo, descripcion, fecha_adquision, precio, serie, modelo, ubicacion, entidad, rubro, marca, procedencia, cuenta, observacion, historial } = { ...activo };
+                    let {id, codigo, descripcion, fecha_adquision, precio, serie, modelo, ubicacion, entidad, rubro, marca, procedencia, cuenta, observacion, historial, respaldos } = { ...activo };
 
                     this.inventario.id = id;
                     this.inventario.codigo = codigo;
-                    this.inventario.serie = serie;
+                    this.inventario.serie = serie ?? '';
                     this.inventario.descripcion = descripcion;
-                    this.inventario.modelo = modelo;
-                    this.inventario.precio = precio;
+                    this.inventario.modelo = modelo ?? '';
+                    this.inventario.precio = precio ?? '';
                     this.inventario.fecha = fecha_adquision;
-                    this.inventario.observaciones = observacion
+                    this.inventario.observaciones = observacion ?? ''
 
 
                     this.inventario.procedencia = procedencia;
-                    this.inventario.entidad = entidad;
-                    this.inventario.marca = marca;
+                    this.inventario.entidad = entidad ?? {id: null, entidad: '' };
+                    this.inventario.marca = marca ?? {id: null, marca: ''} ;
                     this.inventario.rubro = rubro;
                     this.inventario.cuenta = cuenta;
                     this.inventario.ubicacion = ubicacion;
                     
                     console.log( historial )
                     this.historial = [... historial ]
+                    this.copias = [...respaldos ]
                     this.loader = false
 
                 }).catch(console.error)
@@ -489,8 +536,7 @@ export default {
           })
           .catch(console.error);
         },
-        save() {
-
+        save() { 
             Swal.fire({
                 title: '¡Importante!',
                 text: "Estas seguro/as que los datos son correctos ¿Deseas guardarlo?",
@@ -503,10 +549,10 @@ export default {
                 }).then((result) => {
                 if (result.isConfirmed) {
                     this.loader = true;
-            const path = ( this.idPrueba != null ) ? `/Api/inventario/${ this.idPrueba }/edit` : `/Api/inventario/save`;
-            axios
-                .post(path, this.inventario)
-                .then( response => {
+                    const path = ( this.idPrueba != null ) ? `/Api/inventario/${ this.idPrueba }/edit` : `/Api/inventario/save`;
+                    axios
+                        .post(path, this.inventario)
+                        .then( response => {
 
                     this.loader = false
                     if(response.status == 200 )
@@ -531,18 +577,18 @@ export default {
                                 confirmButtonText: "Si",
                                 cancelButtonText: 'No',
                                 allowOutsideClick: false
-                            }).then((result) => {
-                                if ( result.isConfirmed ) {
-                                    this.inventario = {                                        
-                                        codigo: '', serie: '', descripcion: '', modelo: '', observaciones: '', marca: { id: null, marca: '' }, cuenta: { id: null, cuenta: ''},
-                                        rubro: { id: null, rubro: '' }, procedencia: { id: null, procedencia: ''}, precio: 0.00, ubicacion: {id: null, ubicacion: ''},
-                                        entidad: { id: null, entidad: ''}
+                                }).then((result) => {
+                                    if ( result.isConfirmed ) {
+                                        this.inventario = {                                        
+                                            codigo: '', serie: '', descripcion: '', modelo: '', observaciones: '', marca: { id: null, marca: '' }, cuenta: { id: null, cuenta: ''},
+                                            rubro: { id: null, rubro: '' }, procedencia: { id: null, procedencia: ''}, precio: 0.00, ubicacion: {id: null, ubicacion: ''},
+                                            entidad: { id: null, entidad: ''}
+                                        }
+                                        console.log('Limpiando')
+                                    } else {
+                                        window.location = '/inventario/index';                                    
                                     }
-                                    console.log('Limpiando')
-                                } else {
-                                    window.location = '/inventario/index';                                    
-                                }
-                            });
+                                });
 
                             }
 
@@ -555,14 +601,15 @@ export default {
                         }
                     }
                 })
-                .catch( () => {
-                    this.loader = false;
-                    this.alerta('Ocurrio un error en el sistema');
-                })
-                }
+                    .catch( () => {
+                        this.loader = false;
+                        this.alerta('Ocurrio un error en el sistema');
+                    })
+                } 
             })
         },
         cancelar() {
+            console.log( this.inventarioValido )
             Swal.fire({
                 title: "INFORMACION",
                 text: `¿Quieres cancelar el registro`,

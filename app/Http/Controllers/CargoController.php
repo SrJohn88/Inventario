@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Empleado;
+use App\Models\Cargo;
 
 class CargoController extends Controller
 {
-    function obtenerEmpleado() 
+    function obtenerCargos() 
     {
         return response()->json([
-            'empleados' => Empleado::all()
+            'cargos' => Cargo::all()
         ]);
     }
 }

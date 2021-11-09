@@ -263,6 +263,11 @@ return [
                     'icon'  => 'fas fw fa-registered',
                 ],
                 [
+                    'text' => 'Empleados',
+                    'route' => 'empleados.index',
+                    'icon'  => 'fas fw fa-registered',
+                ],
+                [
                     'text' => 'Inventario',
                     'route' => 'inventario.index',
                     'icon'  => 'fas fw fa-registered',

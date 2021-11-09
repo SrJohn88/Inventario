@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CargoController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -91,10 +92,15 @@ Route::get('Api/movimientos/tipos',[ TipoMovimientoController::class,'obtenerTip
 
 
 // EMPLEADOS
-Route::get('/empleados',[ EmpleadoController::class, 'index'])->name("movimiento.index");
+Route::get('/empleados',[ EmpleadoController::class, 'index'])->name("empleados.index");
 
 // API EMPLEADOS
 Route::get('Api/empleados',[EmpleadoController::class,'obtenerEmpleados'])->name("empleados.get");
+Route::get('Api/cargos',[CargoController::class,'obtenerCargos'])->name("cargos.get");
+Route::post('Api/empleados',[EmpleadoController::class,'save'])->name("empleados.save");
+Route::post('Api/empleados/{empleado}/edit',[EmpleadoController::class,'update'])->name("empleados.update");
+Route::delete('Api/empleados/{empleado}/{acccion}',[EmpleadoController::class,'delete'])->name("empleados.delete");
+
 
 //MOVIMIENTO DE INVENTARIO
 Route::get('/inventario/movimientos',[ MovimientoController::class, 'index'])->name("movimiento.index");

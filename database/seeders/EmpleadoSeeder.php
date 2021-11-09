@@ -18,6 +18,7 @@ class EmpleadoSeeder extends Seeder
         $empleado1 = new Empleado();
         $empleado1->nombre = 'Leonel Andres';
         $empleado1->apellido = 'Messi';
+        $empleado1->dui = '00000000-9';
         $empleado1->cargo_id = 1;
         $empleado1->save();
     }

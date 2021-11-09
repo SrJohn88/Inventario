@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInventariosTable extends Migration
+class CreateHistorialInventariosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,13 @@ class CreateInventariosTable extends Migration
      */
     public function up()
     {
-        Schema::create('inventarios', function (Blueprint $table) {
+        Schema::create('historial_inventarios', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
+
+            $table->unsignedInteger('inventario_id');
+            $table->foreign('inventario_id')->references('id')->on('inventarios');
+
             $table->string('codigo',50);
             $table->string('serie',100)->nullable();
             $table->string('descripcion',250);
@@ -60,6 +64,6 @@ class CreateInventariosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('inventarios');
+        Schema::dropIfExists('historial_inventarios');
     }
 }

@@ -20,6 +20,7 @@ class CreateEmpleadosTable extends Migration
             $table->increments('id');
             $table->String('nombre');
             $table->String('apellido');
+            $table->String('dui');
             
             $table->unsignedInteger('cargo_id');
             $table->foreign('cargo_id')->references('id')->on('cargos');

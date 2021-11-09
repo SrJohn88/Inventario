@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Inventario;
+use App\Models\HistorialInventario;
 
 class InventarioController extends Controller
 {
@@ -38,12 +39,8 @@ class InventarioController extends Controller
 
     function getOneActivo ( $id )
     {   
-        // return response()->json([
-        //    'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado', 'movimiento')->where('id', $id)->firstOrFail()
-        //]);
-
         return response()->json([
-            'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado', 'historial')->where('id', $id)->firstOrFail()
+            'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado', 'historial', 'respaldos')->where('id', $id)->firstOrFail()
         ]);
     }
 
@@ -80,20 +77,16 @@ class InventarioController extends Controller
             $inventario->estado_id = 1;
             $inventario->save();
 
-            //return $request->all();
-
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'El producto a sido registrado con exito',
-                'procedencia' => $inventario
+                'inventario' => $inventario
             ]);
         }
 
     }
 
     function update( Request $request, Inventario $inventario ) {
-
-        // return $inventario;
 
         $validacion = Validator::make($request->all(), [
             'codigo' => 'required|unique:inventarios,codigo,'.$inventario->id.'|min:2|max:100'
@@ -105,6 +98,31 @@ class InventarioController extends Controller
                     'mensaje' => '',
                     'inventario' => $validacion->errors()->get('codigo')
             ]);
+        }
+
+        $guardarCopia = false;
+        $guardarCopia = filter_var( $request->input('guardarHistorial'), FILTER_VALIDATE_BOOLEAN);;
+
+
+        if ( $guardarCopia )
+        {
+            $historialInventario = new HistorialInventario();
+            $historialInventario->inventario_id = $inventario->id;
+            $historialInventario->codigo = $inventario->codigo;
+            $historialInventario->serie = $inventario->serie;
+            $historialInventario->descripcion = $inventario->descripcion;
+            $historialInventario->marca_id = $inventario->marca_id;
+            $historialInventario->modelo = $inventario->modelo;
+            $historialInventario->procedencia_id = $inventario->procedencia_id;
+            $historialInventario->entidad_id = $inventario->entidad_id;
+            $historialInventario->cuenta_id = $inventario->cuenta_id;
+            $historialInventario->precio = $inventario->precio;
+            $historialInventario->rubro_id = $inventario->rubro_id;
+            $historialInventario->ubicacion_id = $inventario->ubicacion_id;
+            $historialInventario->desUbicacion = $inventario->desUbicacion;
+            $historialInventario->fecha_adquision = $inventario->fecha_adquision;
+            $historialInventario->observacion = $inventario->observacion;
+            $historialInventario->save();
         }
 
         $inventario->codigo = $request->get('codigo');

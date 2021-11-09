@@ -52,4 +52,8 @@ class Inventario extends Model
     public function historial(){
         return $this->hasMany('App\Models\HistorialMovimiento');
     }
+
+    public function respaldos (){
+        return $this->hasMany('App\Models\HistorialInventario');
+    }
 }

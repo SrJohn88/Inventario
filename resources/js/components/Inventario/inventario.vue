@@ -63,7 +63,7 @@
                         dark
                         :disabled="item.id < 0"
                         v-on="on"
-                        @click="editar()"
+                        @click="detalle(item)"
                         >
                         <v-icon>far fa-clipboard</v-icon>
                         </v-btn>
@@ -119,6 +119,10 @@ export default {
         editar( { ...activo } ) 
         {
             window.location = `/inventario/crear?id=${activo.id}`
+        },
+        detalle( {...activo })
+        {
+            window.location = `/inventario/crear?id=${activo.id}&detalle=true`
         }
     }
 

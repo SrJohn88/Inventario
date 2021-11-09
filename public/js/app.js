@@ -2226,11 +2226,459 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
 //
 //
 //
 //
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      loader: false,
+      validForm: false,
+      modal: false,
+      buscarEmpleado: '',
+      TheadTable: [{
+        text: "Nombre",
+        value: "nombre",
+        align: 'center'
+      }, {
+        text: "Apellido",
+        value: "apellido",
+        align: 'center'
+      }, {
+        text: "DUI",
+        value: "dui",
+        align: 'center'
+      }, {
+        text: "Cargo",
+        value: "cargo.cargo",
+        align: 'center'
+      }, {
+        text: "Acciones",
+        value: "action",
+        sortable: false,
+        align: "center"
+      }],
+      empleados: [],
+      empleadosEliminado: [],
+      mostrarEmpleadosEliminados: false,
+      empleado: {
+        id: null,
+        nombre: '',
+        apellido: '',
+        cargo: {
+          id: null,
+          cargo: ''
+        }
+      },
+      errorsEmpleado: [],
+      reglas: {
+        requerido: function requerido(v) {
+          return !!v || "Nombre del empleado es requerido";
+        },
+        min: function min(v) {
+          return v.length >= 2 && v.length <= 100 || "Nombre de la cuenta debe ser mayor a 2 caracteres";
+        },
+        expresion: function expresion(v) {
+          return /^[A-Za-záéíóúÁÉÍÓÚ\s]+$/g.test(v) || "Nombre del empleado solo puede contener letras";
+        },
+        dui: function dui(v) {
+          return /^[0-9]{8}-[0-9]{1}$/.test(v) || "Ingresa un numero de DUI valido";
+        }
+      },
+      cargos: []
+    };
+  },
+  computed: {
+    formTitle: function formTitle() {
+      return this.empleado.id ? 'Actualizar Empleado' : 'Agregar Empleado';
+    },
+    tituloBtnGuardar: function tituloBtnGuardar() {
+      return this.empleado.id ? 'Actualizar' : 'Guardar';
+    }
+  },
+  mounted: function mounted() {
+    this.obtenerEmpleados();
+    this.obtenerCargos();
+  },
+  methods: {
+    obtenerEmpleados: function obtenerEmpleados() {
+      var _this = this;
+
+      this.loader = true;
+      axios.get("/Api/empleados").then(function (_ref) {
+        var empleados = _ref.data.empleados;
+        _this.loader = false;
+        _this.empleados = empleados.filter(function (r) {
+          return r.eliminado == false;
+        });
+        _this.empleadosEliminado = empleados.filter(function (r) {
+          return r.eliminado == true;
+        });
+      })["catch"](console.error);
+    },
+    obtenerCargos: function obtenerCargos() {
+      var _this2 = this;
+
+      axios.get("/Api/cargos").then(function (_ref2) {
+        var cargos = _ref2.data.cargos;
+        _this2.cargos = cargos.filter(function (r) {
+          return r.eliminado == false;
+        });
+      })["catch"](console.error);
+    },
+    save: function save() {
+      var _this3 = this;
+
+      var path = this.empleado.id == null ? '/Api/empleados' : "Api/empleados/".concat(this.empleado.id, "/edit");
+      axios.post(path, this.empleado).then(function (response) {
+        var _response$data = response.data,
+            respuesta = _response$data.respuesta,
+            mensaje = _response$data.mensaje;
+
+        if (respuesta) {
+          _this3.obtenerEmpleados();
+
+          _this3.alerta(mensaje, 'success', '¡Bien hecho!');
+
+          _this3.cerrarModal();
+        } else {
+          _this3.errorsEmpleado = [];
+          var dui = response.data.dui;
+          _this3.errorsEmpleado = dui;
+        }
+      })["catch"](function () {
+        _this3.alerta(mensaje, 'error', '¡Algo salio mal!');
+
+        _this3.cerrarModal();
+      });
+    },
+    mostrarModal: function mostrarModal(_ref3) {
+      var empleado = _extends({}, _ref3);
+
+      this.empleado = empleado;
+      this.modal = true;
+    },
+    cerrarModal: function cerrarModal() {
+      var _this4 = this;
+
+      this.modal = false;
+      setTimeout(function () {
+        _this4.empleado = {
+          id: null,
+          nombre: "",
+          apellido: '',
+          dui: '',
+          cargo: {
+            id: null,
+            cargo: ''
+          }
+        };
+
+        _this4.resetValidation();
+      }, 300);
+    },
+    resetValidation: function resetValidation() {
+      this.errorsEmpleado = [];
+      this.$refs.formEmpleado.resetValidation();
+    },
+    eliminar: function eliminar(_ref4) {
+      var _this5 = this;
+
+      var empleado = _extends({}, _ref4);
+
+      Swal.fire({
+        title: "INFORMACION",
+        text: "\xBFEstas seguro de desactivar el emplado ".concat(empleado.nombre, " ?"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          _this5.cambiarEstadoEmpleado(empleado);
+        }
+      });
+    },
+    restaurar: function restaurar(_ref5) {
+      var _this6 = this;
+
+      var empleado = _extends({}, _ref5);
+
+      Swal.fire({
+        title: "INFORMACION",
+        text: "\xBFEstas seguro de activar el empleado ".concat(empleado.nombre, " ?"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          _this6.cambiarEstadoEmpleado(empleado, false);
+        }
+      });
+    },
+    cambiarEstadoEmpleado: function cambiarEstadoEmpleado(empleado) {
+      var _this7 = this;
+
+      var eliminar = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      axios["delete"]("/Api/empleados/".concat(empleado.id, "/").concat(eliminar)).then(function (response) {
+        if (response.status == 200) {
+          var _response$data2 = response.data,
+              respuesta = _response$data2.respuesta,
+              _mensaje = _response$data2.mensaje;
+
+          if (respuesta) {
+            _this7.alerta(_mensaje, 'success', '¡Bien Hecho!');
+
+            _this7.obtenerEmpleados();
+          } else {
+            _this7.alerta(_mensaje, 'error', 'IMPORTANTE');
+          }
+        }
+      })["catch"](function () {
+        _this7.alerta('Algo salio mal', 'error', 'IMPORTANTE');
+      });
+    },
+    alerta: function alerta(mensaje) {
+      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
+      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+      Swal.fire({
+        position: "top-end",
+        icon: icono,
+        title: titulo,
+        text: mensaje,
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -3830,45 +4278,53 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue */ "./resources/js/components/Inventario/Modals/Movimiento.vue").default);
+//
+//
+//
+//
+//
+//
+//
+//
+Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue */ "./resources/js/components/Inventario/Modals/Movimiento.vue").default);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: 'movimiento-crear',
+  name: "movimiento-crear",
   data: function data() {
     return {
       menu: false,
-      formTitle: 'Inventario General',
+      formTitle: "Inventario General",
       errors: [],
-      formularioValido: false,
+      formularioMovimiento: true,
       modalNMovimientos: false,
       movimiento: {
         tipoMovimiento: {
           id: null,
-          tipo: ''
+          tipo: ""
         },
         recibe: {
           id: null,
-          nombre: ''
+          nombre: ""
         },
         aprueba: {
           id: null,
-          nombre: ''
+          nombre: ""
         },
         gerencia: {
           id: null,
-          nombre: ''
+          nombre: ""
         },
         ubicacion: {
           id: null,
-          ubicacion: ''
+          ubicacion: ""
         },
-        fecha: '',
-        observaciones: '',
+        fecha: "",
+        observaciones: "",
         activos: []
       },
       tiposMovimientos: [],
       ubicaciones: [],
       empleados: [],
-      buscarInventario: '',
+      buscarInventario: "",
       headMovimientos: [{
         text: "Codigo",
         value: "codigo",
@@ -3905,7 +4361,7 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
   },
   methods: {
     EmpleadoNombreCompleto: function EmpleadoNombreCompleto(empleado) {
-      return empleado.nombre + ' ' + empleado.apellido;
+      return empleado.nombre + " " + empleado.apellido;
     },
     getUbicaciones: function getUbicaciones() {
       var _this = this;
@@ -3916,7 +4372,7 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
       });
     },
     getInventario: function getInventario() {
-      console.log('creando desde movimiento');
+      console.log("creando desde movimiento");
       this.$refs.activo = [];
     },
     getEmpleados: function getEmpleados() {
@@ -3945,52 +4401,65 @@ Vue.component('n-inventario', __webpack_require__(/*! ..//Modals/Movimiento.vue 
     guardarMovimiento: function guardarMovimiento() {
       var _this4 = this;
 
-      console.log(this.inventarios);
+      if (this.formularioMovimiento && this.inventarios.length > 0) {
+        Swal.fire({
+          title: "¡Importante!",
+          text: "Estas seguro/as que los datos son correctos ¿Deseas guardar el movimiento?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Guardar",
+          cancelButtonText: "Cancelar"
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            var activosTemp = _toConsumableArray(_this4.inventarios);
 
-      var activosTemp = _toConsumableArray(this.inventarios);
-
-      activosTemp.forEach(function (activo) {
-        _this4.movimiento.activos.push({
-          inventario_id: activo.id,
-          falla: activo.falla,
-          observaciones: activo.observaciones
-        });
-      });
-      var path = "/Api/inventario/movimientos/save";
-      axios.post(path, this.movimiento).then(function (response) {
-        console.log(response);
-
-        if (response.status == 200) {
-          var _response$data = response.data,
-              respuesta = _response$data.respuesta,
-              mensaje = _response$data.mensaje;
-
-          if (respuesta) {
-            _this4.alerta(mensaje, 'success', '¡Bien hecho!').then(function () {
-              var _Swal$fire;
-
-              Swal.fire((_Swal$fire = {
-                title: 'INFORMACION',
-                text: "¿Quieres agregar otro movimiento?",
-                icon: 'info'
-              }, _defineProperty(_Swal$fire, "icon", "info"), _defineProperty(_Swal$fire, "showCancelButton", true), _defineProperty(_Swal$fire, "confirmButtonColor", "#3698e3"), _defineProperty(_Swal$fire, "cancelButtonColor", "#d33"), _defineProperty(_Swal$fire, "confirmButtonText", "Si"), _defineProperty(_Swal$fire, "cancelButtonText", 'No'), _defineProperty(_Swal$fire, "allowOutsideClick", false), _Swal$fire)).then(function (result) {
-                if (result.isConfirmed) {
-                  _this4.movimiento = {};
-                } else {
-                  window.location = '/inventario/movimientos';
-                }
+            activosTemp.forEach(function (activo) {
+              _this4.movimiento.activos.push({
+                inventario_id: activo.id,
+                falla: activo.falla,
+                observaciones: activo.observaciones
               });
             });
+            var path = "/Api/inventario/movimientos/save";
+            axios.post(path, _this4.movimiento).then(function (response) {
+              if (response.status == 200) {
+                var _response$data = response.data,
+                    respuesta = _response$data.respuesta,
+                    mensaje = _response$data.mensaje;
+
+                if (respuesta) {
+                  _this4.alerta(mensaje, "success", "¡Bien hecho!").then(function () {
+                    var _Swal$fire;
+
+                    Swal.fire((_Swal$fire = {
+                      title: "INFORMACION",
+                      text: "¿Quieres agregar otro movimiento?",
+                      icon: "info"
+                    }, _defineProperty(_Swal$fire, "icon", "info"), _defineProperty(_Swal$fire, "showCancelButton", true), _defineProperty(_Swal$fire, "confirmButtonColor", "#3698e3"), _defineProperty(_Swal$fire, "cancelButtonColor", "#d33"), _defineProperty(_Swal$fire, "confirmButtonText", "Si"), _defineProperty(_Swal$fire, "cancelButtonText", "No"), _defineProperty(_Swal$fire, "allowOutsideClick", false), _Swal$fire)).then(function (result) {
+                      if (result.isConfirmed) {
+                        _this4.movimiento = {};
+                      } else {
+                        window.location = "/inventario/movimientos";
+                      }
+                    });
+                  });
+                }
+              }
+            })["catch"](console.error);
           }
-        }
-      })["catch"](console.error);
+        });
+      } else {
+        this.alerta('Completa los datos', 'warning', 'IMPORTANTE');
+      }
     },
     cancelar: function cancelar() {
-      window.location = '/inventario/movimientos';
+      window.location = "/inventario/movimientos";
     },
     alerta: function alerta(mensaje) {
-      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
-      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "info";
+      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
       return new Promise(function (resolve, reject) {
         Swal.fire({
           position: "top-end",
@@ -4528,6 +4997,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 Vue.component('Entidad', __webpack_require__(/*! .//Modals/Entidad.vue */ "./resources/js/components/Inventario/Modals/Entidad.vue").default);
 Vue.component('Cuenta', __webpack_require__(/*! .//Modals/Cuenta.vue */ "./resources/js/components/Inventario/Modals/Cuenta.vue").default);
 Vue.component('Marca', __webpack_require__(/*! .//Modals/Marca.vue */ "./resources/js/components/Inventario/Modals/Marca.vue").default);
@@ -4552,13 +5049,13 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
           return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
         },
         precio: function precio(v) {
-          return /^[0-9. \s]+$/g.test(v) || 'No parece formato de dinero';
+          return v.length == 0 || /^[0-9. \s]+$/g.test(v) || 'No parece formato de dinero';
         }
       },
       menu: false,
       idPrueba: 0,
       loader: false,
-      validForm: false,
+      inventarioValido: true,
       marcas: [],
       entidades: [],
       rubros: [],
@@ -4596,7 +5093,8 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
           id: null,
           entidad: ''
         },
-        fecha: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10)
+        fecha: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
+        guardarHistorial: false
       },
       errorsNombre: [],
       procedencias: [],
@@ -4612,7 +5110,40 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
       }, {
         text: "Fecha creación",
         value: "created_at"
-      }]
+      }],
+      esperando: false,
+      copias: [],
+      headCopias: [{
+        text: 'Codigo',
+        value: 'codigo'
+      }, {
+        text: "Descripcion",
+        value: "descripcion"
+      }, {
+        text: "Marca",
+        value: "marca.marca"
+      }, {
+        text: "Modelo",
+        value: "modelo"
+      }, {
+        text: "Serie",
+        value: "serie"
+      }, {
+        text: "Precio",
+        value: "precio"
+      }, {
+        text: "Ubicacion",
+        value: "ubicacion.ubicacion"
+      }, {
+        text: "Fecha adquisicion",
+        value: "fecha_adquision"
+      }, {
+        text: "Acciones",
+        value: "action",
+        sortable: false,
+        align: "center"
+      }],
+      buscarCopia: ''
     };
   },
   created: function created() {
@@ -4635,6 +5166,9 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
     }
   },
   computed: {
+    cardTitle: function cardTitle() {
+      return this.idPrueba != null ? this.idPrueba != null && this.detalle ? 'Detalle del activo' : 'Actualizar Inventario' : 'Guardar Inventario';
+    },
     textButton: function textButton() {
       return this.idPrueba != null ? 'Actualizar' : 'Guardar';
     }
@@ -4662,24 +5196,32 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
             procedencia = _activo.procedencia,
             cuenta = _activo.cuenta,
             observacion = _activo.observacion,
-            historial = _activo.historial;
+            historial = _activo.historial,
+            respaldos = _activo.respaldos;
 
         _this.inventario.id = id;
         _this.inventario.codigo = codigo;
-        _this.inventario.serie = serie;
+        _this.inventario.serie = serie !== null && serie !== void 0 ? serie : '';
         _this.inventario.descripcion = descripcion;
-        _this.inventario.modelo = modelo;
-        _this.inventario.precio = precio;
+        _this.inventario.modelo = modelo !== null && modelo !== void 0 ? modelo : '';
+        _this.inventario.precio = precio !== null && precio !== void 0 ? precio : '';
         _this.inventario.fecha = fecha_adquision;
-        _this.inventario.observaciones = observacion;
+        _this.inventario.observaciones = observacion !== null && observacion !== void 0 ? observacion : '';
         _this.inventario.procedencia = procedencia;
-        _this.inventario.entidad = entidad;
-        _this.inventario.marca = marca;
+        _this.inventario.entidad = entidad !== null && entidad !== void 0 ? entidad : {
+          id: null,
+          entidad: ''
+        };
+        _this.inventario.marca = marca !== null && marca !== void 0 ? marca : {
+          id: null,
+          marca: ''
+        };
         _this.inventario.rubro = rubro;
         _this.inventario.cuenta = cuenta;
         _this.inventario.ubicacion = ubicacion;
         console.log(historial);
         _this.historial = _toConsumableArray(historial);
+        _this.copias = _toConsumableArray(respaldos);
         _this.loader = false;
       })["catch"](console.error);
     },
@@ -4836,6 +5378,7 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
       });
     },
     cancelar: function cancelar() {
+      console.log(this.inventarioValido);
       Swal.fire({
         title: "INFORMACION",
         text: "\xBFQuieres cancelar el registro",
@@ -5063,6 +5606,11 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       var activo = _extends({}, _ref2);
 
       window.location = "/inventario/crear?id=".concat(activo.id);
+    },
+    detalle: function detalle(_ref3) {
+      var activo = _extends({}, _ref3);
+
+      window.location = "/inventario/crear?id=".concat(activo.id, "&detalle=true");
     }
   }
 });
@@ -47381,7 +47929,613 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("h1", [_vm._v("EMPLEADOS")])
+  return _c("div", { staticClass: "content" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+      },
+      [
+        _c(
+          "v-overlay",
+          { attrs: { value: _vm.loader, "z-index": "99999999" } },
+          [
+            _c("v-progress-circular", {
+              attrs: { indeterminate: "", size: "80", color: "grey darken-4" }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "v-card",
+          [
+            _c(
+              "v-card-title",
+              [
+                _vm._v("\n            Empleados de ITCHA\n            "),
+                _c("div", { staticClass: "flex-grow-1" }),
+                _vm._v(" "),
+                _c("v-text-field", {
+                  attrs: { label: "Buscar Empleado", "hide-details": "" },
+                  model: {
+                    value: _vm.buscarEmpleado,
+                    callback: function($$v) {
+                      _vm.buscarEmpleado = $$v
+                    },
+                    expression: "buscarEmpleado"
+                  }
+                })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("v-data-table", {
+              staticClass: "elevation-1",
+              attrs: {
+                headers: _vm.TheadTable,
+                items: _vm.mostrarEmpleadosEliminados
+                  ? _vm.empleadosEliminado
+                  : _vm.empleados,
+                "footer-props": {
+                  "items-per-page-options": [5, 10, 20, 30, 40],
+                  "items-per-page-text": "Registros Por Página"
+                },
+                "items-per-page": 5,
+                search: _vm.buscarEmpleado,
+                "multi-sort": ""
+              },
+              scopedSlots: _vm._u([
+                {
+                  key: "top",
+                  fn: function() {
+                    return [
+                      _c(
+                        "v-toolbar",
+                        { attrs: { flat: "", color: "white" } },
+                        [
+                          _c("div", { staticClass: "flex-grow-1" }),
+                          _vm._v(" "),
+                          _c(
+                            "v-dialog",
+                            {
+                              attrs: { persistent: "", "max-width": "700px" },
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "activator",
+                                  fn: function(ref) {
+                                    var on = ref.on
+                                    return [
+                                      _c(
+                                        "v-btn",
+                                        _vm._g(
+                                          {
+                                            directives: [
+                                              {
+                                                name: "show",
+                                                rawName: "v-show",
+                                                value: !_vm.mostrarEmpleadosEliminados,
+                                                expression:
+                                                  "!mostrarEmpleadosEliminados"
+                                              }
+                                            ],
+                                            staticClass: "mb-2",
+                                            staticStyle: {
+                                              "font-size": "10px"
+                                            },
+                                            attrs: {
+                                              elevation: "10",
+                                              color: "blue  darken-3",
+                                              dark: ""
+                                            }
+                                          },
+                                          on
+                                        ),
+                                        [
+                                          _vm._v(
+                                            "\n                            Agregar Empleado \n                            "
+                                          ),
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              "mdi-plus-box-multiple-outline"
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-checkbox", {
+                                        staticClass: "mx-10",
+                                        staticStyle: { "margin-top": "1.5rem" },
+                                        attrs: {
+                                          label: "Empleados desactivados"
+                                        },
+                                        model: {
+                                          value: _vm.mostrarEmpleadosEliminados,
+                                          callback: function($$v) {
+                                            _vm.mostrarEmpleadosEliminados = $$v
+                                          },
+                                          expression:
+                                            "mostrarEmpleadosEliminados"
+                                        }
+                                      })
+                                    ]
+                                  }
+                                }
+                              ]),
+                              model: {
+                                value: _vm.modal,
+                                callback: function($$v) {
+                                  _vm.modal = $$v
+                                },
+                                expression: "modal"
+                              }
+                            },
+                            [
+                              _vm._v(" "),
+                              _c(
+                                "v-card",
+                                [
+                                  _c(
+                                    "v-card-title",
+                                    {
+                                      staticClass: "headline grey lighten-2",
+                                      attrs: { "primary-titles": "" }
+                                    },
+                                    [
+                                      _c("span", {
+                                        staticClass: "headline",
+                                        domProps: {
+                                          textContent: _vm._s(_vm.formTitle)
+                                        }
+                                      })
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-card-text",
+                                    [
+                                      _c(
+                                        "v-container",
+                                        [
+                                          _c(
+                                            "v-form",
+                                            {
+                                              ref: "formEmpleado",
+                                              attrs: {
+                                                "lazy-validation": true
+                                              },
+                                              model: {
+                                                value: _vm.validForm,
+                                                callback: function($$v) {
+                                                  _vm.validForm = $$v
+                                                },
+                                                expression: "validForm"
+                                              }
+                                            },
+                                            [
+                                              _c(
+                                                "v-row",
+                                                [
+                                                  _c(
+                                                    "v-col",
+                                                    { attrs: { cols: "12" } },
+                                                    [
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          "append-icon":
+                                                            "mdi-folder-outline",
+                                                          rules: [
+                                                            _vm.reglas
+                                                              .requerido,
+                                                            _vm.reglas.min,
+                                                            _vm.reglas.expresion
+                                                          ],
+                                                          label: "Nombres",
+                                                          required: ""
+                                                        },
+                                                        on: {
+                                                          keyup: function(
+                                                            $event
+                                                          ) {
+                                                            _vm.errorsEmpleado = []
+                                                          }
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.empleado.nombre,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.empleado,
+                                                              "nombre",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "empleado.nombre"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-col",
+                                                    { attrs: { cols: "12" } },
+                                                    [
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          "append-icon":
+                                                            "mdi-folder-outline",
+                                                          rules: [
+                                                            _vm.reglas
+                                                              .requerido,
+                                                            _vm.reglas.min,
+                                                            _vm.reglas.expresion
+                                                          ],
+                                                          label: "Apellidos",
+                                                          required: ""
+                                                        },
+                                                        on: {
+                                                          keyup: function(
+                                                            $event
+                                                          ) {
+                                                            _vm.errorsEmpleado = []
+                                                          }
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.empleado
+                                                              .apellido,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.empleado,
+                                                              "apellido",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "empleado.apellido"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-col",
+                                                    { attrs: { cols: "12" } },
+                                                    [
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          "append-icon":
+                                                            "mdi-folder-outline",
+                                                          rules: [
+                                                            _vm.reglas.dui
+                                                          ],
+                                                          label: "DUI",
+                                                          required: "",
+                                                          "error-messages":
+                                                            _vm.errorsEmpleado
+                                                        },
+                                                        on: {
+                                                          keyup: function(
+                                                            $event
+                                                          ) {
+                                                            _vm.errorsEmpleado = []
+                                                          }
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.empleado.dui,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.empleado,
+                                                              "dui",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "empleado.dui"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-col",
+                                                    { attrs: { cols: "12" } },
+                                                    [
+                                                      _c("v-autocomplete", {
+                                                        attrs: {
+                                                          items: _vm.cargos,
+                                                          required: "",
+                                                          label: "Cargos",
+                                                          "item-text": "cargo",
+                                                          "item-value": "id",
+                                                          aling: "center",
+                                                          "return-object": "",
+                                                          clearable: "",
+                                                          "menu-props": {
+                                                            closeOnClick: true
+                                                          }
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.empleado.cargo,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.empleado,
+                                                              "cargo",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "empleado.cargo"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c("v-divider"),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-card-actions",
+                                    [
+                                      _c("div", { staticClass: "flex-grow-1" }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            color: "red darken-1",
+                                            text: ""
+                                          },
+                                          on: { click: _vm.cerrarModal }
+                                        },
+                                        [_vm._v("Cerrar")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-btn", {
+                                        attrs: {
+                                          color: "info darken-1",
+                                          disabled: !_vm.validForm,
+                                          text: ""
+                                        },
+                                        domProps: {
+                                          textContent: _vm._s(
+                                            _vm.tituloBtnGuardar
+                                          )
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.save()
+                                          }
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ]
+                  },
+                  proxy: true
+                },
+                {
+                  key: "item.action",
+                  fn: function(ref) {
+                    var item = ref.item
+                    return [
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.mostrarEmpleadosEliminados,
+                                              expression:
+                                                "!mostrarEmpleadosEliminados"
+                                            }
+                                          ],
+                                          attrs: {
+                                            color: "success",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.mostrarModal(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-pencil")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [
+                          _vm._v(" "),
+                          _c("span", [_vm._v("Actualizar Empleado")])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.mostrarEmpleadosEliminados,
+                                              expression:
+                                                "!mostrarEmpleadosEliminados"
+                                            }
+                                          ],
+                                          staticClass: "mx-1",
+                                          attrs: {
+                                            color: "info",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.eliminar(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-delete")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [
+                          _vm._v(" "),
+                          _c("span", [_vm._v("Desactivar Empleado")])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value:
+                                                _vm.mostrarEmpleadosEliminados,
+                                              expression:
+                                                " mostrarEmpleadosEliminados"
+                                            }
+                                          ],
+                                          staticClass: "mx-1",
+                                          attrs: {
+                                            color: "teal",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.restaurar(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-restore")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Activar Empleado")])]
+                      )
+                    ]
+                  }
+                }
+              ])
+            })
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -48782,11 +49936,11 @@ var render = function() {
                     ref: "formMovimiento",
                     attrs: { "lazy-validation": true },
                     model: {
-                      value: _vm.formularioValido,
+                      value: _vm.formularioMovimiento,
                       callback: function($$v) {
-                        _vm.formularioValido = $$v
+                        _vm.formularioMovimiento = $$v
                       },
-                      expression: "formularioValido"
+                      expression: "formularioMovimiento"
                     }
                   },
                   [
@@ -48803,12 +49957,11 @@ var render = function() {
                                 _c("v-autocomplete", {
                                   attrs: {
                                     items: _vm.tiposMovimientos,
-                                    required: "",
                                     rules: [
                                       function(v) {
                                         return (
                                           !!v ||
-                                          "Tipo cuenta del activo es requerido"
+                                          "Tipo de movimiento es requerido"
                                         )
                                       }
                                     ],
@@ -48971,7 +50124,8 @@ var render = function() {
                                                         "Seleccione fecha de reingreso",
                                                       "prepend-icon":
                                                         "mdi-calendar",
-                                                      readonly: ""
+                                                      readonly: "",
+                                                      required: ""
                                                     },
                                                     model: {
                                                       value:
@@ -49029,8 +50183,9 @@ var render = function() {
                               1
                             ),
                             _vm._v(" "),
-                            _vm.movimiento.tipoMovimiento.id == 2 ||
-                            _vm.movimiento.tipoMovimiento.id == 3
+                            _vm.movimiento.tipoMovimiento != null &&
+                            (_vm.movimiento.tipoMovimiento.id == 2 ||
+                              _vm.movimiento.tipoMovimiento.id == 3)
                               ? _c(
                                   "v-col",
                                   { attrs: { cols: "5" } },
@@ -49072,8 +50227,9 @@ var render = function() {
                                 )
                               : _vm._e(),
                             _vm._v(" "),
-                            _vm.movimiento.tipoMovimiento.id == 2 ||
-                            _vm.movimiento.tipoMovimiento.id == 3
+                            _vm.movimiento.tipoMovimiento != null &&
+                            (_vm.movimiento.tipoMovimiento.id == 2 ||
+                              _vm.movimiento.tipoMovimiento.id == 3)
                               ? _c(
                                   "v-col",
                                   { attrs: { cols: "1", md: "1" } },
@@ -49120,7 +50276,6 @@ var render = function() {
                                   attrs: {
                                     label: "Observacion",
                                     rows: "2",
-                                    required: "",
                                     "error-messages": _vm.errors
                                   },
                                   model: {
@@ -49197,7 +50352,7 @@ var render = function() {
                                                 ),
                                                 [
                                                   _vm._v(
-                                                    "\n                                        Agregar Nuevo Movimiento \n                                        "
+                                                    "\n                      Agregar Nuevo Movimiento \n                      "
                                                   ),
                                                   _c("v-icon", [
                                                     _vm._v(
@@ -49278,7 +50433,7 @@ var render = function() {
                                                 },
                                                 [
                                                   _vm._v(
-                                                    "Finalizar\n                                        "
+                                                    "Finalizar\n                      "
                                                   )
                                                 ]
                                               )
@@ -49339,11 +50494,7 @@ var render = function() {
                                             _c(
                                               "div",
                                               { staticClass: "mt-4 text-h6" },
-                                              [
-                                                _vm._v(
-                                                  "\n                                        Falla:\n                                    "
-                                                )
-                                              ]
+                                              [_vm._v("Falla:")]
                                             ),
                                             _vm._v(" "),
                                             _c("v-text-field", {
@@ -49377,9 +50528,9 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    " +
+                                    "\n                " +
                                       _vm._s(props.item.falla) +
-                                      "\n                                "
+                                      "\n                "
                                   )
                                 ]
                               )
@@ -49412,7 +50563,11 @@ var render = function() {
                 _c(
                   "v-btn",
                   {
-                    attrs: { color: "info darken-1", text: "" },
+                    attrs: {
+                      color: "info darken-1",
+                      text: "",
+                      disabled: !_vm.formularioMovimiento
+                    },
                     on: { click: _vm.guardarMovimiento }
                   },
                   [_vm._v("Guardar")]
@@ -49683,6 +50838,14 @@ var render = function() {
         _c(
           "v-card",
           [
+            _c("v-card-title", [
+              _vm._v(
+                "\n                    " +
+                  _vm._s(_vm.cardTitle) +
+                  "\n                "
+              )
+            ]),
+            _vm._v(" "),
             _c(
               "v-card-text",
               [
@@ -49695,11 +50858,11 @@ var render = function() {
                         ref: "formInventario",
                         attrs: { "lazy-validation": true },
                         model: {
-                          value: _vm.validForm,
+                          value: _vm.inventarioValido,
                           callback: function($$v) {
-                            _vm.validForm = $$v
+                            _vm.inventarioValido = $$v
                           },
-                          expression: "validForm"
+                          expression: "inventarioValido"
                         }
                       },
                       [
@@ -49802,7 +50965,6 @@ var render = function() {
                                 _c("v-autocomplete", {
                                   attrs: {
                                     items: _vm.marcas,
-                                    required: "",
                                     label: "Marca",
                                     "item-text": "marca",
                                     "item-value": "id",
@@ -49873,7 +51035,6 @@ var render = function() {
                                   attrs: {
                                     "append-icon": "",
                                     label: "Modelo",
-                                    required: "",
                                     disabled: _vm.detalle
                                   },
                                   model: {
@@ -49944,7 +51105,6 @@ var render = function() {
                                 _c("v-autocomplete", {
                                   attrs: {
                                     items: _vm.cuentas,
-                                    required: "",
                                     rules: [
                                       function(v) {
                                         return (
@@ -50027,7 +51187,6 @@ var render = function() {
                                       attrs: {
                                         disabled: _vm.detalle,
                                         items: _vm.entidades,
-                                        required: "",
                                         rules: [
                                           function(v) {
                                             return (
@@ -50110,7 +51269,6 @@ var render = function() {
                                     "append-icon": "fas fa-tags",
                                     rules: [_vm.reglas.precio],
                                     label: "Precio",
-                                    required: "",
                                     "error-messages": _vm.errorsNombre
                                   },
                                   model: {
@@ -50337,6 +51495,7 @@ var render = function() {
                                   {
                                     staticClass: "mt-8",
                                     attrs: {
+                                      required: "",
                                       disabled: _vm.detalle,
                                       elevation: "5",
                                       text: "",
@@ -50405,6 +51564,23 @@ var render = function() {
                   [
                     _c("div", { staticClass: "flex-grow-1" }),
                     _vm._v(" "),
+                    this.idPrueba != null && !_vm.detalle
+                      ? _c("v-checkbox", {
+                          staticClass: "mx-10",
+                          staticStyle: { "margin-top": "1.5rem" },
+                          attrs: {
+                            label: "¿Desea guardar una copia de los cambios?"
+                          },
+                          model: {
+                            value: _vm.inventario.guardarHistorial,
+                            callback: function($$v) {
+                              _vm.$set(_vm.inventario, "guardarHistorial", $$v)
+                            },
+                            expression: "inventario.guardarHistorial"
+                          }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
                     _c(
                       "v-btn",
                       {
@@ -50419,7 +51595,11 @@ var render = function() {
                     ),
                     _vm._v(" "),
                     _c("v-btn", {
-                      attrs: { color: "info darken-1", disabled: false },
+                      ref: "btnGuardarInventario",
+                      attrs: {
+                        color: "info darken-1",
+                        disabled: !_vm.inventarioValido
+                      },
                       domProps: { textContent: _vm._s(_vm.textButton) },
                       on: {
                         click: function($event) {
@@ -50435,33 +51615,65 @@ var render = function() {
           1
         ),
         _vm._v(" "),
-        _c(
-          "v-card",
-          [
-            _c("v-card-title", [
-              _vm._v(
-                "\n                    Historial de activo\n                    "
-              ),
-              _c("div", { staticClass: "flex-grow-1" })
-            ]),
-            _vm._v(" "),
-            _c("v-data-table", {
-              staticClass: "elevation-1",
-              attrs: {
-                headers: _vm.headerMovimiento,
-                items: _vm.historial,
-                "footer-props": {
-                  "items-per-page-options": [10, 15, 25, 35, 45],
-                  "items-per-page-text": "Registros Por Página"
-                },
-                "items-per-page": 10,
-                search: _vm.buscarMovimiento,
-                "multi-sort": ""
-              }
-            })
-          ],
-          1
-        )
+        _vm.detalle
+          ? _c(
+              "v-card",
+              [
+                _c("v-card-title", [
+                  _vm._v(
+                    "\n                    Historial de activo\n                    "
+                  ),
+                  _c("div", { staticClass: "flex-grow-1" })
+                ]),
+                _vm._v(" "),
+                _c("v-data-table", {
+                  staticClass: "elevation-1",
+                  attrs: {
+                    headers: _vm.headerMovimiento,
+                    items: _vm.historial,
+                    "footer-props": {
+                      "items-per-page-options": [10, 15, 25, 35, 45],
+                      "items-per-page-text": "Registros Por Página"
+                    },
+                    "items-per-page": 10,
+                    search: _vm.buscarMovimiento,
+                    "multi-sort": ""
+                  }
+                })
+              ],
+              1
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.detalle
+          ? _c(
+              "v-card",
+              [
+                _c("v-card-title", [
+                  _vm._v(
+                    "\n                    Copias del activo\n                    "
+                  ),
+                  _c("div", { staticClass: "flex-grow-1" })
+                ]),
+                _vm._v(" "),
+                _c("v-data-table", {
+                  staticClass: "elevation-1",
+                  attrs: {
+                    headers: _vm.headCopias,
+                    items: _vm.copias,
+                    "footer-props": {
+                      "items-per-page-options": [10, 15, 25, 35, 45],
+                      "items-per-page-text": "Registros Por Página"
+                    },
+                    "items-per-page": 10,
+                    search: _vm.buscarCopia,
+                    "multi-sort": ""
+                  }
+                })
+              ],
+              1
+            )
+          : _vm._e()
       ],
       1
     )
@@ -50642,7 +51854,7 @@ var render = function() {
                                           },
                                           on: {
                                             click: function($event) {
-                                              return _vm.editar()
+                                              return _vm.detalle(item)
                                             }
                                           }
                                         },
