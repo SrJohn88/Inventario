@@ -163,11 +163,13 @@
             </v-tooltip>
           </template>
 
-        </v-data-table>
+        </v-data-table>        
       </v-card>
     </div>
   </div>
 </template>
+
+
 
 <script>
 export default {

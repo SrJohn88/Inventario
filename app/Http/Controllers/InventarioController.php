@@ -40,7 +40,7 @@ class InventarioController extends Controller
     function getOneActivo ( $id )
     {   
         return response()->json([
-            'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado', 'historial', 'respaldos')->where('id', $id)->firstOrFail()
+            'activo' => Inventario::with('ubicacion', 'marca', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado', 'historial')->where('id', $id)->firstOrFail()
         ]);
     }
 

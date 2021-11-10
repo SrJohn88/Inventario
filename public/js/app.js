@@ -2024,6 +2024,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2565,8 +2567,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
           _this3.cerrarModal();
         } else {
           _this3.errorsEmpleado = [];
-          var dui = response.data.dui;
-          _this3.errorsEmpleado = dui;
+          var errors = response.data.errors;
+          _this3.errorsEmpleado = errors;
         }
       })["catch"](function () {
         _this3.alerta(mensaje, 'error', '¡Algo salio mal!');
@@ -4635,18 +4637,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -5025,16 +5015,182 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-Vue.component('Entidad', __webpack_require__(/*! .//Modals/Entidad.vue */ "./resources/js/components/Inventario/Modals/Entidad.vue").default);
-Vue.component('Cuenta', __webpack_require__(/*! .//Modals/Cuenta.vue */ "./resources/js/components/Inventario/Modals/Cuenta.vue").default);
-Vue.component('Marca', __webpack_require__(/*! .//Modals/Marca.vue */ "./resources/js/components/Inventario/Modals/Marca.vue").default);
-Vue.component('Rubro', __webpack_require__(/*! .//Modals/Rubro.vue */ "./resources/js/components/Inventario/Modals/Rubro.vue").default);
-Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ "./resources/js/components/Inventario/Modals/Ubicacion.vue").default);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+Vue.component("Entidad", __webpack_require__(/*! .//Modals/Entidad.vue */ "./resources/js/components/Inventario/Modals/Entidad.vue").default);
+Vue.component("Cuenta", __webpack_require__(/*! .//Modals/Cuenta.vue */ "./resources/js/components/Inventario/Modals/Cuenta.vue").default);
+Vue.component("Marca", __webpack_require__(/*! .//Modals/Marca.vue */ "./resources/js/components/Inventario/Modals/Marca.vue").default);
+Vue.component("Rubro", __webpack_require__(/*! .//Modals/Rubro.vue */ "./resources/js/components/Inventario/Modals/Rubro.vue").default);
+Vue.component("Ubicacion", __webpack_require__(/*! .//Modals/Ubicacion.vue */ "./resources/js/components/Inventario/Modals/Ubicacion.vue").default);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: 'inventario-crear',
+  name: "inventario-crear",
   data: function data() {
     return {
-      buscarMovimiento: '',
+      buscarMovimiento: "",
       detalle: false,
       historial: [],
       limitFecha: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
@@ -5049,7 +5205,7 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
           return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
         },
         precio: function precio(v) {
-          return v.length == 0 || /^[0-9. \s]+$/g.test(v) || 'No parece formato de dinero';
+          return v.length == 0 || /^[0-9. \s]+$/g.test(v) || "No parece formato de dinero";
         }
       },
       menu: false,
@@ -5063,35 +5219,35 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
       cuentas: [],
       inventario: {
         id: null,
-        codigo: '',
-        serie: '',
-        descripcion: '',
-        modelo: '',
-        observaciones: '',
+        codigo: "",
+        serie: "",
+        descripcion: "",
+        modelo: "",
+        observaciones: "",
         marca: {
           id: null,
-          marca: ''
+          marca: ""
         },
         cuenta: {
           id: null,
-          cuenta: ''
+          cuenta: ""
         },
         rubro: {
           id: null,
-          rubro: ''
+          rubro: ""
         },
         procedencia: {
           id: null,
-          procedencia: ''
+          procedencia: ""
         },
-        precio: 0.00,
+        precio: 0.0,
         ubicacion: {
           id: null,
-          ubicacion: ''
+          ubicacion: ""
         },
         entidad: {
           id: null,
-          entidad: ''
+          entidad: ""
         },
         fecha: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
         guardarHistorial: false
@@ -5099,8 +5255,8 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
       errorsNombre: [],
       procedencias: [],
       headerMovimiento: [{
-        text: 'Campo',
-        value: 'campo'
+        text: "Campo",
+        value: "campo"
       }, {
         text: "Valor Anterior",
         value: "valor_anterior"
@@ -5114,8 +5270,8 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
       esperando: false,
       copias: [],
       headCopias: [{
-        text: 'Codigo',
-        value: 'codigo'
+        text: "Codigo",
+        value: "codigo"
       }, {
         text: "Descripcion",
         value: "descripcion"
@@ -5137,20 +5293,25 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
       }, {
         text: "Fecha adquisicion",
         value: "fecha_adquision"
-      }, {
-        text: "Acciones",
-        value: "action",
-        sortable: false,
-        align: "center"
       }],
-      buscarCopia: ''
+      buscarCopia: "",
+      menuFechaInicio: false,
+      cpFechaInicio: '',
+      menuFechaFinal: false,
+      cpFechaFinal: '',
+      formularioBuscarCopias: true,
+      menuFechaInicioMovi: false,
+      cpFechaInicioMovi: '',
+      menuFechaFinalMovi: false,
+      cpFechaFinalMovi: '',
+      formularioBuscarMovimientos: true
     };
   },
   created: function created() {
     var uri = window.location.search.substring(1);
     var params = new URLSearchParams(uri);
-    this.idPrueba = params.has('id') ? params.get('id') : null;
-    this.detalle = params.has('detalle') ? Boolean(params.get('detalle')) : false;
+    this.idPrueba = params.has("id") ? params.get("id") : null;
+    this.detalle = params.has("detalle") ? Boolean(params.get("detalle")) : false;
   },
   mounted: function mounted() {
     this.obtenerMarcar();
@@ -5167,10 +5328,10 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
   },
   computed: {
     cardTitle: function cardTitle() {
-      return this.idPrueba != null ? this.idPrueba != null && this.detalle ? 'Detalle del activo' : 'Actualizar Inventario' : 'Guardar Inventario';
+      return this.idPrueba != null ? this.idPrueba != null && this.detalle ? "Detalle del activo" : "Actualizar Inventario" : "Guardar Inventario";
     },
     textButton: function textButton() {
-      return this.idPrueba != null ? 'Actualizar' : 'Guardar';
+      return this.idPrueba != null ? "Actualizar" : "Guardar";
     }
   },
   methods: {
@@ -5195,33 +5356,31 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
             marca = _activo.marca,
             procedencia = _activo.procedencia,
             cuenta = _activo.cuenta,
-            observacion = _activo.observacion,
-            historial = _activo.historial,
-            respaldos = _activo.respaldos;
+            observacion = _activo.observacion;
 
         _this.inventario.id = id;
         _this.inventario.codigo = codigo;
-        _this.inventario.serie = serie !== null && serie !== void 0 ? serie : '';
+        _this.inventario.serie = serie !== null && serie !== void 0 ? serie : "";
         _this.inventario.descripcion = descripcion;
-        _this.inventario.modelo = modelo !== null && modelo !== void 0 ? modelo : '';
-        _this.inventario.precio = precio !== null && precio !== void 0 ? precio : '';
+        _this.inventario.modelo = modelo !== null && modelo !== void 0 ? modelo : "";
+        _this.inventario.precio = precio !== null && precio !== void 0 ? precio : "";
         _this.inventario.fecha = fecha_adquision;
-        _this.inventario.observaciones = observacion !== null && observacion !== void 0 ? observacion : '';
+        _this.inventario.observaciones = observacion !== null && observacion !== void 0 ? observacion : "";
         _this.inventario.procedencia = procedencia;
         _this.inventario.entidad = entidad !== null && entidad !== void 0 ? entidad : {
           id: null,
-          entidad: ''
+          entidad: ""
         };
         _this.inventario.marca = marca !== null && marca !== void 0 ? marca : {
           id: null,
-          marca: ''
+          marca: ""
         };
         _this.inventario.rubro = rubro;
         _this.inventario.cuenta = cuenta;
-        _this.inventario.ubicacion = ubicacion;
-        console.log(historial);
-        _this.historial = _toConsumableArray(historial);
-        _this.copias = _toConsumableArray(respaldos);
+        _this.inventario.ubicacion = ubicacion; //console.log(historial);
+        //this.historial = [...historial];
+        //this.copias = [...respaldos];
+
         _this.loader = false;
       })["catch"](console.error);
     },
@@ -5287,14 +5446,14 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
       var _this8 = this;
 
       Swal.fire({
-        title: '¡Importante!',
+        title: "¡Importante!",
         text: "Estas seguro/as que los datos son correctos ¿Deseas guardarlo?",
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Guardar',
-        cancelButtonText: 'Cancelar'
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Guardar",
+        cancelButtonText: "Cancelar"
       }).then(function (result) {
         if (result.isConfirmed) {
           _this8.loader = true;
@@ -5308,10 +5467,10 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
                   mensaje = _response$data.mensaje;
 
               if (respuesta) {
-                _this8.alerta(mensaje, 'success', 'Bien hecho');
+                _this8.alerta(mensaje, "success", "Bien hecho");
 
                 if (_this8.idPrueba != null) {
-                  window.location = '/inventario/index';
+                  window.location = "/inventario/index";
                 } else {
                   Swal.fire({
                     title: "INFORMACION",
@@ -5321,58 +5480,58 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
                     confirmButtonColor: "#3698e3",
                     cancelButtonColor: "#d33",
                     confirmButtonText: "Si",
-                    cancelButtonText: 'No',
+                    cancelButtonText: "No",
                     allowOutsideClick: false
                   }).then(function (result) {
                     if (result.isConfirmed) {
                       _this8.inventario = {
-                        codigo: '',
-                        serie: '',
-                        descripcion: '',
-                        modelo: '',
-                        observaciones: '',
+                        codigo: "",
+                        serie: "",
+                        descripcion: "",
+                        modelo: "",
+                        observaciones: "",
                         marca: {
                           id: null,
-                          marca: ''
+                          marca: ""
                         },
                         cuenta: {
                           id: null,
-                          cuenta: ''
+                          cuenta: ""
                         },
                         rubro: {
                           id: null,
-                          rubro: ''
+                          rubro: ""
                         },
                         procedencia: {
                           id: null,
-                          procedencia: ''
+                          procedencia: ""
                         },
-                        precio: 0.00,
+                        precio: 0.0,
                         ubicacion: {
                           id: null,
-                          ubicacion: ''
+                          ubicacion: ""
                         },
                         entidad: {
                           id: null,
-                          entidad: ''
+                          entidad: ""
                         }
                       };
-                      console.log('Limpiando');
+                      console.log("Limpiando");
                     } else {
-                      window.location = '/inventario/index';
+                      window.location = "/inventario/index";
                     }
                   });
                 }
               } else {
                 var inventario = response.data.inventario;
-                _this8.errorsNombre['codigo'] = inventario.codigo[0];
-                console.log(_this8.errorsNombre['codigo']);
+                _this8.errorsNombre["codigo"] = inventario.codigo[0];
+                console.log(_this8.errorsNombre["codigo"]);
               }
             }
           })["catch"](function () {
             _this8.loader = false;
 
-            _this8.alerta('Ocurrio un error en el sistema');
+            _this8.alerta("Ocurrio un error en el sistema");
           });
         }
       });
@@ -5387,16 +5546,16 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
         confirmButtonColor: "#3698e3",
         cancelButtonColor: "#d33",
         confirmButtonText: "Si",
-        cancelButtonText: 'No'
+        cancelButtonText: "No"
       }).then(function (result) {
         if (result.isConfirmed) {
-          window.location = '/inventario/index';
+          window.location = "/inventario/index";
         }
       });
     },
     alerta: function alerta(mensaje) {
-      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
-      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "info";
+      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
       Swal.fire({
         position: "top-end",
         icon: icono,
@@ -5445,6 +5604,32 @@ Vue.component('Ubicacion', __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
       if (value) {
         this.ubicaciones.push(_objectSpread({}, value));
       }
+    },
+    buscarCopias: function buscarCopias() {
+      var _this9 = this;
+
+      console.log({
+        inicio: this.cpFechaInicio,
+        fin: this.cpFechaFinal
+      });
+      axios.get("/Api/historial/respaldos/".concat(this.idPrueba, "/").concat(this.cpFechaInicio, "/").concat(this.cpFechaFinal)).then(function (_ref8) {
+        var historial = _ref8.data.historial;
+        console.log(historial);
+        _this9.copias = historial;
+      })["catch"](console.error);
+    },
+    buscarMovimientosActivos: function buscarMovimientosActivos() {
+      var _this10 = this;
+
+      console.log({
+        inicio: this.cpFechaInicioMovi,
+        "final": this.cpFechaFinalMovi
+      });
+      axios.get("/Api/historial/movimientos/".concat(this.idPrueba, "/").concat(this.cpFechaInicioMovi, "/").concat(this.cpFechaFinalMovi)).then(function (_ref9) {
+        var historial = _ref9.data.historial;
+        console.log(historial);
+        _this10.historial = historial;
+      })["catch"](console.error);
     }
   }
 });
@@ -50839,11 +51024,7 @@ var render = function() {
           "v-card",
           [
             _c("v-card-title", [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(_vm.cardTitle) +
-                  "\n                "
-              )
+              _vm._v("\n        " + _vm._s(_vm.cardTitle) + "\n      ")
             ]),
             _vm._v(" "),
             _c(
@@ -51141,8 +51322,7 @@ var render = function() {
                                     name: "show",
                                     rawName: "v-show",
                                     value: _vm.inventario.procedencia.id == 1,
-                                    expression:
-                                      "inventario.procedencia.id == 1 "
+                                    expression: "inventario.procedencia.id == 1"
                                   }
                                 ],
                                 attrs: { cols: "1", md: "1" }
@@ -51620,11 +51800,250 @@ var render = function() {
               "v-card",
               [
                 _c("v-card-title", [
-                  _vm._v(
-                    "\n                    Historial de activo\n                    "
-                  ),
+                  _vm._v("\n        Historial de activo\n        "),
                   _c("div", { staticClass: "flex-grow-1" })
                 ]),
+                _vm._v(" "),
+                _c(
+                  "v-container",
+                  { attrs: { fluid: "" } },
+                  [
+                    _c(
+                      "v-form",
+                      {
+                        ref: "formLogs",
+                        attrs: { "lazy-validation": true },
+                        model: {
+                          value: _vm.formularioBuscarCopias,
+                          callback: function($$v) {
+                            _vm.formularioBuscarCopias = $$v
+                          },
+                          expression: "formularioBuscarCopias"
+                        }
+                      },
+                      [
+                        _c(
+                          "v-row",
+                          {
+                            attrs: { align: "center", justify: "space-around" }
+                          },
+                          [
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "5" } },
+                              [
+                                _c(
+                                  "v-menu",
+                                  {
+                                    attrs: {
+                                      "close-on-content-click": false,
+                                      "nudge-right": 40,
+                                      transition: "scale-transition",
+                                      "offset-y": "",
+                                      "min-width": "auto"
+                                    },
+                                    scopedSlots: _vm._u(
+                                      [
+                                        {
+                                          key: "activator",
+                                          fn: function(ref) {
+                                            var on = ref.on
+                                            var attrs = ref.attrs
+                                            return [
+                                              _c(
+                                                "v-text-field",
+                                                _vm._g(
+                                                  _vm._b(
+                                                    {
+                                                      attrs: {
+                                                        label:
+                                                          "Seleccione fecha de reingreso",
+                                                        "prepend-icon":
+                                                          "mdi-calendar",
+                                                        readonly: "",
+                                                        required: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.cpFechaInicioMovi,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.cpFechaInicioMovi = $$v
+                                                        },
+                                                        expression:
+                                                          "cpFechaInicioMovi"
+                                                      }
+                                                    },
+                                                    "v-text-field",
+                                                    attrs,
+                                                    false
+                                                  ),
+                                                  on
+                                                )
+                                              )
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      null,
+                                      false,
+                                      388035075
+                                    ),
+                                    model: {
+                                      value: _vm.menuFechaInicioMovi,
+                                      callback: function($$v) {
+                                        _vm.menuFechaInicioMovi = $$v
+                                      },
+                                      expression: "menuFechaInicioMovi"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(" "),
+                                    _c("v-date-picker", {
+                                      attrs: { max: _vm.limitFecha },
+                                      on: {
+                                        input: function($event) {
+                                          _vm.menuFechaInicioMovi = false
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.cpFechaInicioMovi,
+                                        callback: function($$v) {
+                                          _vm.cpFechaInicioMovi = $$v
+                                        },
+                                        expression: "cpFechaInicioMovi"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "5" } },
+                              [
+                                _c(
+                                  "v-menu",
+                                  {
+                                    attrs: {
+                                      "close-on-content-click": false,
+                                      "nudge-right": 40,
+                                      transition: "scale-transition",
+                                      "offset-y": "",
+                                      "min-width": "auto"
+                                    },
+                                    scopedSlots: _vm._u(
+                                      [
+                                        {
+                                          key: "activator",
+                                          fn: function(ref) {
+                                            var on = ref.on
+                                            var attrs = ref.attrs
+                                            return [
+                                              _c(
+                                                "v-text-field",
+                                                _vm._g(
+                                                  _vm._b(
+                                                    {
+                                                      attrs: {
+                                                        label:
+                                                          "Seleccione fecha de reingreso",
+                                                        "prepend-icon":
+                                                          "mdi-calendar",
+                                                        readonly: "",
+                                                        required: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.cpFechaFinalMovi,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.cpFechaFinalMovi = $$v
+                                                        },
+                                                        expression:
+                                                          "cpFechaFinalMovi"
+                                                      }
+                                                    },
+                                                    "v-text-field",
+                                                    attrs,
+                                                    false
+                                                  ),
+                                                  on
+                                                )
+                                              )
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      null,
+                                      false,
+                                      3474240900
+                                    ),
+                                    model: {
+                                      value: _vm.menuFechaFinalMovi,
+                                      callback: function($$v) {
+                                        _vm.menuFechaFinalMovi = $$v
+                                      },
+                                      expression: "menuFechaFinalMovi"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(" "),
+                                    _c("v-date-picker", {
+                                      attrs: { max: _vm.limitFecha },
+                                      on: {
+                                        input: function($event) {
+                                          _vm.menuFechaFinalMovi = false
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.cpFechaFinalMovi,
+                                        callback: function($$v) {
+                                          _vm.cpFechaFinalMovi = $$v
+                                        },
+                                        expression: "cpFechaFinalMovi"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { staticClass: "2" },
+                              [
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { color: "primary" },
+                                    on: { click: _vm.buscarMovimientosActivos }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                          Buscar\n                          "
+                                    )
+                                  ]
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
                 _vm._v(" "),
                 _c("v-data-table", {
                   staticClass: "elevation-1",
@@ -51650,11 +52069,249 @@ var render = function() {
               "v-card",
               [
                 _c("v-card-title", [
-                  _vm._v(
-                    "\n                    Copias del activo\n                    "
-                  ),
+                  _vm._v("\n        Copias antiguas del activo\n        "),
                   _c("div", { staticClass: "flex-grow-1" })
                 ]),
+                _vm._v(" "),
+                _c(
+                  "v-container",
+                  { attrs: { fluid: "" } },
+                  [
+                    _c(
+                      "v-form",
+                      {
+                        ref: "fmdaasas",
+                        attrs: { "lazy-validation": true },
+                        model: {
+                          value: _vm.formularioBuscarCopias,
+                          callback: function($$v) {
+                            _vm.formularioBuscarCopias = $$v
+                          },
+                          expression: "formularioBuscarCopias"
+                        }
+                      },
+                      [
+                        _c(
+                          "v-row",
+                          {
+                            attrs: { align: "center", justify: "space-around" }
+                          },
+                          [
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "5" } },
+                              [
+                                _c(
+                                  "v-menu",
+                                  {
+                                    attrs: {
+                                      "close-on-content-click": false,
+                                      "nudge-right": 40,
+                                      transition: "scale-transition",
+                                      "offset-y": "",
+                                      "min-width": "auto"
+                                    },
+                                    scopedSlots: _vm._u(
+                                      [
+                                        {
+                                          key: "activator",
+                                          fn: function(ref) {
+                                            var on = ref.on
+                                            var attrs = ref.attrs
+                                            return [
+                                              _c(
+                                                "v-text-field",
+                                                _vm._g(
+                                                  _vm._b(
+                                                    {
+                                                      attrs: {
+                                                        label:
+                                                          "Seleccione fecha de reingreso",
+                                                        "prepend-icon":
+                                                          "mdi-calendar",
+                                                        readonly: "",
+                                                        required: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.cpFechaInicio,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.cpFechaInicio = $$v
+                                                        },
+                                                        expression:
+                                                          "cpFechaInicio"
+                                                      }
+                                                    },
+                                                    "v-text-field",
+                                                    attrs,
+                                                    false
+                                                  ),
+                                                  on
+                                                )
+                                              )
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      null,
+                                      false,
+                                      1226698078
+                                    ),
+                                    model: {
+                                      value: _vm.menuFechaInicio,
+                                      callback: function($$v) {
+                                        _vm.menuFechaInicio = $$v
+                                      },
+                                      expression: "menuFechaInicio"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(" "),
+                                    _c("v-date-picker", {
+                                      attrs: { max: _vm.limitFecha },
+                                      on: {
+                                        input: function($event) {
+                                          _vm.menuFechaInicio = false
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.cpFechaInicio,
+                                        callback: function($$v) {
+                                          _vm.cpFechaInicio = $$v
+                                        },
+                                        expression: "cpFechaInicio"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "5" } },
+                              [
+                                _c(
+                                  "v-menu",
+                                  {
+                                    attrs: {
+                                      "close-on-content-click": false,
+                                      "nudge-right": 40,
+                                      transition: "scale-transition",
+                                      "offset-y": "",
+                                      "min-width": "auto"
+                                    },
+                                    scopedSlots: _vm._u(
+                                      [
+                                        {
+                                          key: "activator",
+                                          fn: function(ref) {
+                                            var on = ref.on
+                                            var attrs = ref.attrs
+                                            return [
+                                              _c(
+                                                "v-text-field",
+                                                _vm._g(
+                                                  _vm._b(
+                                                    {
+                                                      attrs: {
+                                                        label:
+                                                          "Seleccione fecha de reingreso",
+                                                        "prepend-icon":
+                                                          "mdi-calendar",
+                                                        readonly: "",
+                                                        required: ""
+                                                      },
+                                                      model: {
+                                                        value: _vm.cpFechaFinal,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.cpFechaFinal = $$v
+                                                        },
+                                                        expression:
+                                                          "cpFechaFinal"
+                                                      }
+                                                    },
+                                                    "v-text-field",
+                                                    attrs,
+                                                    false
+                                                  ),
+                                                  on
+                                                )
+                                              )
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      null,
+                                      false,
+                                      2696503641
+                                    ),
+                                    model: {
+                                      value: _vm.menuFechaFinal,
+                                      callback: function($$v) {
+                                        _vm.menuFechaFinal = $$v
+                                      },
+                                      expression: "menuFechaFinal"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(" "),
+                                    _c("v-date-picker", {
+                                      attrs: { max: _vm.limitFecha },
+                                      on: {
+                                        input: function($event) {
+                                          _vm.menuFechaFinal = false
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.cpFechaFinal,
+                                        callback: function($$v) {
+                                          _vm.cpFechaFinal = $$v
+                                        },
+                                        expression: "cpFechaFinal"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { staticClass: "2" },
+                              [
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { color: "primary" },
+                                    on: { click: _vm.buscarCopias }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                      Buscar\n                      "
+                                    )
+                                  ]
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
                 _vm._v(" "),
                 _c("v-data-table", {
                   staticClass: "elevation-1",

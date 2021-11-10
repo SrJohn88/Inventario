@@ -31,14 +31,20 @@ class EmpleadoController extends Controller
         if( $request->isMethod('POST') )
         {   
             $validacion = Validator::make($request->all(), [
-                'dui' => 'required|unique:empleados|max:10'
+                'dui' => 'required|unique:empleados|max:10',
+                'nombre' => 'required|min:2|max:200',
+                'apellido' => 'required|min:2|max:200'
             ], $this->mensajes);
 
             if ($validacion->fails()) {
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => '',
-                    'dui' => $validacion->errors()->get('dui')
+                    'errors' => [
+                        'dui' => $validacion->errors()->get('dui'),
+                        'nombre' => $validacion->errors()->get('nombre'),
+                    ]
+                    
                 ]);
             }
 

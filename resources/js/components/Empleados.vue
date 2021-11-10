@@ -310,8 +310,8 @@ export default {
                         this.cerrarModal()
                     } else {
                         this.errorsEmpleado = []
-                        let { dui } = response.data
-                        this.errorsEmpleado = dui
+                        let { errors } = response.data
+                        this.errorsEmpleado = errors;
                     }
                 }).catch( () => {
                     this.alerta( mensaje, 'error', '¡Algo salio mal!');

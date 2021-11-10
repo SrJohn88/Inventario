@@ -15,8 +15,11 @@ use App\Http\Controllers\ProcedenciaController;
 
 use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\HistorialInventarioController;
+use App\Http\Controllers\HistorialMovimientoController;
 use App\Http\Controllers\TipoMovimientoController;
-
+use App\Models\HistorialInventario;
+use App\Models\HistorialMovimiento;
 
 Auth::routes();
 Route::get('/',HomeController::class);
@@ -113,8 +116,12 @@ Route::get('/inventario/movimientos/crear',[ MovimientoController::class, 'crear
 Route::get('/Api/inventario/movimientos',[ MovimientoController::class, 'obtenerMovimientos'])->name("movimiento.get");
 
 
-
 Route::post('/Api/inventario/movimientos/save',[ MovimientoController::class, 'save'])->name("movimiento.save");
+
+
+// HISTORIAL DE INVENTARIO
+Route::get('/Api/historial/respaldos/{inventario}/{desde}/{hasta}',[ HistorialInventarioController::class, 'obtenerHistorialActivo'])->name("historialInventario.get");
+Route::get('/Api/historial/movimientos/{inventario}/{desde}/{hasta}',[ HistorialMovimientoController::class, 'obtenerHistorialMovimientos'])->name("historialMovimiento.get");
 
 
 
