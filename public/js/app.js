@@ -2567,8 +2567,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
           _this3.cerrarModal();
         } else {
           _this3.errorsEmpleado = [];
-          var errors = response.data.errors;
-          _this3.errorsEmpleado = errors;
+          var dui = response.data.dui;
+          _this3.errorsEmpleado = dui;
         }
       })["catch"](function () {
         _this3.alerta(mensaje, 'error', '¡Algo salio mal!');

@@ -40,11 +40,7 @@ class EmpleadoController extends Controller
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => '',
-                    'errors' => [
-                        'dui' => $validacion->errors()->get('dui'),
-                        'nombre' => $validacion->errors()->get('nombre'),
-                    ]
-                    
+                    'dui' => $validacion->errors()->get('dui')                 
                 ]);
             }
 
