@@ -33,14 +33,20 @@ class EmpleadoController extends Controller
             $validacion = Validator::make($request->all(), [
                 'dui' => 'required|unique:empleados|max:10',
                 'nombre' => 'required|min:2|max:200',
-                'apellido' => 'required|min:2|max:200'
+                'apellido' => 'required|min:2|max:200',
+                'cargo.id' => 'required'
             ], $this->mensajes);
 
             if ($validacion->fails()) {
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => '',
-                    'dui' => $validacion->errors()->get('dui')                 
+                    'errors' => [
+                        'dui' => $validacion->errors()->get('dui'),
+                        'nombre' => $validacion->errors()->get('nombre'),
+                        'apellido' => $validacion->errors()->get('apellido'),
+                        'cargo' =>   $validacion->errors()->get('cargo.id')
+                    ]                                  
                 ]);
             }
 
@@ -89,17 +95,38 @@ class EmpleadoController extends Controller
 
     function delete(Empleado $empleado, $accion )
     {
-        $empleado->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
-        $empleado->save();
+        $contador = 0;
 
-        $mensaje = filter_var($accion, FILTER_VALIDATE_BOOLEAN) 
-                        ? 'El usuario'. $empleado->nombre .' desactivado con exito' 
-                        : 'El usuario'. $empleado->nombre .' ha sido activado con exito';
+        if ( filter_var($accion, FILTER_VALIDATE_BOOLEAN) )
+        {   
+            if ( $empleado->recibidoPor->count() > 0 
+                        || $empleado->aprobadoPor->count() > 0 
+                        || $empleado->aprobadoGerencia->count() > 0 )
+                        {
+                            $contador = 1;
+                        }
+        }
 
-        return response()->json([
-            'respuesta' => true,
-            'mensaje' => $mensaje
-        ]);
-        
+        if ( $contador == 0 )
+        {
+            $empleado->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
+            $empleado->save();
+
+            $mensaje = filter_var($accion, FILTER_VALIDATE_BOOLEAN) 
+                            ? 'El usuario'. $empleado->nombre .' desactivado con exito' 
+                            : 'El usuario'. $empleado->nombre .' ha sido activado con exito';
+
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => $mensaje
+            ]);
+        } else
+        {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'No se puede desactivar el empleado, debido que hay registros que hacen referencia a ella'
+            ]);
+        }
+ 
     }
 }

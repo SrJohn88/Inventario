@@ -28,18 +28,19 @@
                   <v-text-field
                     append-icon="fas fa-barcode"
                     v-model="inventario.codigo"
-                    @keyup="errorsNombre['codigo'] = null"
-                    :rules="[(v) => !!v || 'Codigo Es Requerido']"
+                    @keyup="errors.codigo = []"
+                    :rules="[ reglas.requerido, reglas.min ]"
                     label="Código"
                     required
                     :disabled="detalle"
-                    :error-messages="errorsNombre['codigo']"
+                    :error-messages="errors.codigo"
                   ></v-text-field>
                 </v-col>
 
                 <v-col cols="6">
                   <v-text-field
                     append-icon=""
+                    :rules="[ reglas.requerido, reglas.min ]"
                     v-model="inventario.serie"
                     label="Serie"
                     :disabled="detalle"
@@ -49,6 +50,8 @@
 
                 <v-col cols="12">
                   <v-textarea
+                    @keyup="errors.descripcion = []"
+                    :error-messages="errors.descripcion"
                     v-model="inventario.descripcion"
                     label="Descripcion"
                     rows="2"
@@ -100,6 +103,8 @@
 
                 <v-col cols="6">
                   <v-select
+                    @keyup="errors['procedencia.id'] = []"
+                    :error-messages="errors['procedencia.id']"
                     :items="procedencias"
                     v-model="inventario.procedencia"
                     item-text="procedencia"
@@ -118,7 +123,7 @@
                     v-model="inventario.cuenta"
                     :items="cuentas"
                     :rules="[
-                      (v) => !!v || 'Tipo cuenta del activo es requerido',
+                      (v) => !!v || 'La cuenta es requerida',
                     ]"
                     label="Cuenta"
                     item-text="cuenta"
@@ -152,7 +157,7 @@
                     v-model="inventario.entidad"
                     :items="entidades"
                     :rules="[
-                      (v) => !!v || 'Tipo cuenta del activo es requerido',
+                      (v) => !!v || 'La entidad es requerido',
                     ]"
                     label="Entidad Donante"
                     item-text="entidad"
@@ -186,18 +191,20 @@
                     v-model="inventario.precio"
                     :rules="[reglas.precio]"
                     label="Precio"
-                    :error-messages="errorsNombre"
+                    prefix="$"
                   ></v-text-field>
                 </v-col>
 
                 <v-col cols="5">
                   <v-autocomplete
+                    @keyup="errors['rubro.id'] = []"
+                    :error-messages="errors['rubro.id']"
                     :disabled="detalle"
                     v-model="inventario.rubro"
                     :items="rubros"
                     required
                     :rules="[
-                      (v) => !!v || 'Tipo entidad del activo es requerido',
+                      (v) => !!v || 'El rubro es requerido',
                     ]"
                     label="Rubros"
                     item-text="rubro"
@@ -237,7 +244,7 @@
                       <v-text-field
                         :disabled="detalle"
                         v-model="inventario.fecha"
-                        label="Selecciona la fecha"
+                        label="Fecha adquisición"
                         prepend-icon="mdi-calendar"
                         readonly
                         v-bind="attrs"
@@ -254,6 +261,8 @@
 
                 <v-col cols="5">
                   <v-autocomplete
+                    @keyup="errors['ubicacion.id'] = []"
+                    :error-messages="errors['ubicacion.id']"
                     :disabled="detalle"
                     append-icon="fas fa-map-marker-alt"
                     v-model="inventario.ubicacion"
@@ -559,7 +568,7 @@ export default {
           (v.length >= 2 && v.length <= 100) ||
           "Nombre de la entidad debe ser mayor a 2 caracteres",
         expresion: (v) =>
-          /^[A-Za-z0-9- \s]+$/g.test(v) ||
+          /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) ||
           "Nombre de la entidad no puede tener caracteres especiales",
         precio: (v) =>
           v.length == 0 ||
@@ -594,7 +603,7 @@ export default {
           .substr(0, 10),
         guardarHistorial: false,
       },
-      errorsNombre: [],
+      errors: [],
       procedencias: [],
       headerMovimiento: [
         { text: "Campo", value: "campo" },
@@ -814,10 +823,8 @@ export default {
                     });
                   }
                 } else {
-                  const { inventario } = response.data;
-
-                  this.errorsNombre["codigo"] = inventario.codigo[0];
-                  console.log(this.errorsNombre["codigo"]);
+                  const { errors } = response.data;
+                  this.errors = errors
                 }
               }
             })

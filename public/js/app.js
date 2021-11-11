@@ -2026,6 +2026,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2059,7 +2060,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
           return v.length >= 2 && v.length <= 100 || "Nombre de la cuenta debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la cuenta no puede tener caracteres especiales";
+          return /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) || "Nombre de la cuenta no puede tener caracteres especiales";
         }
       }
     };
@@ -2453,6 +2454,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2494,7 +2497,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
           cargo: ''
         }
       },
-      errorsEmpleado: [],
+      errorsEmpleado: {},
       reglas: {
         requerido: function requerido(v) {
           return !!v || "Nombre del empleado es requerido";
@@ -2566,9 +2569,9 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
           _this3.cerrarModal();
         } else {
-          _this3.errorsEmpleado = [];
-          var dui = response.data.dui;
-          _this3.errorsEmpleado = dui;
+          _this3.errorsEmpleado = {};
+          var errors = response.data.errors;
+          _this3.errorsEmpleado = errors;
         }
       })["catch"](function () {
         _this3.alerta(mensaje, 'error', '¡Algo salio mal!');
@@ -2868,17 +2871,16 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       loader: false,
       EstadoEntidad: false,
       theadTable: [{
-        text: "ID",
-        value: "id"
-      }, {
         text: "Entidad",
-        value: "entidad"
+        value: "entidad",
+        align: "center"
       }, {
         text: "Acciones",
         value: "action",
@@ -2903,7 +2905,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
           return v.length >= 2 && v.length <= 100 || "Nombre de la entidad debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
+          return /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
         }
       }
     };
@@ -5181,6 +5183,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 Vue.component("Entidad", __webpack_require__(/*! .//Modals/Entidad.vue */ "./resources/js/components/Inventario/Modals/Entidad.vue").default);
 Vue.component("Cuenta", __webpack_require__(/*! .//Modals/Cuenta.vue */ "./resources/js/components/Inventario/Modals/Cuenta.vue").default);
 Vue.component("Marca", __webpack_require__(/*! .//Modals/Marca.vue */ "./resources/js/components/Inventario/Modals/Marca.vue").default);
@@ -5202,7 +5213,7 @@ Vue.component("Ubicacion", __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
           return v.length >= 2 && v.length <= 100 || "Nombre de la entidad debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
+          return /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
         },
         precio: function precio(v) {
           return v.length == 0 || /^[0-9. \s]+$/g.test(v) || "No parece formato de dinero";
@@ -5252,7 +5263,7 @@ Vue.component("Ubicacion", __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
         fecha: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
         guardarHistorial: false
       },
-      errorsNombre: [],
+      errors: [],
       procedencias: [],
       headerMovimiento: [{
         text: "Campo",
@@ -5523,9 +5534,8 @@ Vue.component("Ubicacion", __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
                   });
                 }
               } else {
-                var inventario = response.data.inventario;
-                _this8.errorsNombre["codigo"] = inventario.codigo[0];
-                console.log(_this8.errorsNombre["codigo"]);
+                var errors = response.data.errors;
+                _this8.errors = errors;
               }
             }
           })["catch"](function () {
@@ -5991,6 +6001,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5998,7 +6009,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       marcas: [],
       hTBMarcas: [{
         text: "Nombre",
-        value: "marca"
+        value: "marca",
+        align: "center"
       }, {
         text: "Acciones",
         value: "action",
@@ -6013,7 +6025,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
           return v && v.length >= 2 && v.length <= 100 || "Nombre de la marca debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) || "Nombre de la marca no puede tener caracteres especiales";
+          return /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) || "Nombre de la marca no puede tener caracteres especiales";
         }
       },
       loader: false,
@@ -6735,11 +6747,9 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       validForm: false,
       buscarUbicacion: '',
       encabezados: [{
-        text: "ID",
-        value: "id"
-      }, {
         text: "Ubicacion",
-        value: "ubicacion"
+        value: "ubicacion",
+        align: "center"
       }, {
         text: "Acciones",
         value: "action",
@@ -47689,7 +47699,8 @@ var render = function() {
                 },
                 "items-per-page": 5,
                 search: _vm.buscarCuentas,
-                "multi-sort": ""
+                "multi-sort": "",
+                "no-data-text": "No hay cuentas para mostrar"
               },
               scopedSlots: _vm._u([
                 {
@@ -48318,13 +48329,16 @@ var render = function() {
                                                             _vm.reglas.expresion
                                                           ],
                                                           label: "Nombres",
-                                                          required: ""
+                                                          required: "",
+                                                          "error-messages":
+                                                            _vm.errorsEmpleado
+                                                              .nombre
                                                         },
                                                         on: {
                                                           keyup: function(
                                                             $event
                                                           ) {
-                                                            _vm.errorsEmpleado = []
+                                                            _vm.errorsEmpleado.nombre = []
                                                           }
                                                         },
                                                         model: {
@@ -48362,13 +48376,16 @@ var render = function() {
                                                             _vm.reglas.expresion
                                                           ],
                                                           label: "Apellidos",
-                                                          required: ""
+                                                          required: "",
+                                                          "error-messages":
+                                                            _vm.errorsEmpleado
+                                                              .apellido
                                                         },
                                                         on: {
                                                           keyup: function(
                                                             $event
                                                           ) {
-                                                            _vm.errorsEmpleado = []
+                                                            _vm.errorsEmpleado.apellido = []
                                                           }
                                                         },
                                                         model: {
@@ -48407,12 +48424,13 @@ var render = function() {
                                                           required: "",
                                                           "error-messages":
                                                             _vm.errorsEmpleado
+                                                              .dui
                                                         },
                                                         on: {
                                                           keyup: function(
                                                             $event
                                                           ) {
-                                                            _vm.errorsEmpleado = []
+                                                            _vm.errorsEmpleado.dui = []
                                                           }
                                                         },
                                                         model: {
@@ -48800,7 +48818,8 @@ var render = function() {
                 },
                 "items-per-page": 5,
                 search: _vm.buscarEntidad,
-                "multi-sort": ""
+                "multi-sort": "",
+                "no-data-text": "No hay entidades para mostrar"
               },
               scopedSlots: _vm._u([
                 {
@@ -48913,7 +48932,10 @@ var render = function() {
                             true
                           )
                         },
-                        [_vm._v(" "), _c("span", [_vm._v("Eliminar Entidad")])]
+                        [
+                          _vm._v(" "),
+                          _c("span", [_vm._v("Desactivar Entidad")])
+                        ]
                       ),
                       _vm._v(" "),
                       _c(
@@ -48966,7 +48988,7 @@ var render = function() {
                             true
                           )
                         },
-                        [_vm._v(" "), _c("span", [_vm._v("Eliminar Entidad")])]
+                        [_vm._v(" "), _c("span", [_vm._v("Restaurar Entidad")])]
                       )
                     ]
                   }
@@ -49029,7 +49051,7 @@ var render = function() {
                                         staticClass: "mx-10",
                                         staticStyle: { "margin-top": "1.5rem" },
                                         attrs: {
-                                          label: "Mostrar entidades eliminadas",
+                                          label: "Entidades desactivadas",
                                           value: "false"
                                         },
                                         model: {
@@ -51058,18 +51080,17 @@ var render = function() {
                                   attrs: {
                                     "append-icon": "fas fa-barcode",
                                     rules: [
-                                      function(v) {
-                                        return !!v || "Codigo Es Requerido"
-                                      }
+                                      _vm.reglas.requerido,
+                                      _vm.reglas.min
                                     ],
                                     label: "Código",
                                     required: "",
                                     disabled: _vm.detalle,
-                                    "error-messages": _vm.errorsNombre["codigo"]
+                                    "error-messages": _vm.errors.codigo
                                   },
                                   on: {
                                     keyup: function($event) {
-                                      _vm.errorsNombre["codigo"] = null
+                                      _vm.errors.codigo = []
                                     }
                                   },
                                   model: {
@@ -51091,6 +51112,10 @@ var render = function() {
                                 _c("v-text-field", {
                                   attrs: {
                                     "append-icon": "",
+                                    rules: [
+                                      _vm.reglas.requerido,
+                                      _vm.reglas.min
+                                    ],
                                     label: "Serie",
                                     disabled: _vm.detalle,
                                     required: ""
@@ -51113,6 +51138,7 @@ var render = function() {
                               [
                                 _c("v-textarea", {
                                   attrs: {
+                                    "error-messages": _vm.errors.descripcion,
                                     label: "Descripcion",
                                     rows: "2",
                                     rules: [
@@ -51122,6 +51148,11 @@ var render = function() {
                                     ],
                                     disabled: _vm.detalle,
                                     required: ""
+                                  },
+                                  on: {
+                                    keyup: function($event) {
+                                      _vm.errors.descripcion = []
+                                    }
                                   },
                                   model: {
                                     value: _vm.inventario.descripcion,
@@ -51236,6 +51267,8 @@ var render = function() {
                               [
                                 _c("v-select", {
                                   attrs: {
+                                    "error-messages":
+                                      _vm.errors["procedencia.id"],
                                     items: _vm.procedencias,
                                     "item-text": "procedencia",
                                     "item-value": "id",
@@ -51252,6 +51285,11 @@ var render = function() {
                                       }
                                     ],
                                     required: ""
+                                  },
+                                  on: {
+                                    keyup: function($event) {
+                                      _vm.errors["procedencia.id"] = []
+                                    }
                                   },
                                   model: {
                                     value: _vm.inventario.procedencia,
@@ -51288,10 +51326,7 @@ var render = function() {
                                     items: _vm.cuentas,
                                     rules: [
                                       function(v) {
-                                        return (
-                                          !!v ||
-                                          "Tipo cuenta del activo es requerido"
-                                        )
+                                        return !!v || "La cuenta es requerida"
                                       }
                                     ],
                                     label: "Cuenta",
@@ -51370,8 +51405,7 @@ var render = function() {
                                         rules: [
                                           function(v) {
                                             return (
-                                              !!v ||
-                                              "Tipo cuenta del activo es requerido"
+                                              !!v || "La entidad es requerido"
                                             )
                                           }
                                         ],
@@ -51449,7 +51483,7 @@ var render = function() {
                                     "append-icon": "fas fa-tags",
                                     rules: [_vm.reglas.precio],
                                     label: "Precio",
-                                    "error-messages": _vm.errorsNombre
+                                    prefix: "$"
                                   },
                                   model: {
                                     value: _vm.inventario.precio,
@@ -51469,15 +51503,13 @@ var render = function() {
                               [
                                 _c("v-autocomplete", {
                                   attrs: {
+                                    "error-messages": _vm.errors["rubro.id"],
                                     disabled: _vm.detalle,
                                     items: _vm.rubros,
                                     required: "",
                                     rules: [
                                       function(v) {
-                                        return (
-                                          !!v ||
-                                          "Tipo entidad del activo es requerido"
-                                        )
+                                        return !!v || "El rubro es requerido"
                                       }
                                     ],
                                     label: "Rubros",
@@ -51486,6 +51518,11 @@ var render = function() {
                                     "return-object": "",
                                     clearable: "",
                                     "menu-props": { closeOnClick: true }
+                                  },
+                                  on: {
+                                    keyup: function($event) {
+                                      _vm.errors["rubro.id"] = []
+                                    }
                                   },
                                   model: {
                                     value: _vm.inventario.rubro,
@@ -51562,7 +51599,7 @@ var render = function() {
                                                     attrs: {
                                                       disabled: _vm.detalle,
                                                       label:
-                                                        "Selecciona la fecha",
+                                                        "Fecha adquisición",
                                                       "prepend-icon":
                                                         "mdi-calendar",
                                                       readonly: ""
@@ -51630,6 +51667,8 @@ var render = function() {
                               [
                                 _c("v-autocomplete", {
                                   attrs: {
+                                    "error-messages":
+                                      _vm.errors["ubicacion.id"],
                                     disabled: _vm.detalle,
                                     "append-icon": "fas fa-map-marker-alt",
                                     items: _vm.ubicaciones,
@@ -51648,6 +51687,11 @@ var render = function() {
                                     "return-object": "",
                                     clearable: "",
                                     "menu-props": { closeOnClick: true }
+                                  },
+                                  on: {
+                                    keyup: function($event) {
+                                      _vm.errors["ubicacion.id"] = []
+                                    }
                                   },
                                   model: {
                                     value: _vm.inventario.ubicacion,
@@ -52669,7 +52713,8 @@ var render = function() {
                 },
                 "items-per-page": 5,
                 search: _vm.searchMarcas,
-                "multi-sort": ""
+                "multi-sort": "",
+                "no-data-text": "No hay marcas para mostrar"
               },
               scopedSlots: _vm._u([
                 {
@@ -52730,7 +52775,7 @@ var render = function() {
                                         staticClass: "mx-10",
                                         staticStyle: { "margin-top": "1.5rem" },
                                         attrs: {
-                                          label: "Mostrar Las Marcas Removidas",
+                                          label: "Marcas desactivadas",
                                           value: "false"
                                         },
                                         model: {
@@ -52994,7 +53039,7 @@ var render = function() {
                             true
                           )
                         },
-                        [_vm._v(" "), _c("span", [_vm._v("Remover Marca")])]
+                        [_vm._v(" "), _c("span", [_vm._v("Desactivar Marca")])]
                       ),
                       _vm._v(" "),
                       _c(

@@ -49,14 +49,20 @@ class InventarioController extends Controller
         if( $request->isMethod('POST') )
         {   
             $validacion = Validator::make($request->all(), [
-                'codigo' => 'required|unique:inventarios|min:2|max:50'
+                'codigo' => 'required|unique:inventarios|min:2|max:50',
+                'descripcion' => 'required|min:2',
+                'procedencia.id' => 'required',
+                'rubro' => 'required',
+                'fecha' => 'required'
+                ,'ubicacion.id' => 'required',
+                'rubro.id' => 'required'  
             ], $this->mensajes);
 
             if ($validacion->fails()) {
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => '',
-                    'inventario' => $validacion->errors()
+                    'errors' => $validacion->errors()
                 ]);
             }
 
@@ -89,14 +95,20 @@ class InventarioController extends Controller
     function update( Request $request, Inventario $inventario ) {
 
         $validacion = Validator::make($request->all(), [
-            'codigo' => 'required|unique:inventarios,codigo,'.$inventario->id.'|min:2|max:100'
+            'codigo' => 'required|unique:inventarios,codigo,'.$inventario->id.'|min:2|max:100',
+            'descripcion' => 'required|min:2',
+            'procedencia.id' => 'required',
+            'rubro' => 'required',
+            'fecha' => 'required',
+            'ubicacion.id' => 'required',
+           'rubro.id' => 'required' 
         ], $this->mensajes);
 
         if ($validacion->fails()) {
             return response()->json([
                     'respuesta' => false,
                     'mensaje' => '',
-                    'inventario' => $validacion->errors()->get('codigo')
+                    'errors' => $validacion->errors()->get('codigo')
             ]);
         }
 

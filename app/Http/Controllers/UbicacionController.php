@@ -80,14 +80,31 @@ class UbicacionController extends Controller
 
     function delete( Ubicacion $ubicacion, $accion )
     {
-        $ubicacion->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
-        $ubicacion->save();
+        $contador = 0;
 
-        $mensaje = $accion ? 'El rubro '. $ubicacion->ubicacion.' ha sido eliminada con exito' : 'El rubro '. $ubicacion->ubicacion.' ha sido restaurado con exito';
+        if ( filter_var($accion, FILTER_VALIDATE_BOOLEAN) )
+        {
+            $contador = $ubicacion->inventario->count();
+        }
+
+        if( $contador == 0)
+        {
+            $ubicacion->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
+            $ubicacion->save();
+
+            $mensaje = $accion ? 'El rubro '. $ubicacion->ubicacion.' ha sido desactivada con exito' : 'El rubro '. $ubicacion->ubicacion.' ha sido restaurado con exito';
+            
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => $mensaje
+            ]);
+        } else 
+        {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'No se puede desactivar la ubicacion, debido que hay registros que hacen referencia a ella'
+            ]);
+        }
         
-        return response()->json([
-            'respuesta' => true,
-            'mensaje' => $mensaje
-        ]);
     }
 }

@@ -10,4 +10,9 @@ class Cuenta extends Model
     protected $table = 'cuentas';
     
     protected $fillable = ['cuenta'];
+
+    function inventario()
+    {
+        return $this->hasMany('App\Models\Inventario');
+    }
 }

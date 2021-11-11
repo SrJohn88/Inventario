@@ -21,6 +21,7 @@
           :search="searchMarcas"
           multi-sort
           class="elevation-1"
+          no-data-text="No hay marcas para mostrar"
         >
           <!-- Template Para Modal de Actualizar y Agregar Categoria -->
 
@@ -39,7 +40,7 @@
                         v-model="estadoMarca"
                         class="mx-10"
                         style="margin-top: 1.5rem;"
-                        label="Mostrar Las Marcas Removidas"
+                        label="Marcas desactivadas"
                         value="false"
                     />
                 </template>
@@ -116,7 +117,7 @@
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
-              <span>Remover Marca</span>
+              <span>Desactivar Marca</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -149,7 +150,7 @@ export default {
       estadoMarca: false,
       marcas: [],
       hTBMarcas: [
-        { text: "Nombre", value: "marca" },
+        { text: "Nombre", value: "marca", align: "center" },
         { text: "Acciones", value: "action", sortable: false, align: "center" },
       ],
       reglas: {
@@ -157,7 +158,7 @@ export default {
         min: (v) => (v && v.length >= 2 && v.length <= 100) ||
                 "Nombre de la marca debe ser mayor a 2 caracteres",
         expresion: (v) =>
-                /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
+                /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) ||
                 "Nombre de la marca no puede tener caracteres especiales",
       },
       loader: false,

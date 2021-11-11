@@ -82,17 +82,33 @@ class CuentaController extends Controller
 
     function delete( Cuenta $cuenta, $accion )
     {
-        $cuenta->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
-        $cuenta->save();
+        $contador = 0;
 
-        $mensaje = filter_var($accion, FILTER_VALIDATE_BOOLEAN) 
-                        ? 'La cuenta ha sido desactivada con exito' 
-                        : 'La cuenta ha sido activada con exito';
+        if ( filter_var($accion, FILTER_VALIDATE_BOOLEAN) )
+        {
+            $contador = $cuenta->inventario->count();
+        }
 
-        return response()->json([
-            'respuesta' => true,
-            'mensaje' => $mensaje
-        ]);
+        if ( $contador == 0)
+        {
+            $cuenta->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
+            $cuenta->save();
 
+            $mensaje = filter_var($accion, FILTER_VALIDATE_BOOLEAN) 
+                            ? 'La cuenta ha sido desactivada con exito' 
+                            : 'La cuenta ha sido activada con exito';
+
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => $mensaje
+            ]);
+        } else 
+        {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'No se puede desactivar la cuenta, debido que hay registros que hacen referencia a ella'
+            ]);
+        }
+        
     }
 }

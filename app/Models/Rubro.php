@@ -12,4 +12,9 @@ class Rubro extends Model
     
     protected $fillable = ['rubro'];
 
+    function inventario()
+    {
+        return $this->hasMany('App\Models\Inventario');
+    }
+    
 }

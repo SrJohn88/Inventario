@@ -81,14 +81,31 @@ class RubroController extends Controller
 
     function delete ( Rubro $rubro, $accion )
     {
-        $rubro->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
-        $rubro->save();
+        $contador = 0;
 
-        $mensaje = $accion ? 'El rubro '. $rubro->rubro.' ha sido eliminada con exito' : 'El rubro '. $rubro->rubro.' ha sido restaurado con exito';
-        return response()->json([
-            'respuesta' => true,
-            'mensaje' => $mensaje
-        ]);
+        if ( filter_var($accion, FILTER_VALIDATE_BOOLEAN) )
+        {
+            $contador = $rubro->inventario->count();
+        }
+
+        if ( $contador == 0)
+        {
+            $rubro->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
+            $rubro->save();
+
+            $mensaje = $accion ? 'El rubro '. $rubro->rubro.' ha sido desactivado con exito' : 'El rubro '. $rubro->rubro.' ha sido restaurado con exito';
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => $mensaje
+            ]);
+        } else 
+        {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'No se puede desactivar el rubro, debido que hay registros que hacen referencia a ella'
+            ]);
+        }
+        
 
     }
 }

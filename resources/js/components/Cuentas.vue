@@ -33,6 +33,7 @@
           :search="buscarCuentas"
           multi-sort
           class="elevation-1"
+          no-data-text="No hay cuentas para mostrar"
         >
 
           <template v-slot:top>
@@ -194,7 +195,7 @@ export default {
           (v.length >= 2 && v.length <= 100) ||
           "Nombre de la cuenta debe ser mayor a 2 caracteres",
         expresion: (v) =>
-          /^[A-Za-z0-9- \s]+$/g.test(v) ||
+          /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) ||
           "Nombre de la cuenta no puede tener caracteres especiales",
       },
     };

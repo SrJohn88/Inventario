@@ -35,6 +35,7 @@
           :search="buscarEntidad"
           multi-sort
           class="elevation-1"
+          no-data-text="No hay entidades para mostrar"
         >
           <template v-slot:item.action="{ item }" v-slot:activator="{ on }">
             <v-tooltip top>
@@ -70,7 +71,7 @@
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
-              <span>Eliminar Entidad</span>
+              <span>Desactivar Entidad</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -88,7 +89,7 @@
                   <v-icon>mdi-restore</v-icon>
                 </v-btn>
               </template>
-              <span>Eliminar Entidad</span>
+              <span>Restaurar Entidad</span>
             </v-tooltip>
           </template>
           <!-- MODAL -->
@@ -113,7 +114,7 @@
                         v-model="EstadoEntidad"
                         class="mx-10"
                         style="margin-top: 1.5rem;"
-                        label="Mostrar entidades eliminadas"
+                        label="Entidades desactivadas"
                         value="false"
                     />
 
@@ -176,8 +177,7 @@ export default {
       loader: false,
       EstadoEntidad: false,
       theadTable: [
-        { text: "ID", value: "id" },
-        { text: "Entidad", value: "entidad" },
+        { text: "Entidad", value: "entidad", align: "center"},
         { text: "Acciones", value: "action", sortable: false, align: "center" },
       ],
       buscarEntidad: "",
@@ -192,7 +192,7 @@ export default {
           (v.length >= 2 && v.length <= 100) ||
           "Nombre de la entidad debe ser mayor a 2 caracteres",
         expresion: (v) =>
-          /^[A-Za-z0-9- \s]+$/g.test(v) ||
+          /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) ||
           "Nombre de la entidad no puede tener caracteres especiales",
       },
     };

@@ -78,7 +78,7 @@
                                         <v-text-field
                                             append-icon="mdi-folder-outline"
                                             v-model="empleado.nombre"
-                                            @keyup="errorsEmpleado = []"
+                                            @keyup="errorsEmpleado.nombre = []"
                                             :rules= "[
                                                 reglas.requerido,
                                                 reglas.min,
@@ -86,6 +86,7 @@
                                             ]"
                                             label="Nombres"
                                             required
+                                            :error-messages="errorsEmpleado.nombre"
                                             ></v-text-field>
                                     </v-col>
 
@@ -93,7 +94,7 @@
                                         <v-text-field
                                             append-icon="mdi-folder-outline"
                                             v-model="empleado.apellido"
-                                            @keyup="errorsEmpleado = []"
+                                            @keyup="errorsEmpleado.apellido = []"
                                             :rules= "[
                                                 reglas.requerido,
                                                 reglas.min,
@@ -101,6 +102,7 @@
                                             ]"
                                             label="Apellidos"
                                             required
+                                            :error-messages="errorsEmpleado.apellido"
                                             ></v-text-field>
                                     </v-col>
 
@@ -108,13 +110,13 @@
                                         <v-text-field
                                             append-icon="mdi-folder-outline"
                                             v-model="empleado.dui"
-                                            @keyup="errorsEmpleado = []"
+                                            @keyup="errorsEmpleado.dui = []"
                                             :rules= "[
                                                 reglas.dui
                                             ]"
                                             label="DUI"
                                             required
-                                            :error-messages="errorsEmpleado"
+                                            :error-messages="errorsEmpleado.dui"
                                             ></v-text-field>
                                     </v-col>
 
@@ -241,7 +243,7 @@ export default {
             empleadosEliminado: [],
             mostrarEmpleadosEliminados: false,
             empleado: { id: null, nombre: '', apellido: '', cargo: { id: null, cargo: ''} },
-            errorsEmpleado: [],
+            errorsEmpleado: {},
             reglas: {
                 requerido: (v) => !!v || "Nombre del empleado es requerido",
                 min: (v) =>
@@ -309,9 +311,9 @@ export default {
                         this.alerta( mensaje, 'success', '¡Bien hecho!')
                         this.cerrarModal()
                     } else {
-                        this.errorsEmpleado = []
-                        let { dui } = response.data
-                        this.errorsEmpleado = dui
+                        this.errorsEmpleado = {}
+                        let { errors } = response.data
+                        this.errorsEmpleado = errors
                     }
                 }).catch( () => {
                     this.alerta( mensaje, 'error', '¡Algo salio mal!');

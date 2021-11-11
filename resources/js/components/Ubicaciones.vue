@@ -166,8 +166,7 @@ export default {
             validForm: false,
             buscarUbicacion: '',
             encabezados: [
-                { text: "ID", value: "id" },
-                { text: "Ubicacion", value: "ubicacion" },
+                { text: "Ubicacion", value: "ubicacion", align: "center"},
                 { text: "Acciones", value: "action", sortable: false, align: "center" },
             ],
             estadoUbicacion: false,

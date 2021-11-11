@@ -10,4 +10,9 @@ class Entidad extends Model
     protected $table = 'entidades';
     
     protected $fillable = ['entidad'];
+
+    function inventario()
+    {
+        return $this->hasMany('App\Models\Inventario');
+    }
 }

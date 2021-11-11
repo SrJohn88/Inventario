@@ -81,16 +81,32 @@ class EntidadController extends Controller
         ]);
     }
 
-    function delete ( Entidad $entidad, $accion ) {
+    function delete ( Entidad $entidad, $accion ) 
+    {
+        $contador = 0;
 
-        $entidad->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
-        $entidad->save();
+        if ( filter_var($accion, FILTER_VALIDATE_BOOLEAN) )
+        {
+            $contador = $entidad->inventario->count();
+        }
 
-        $mensaje = $accion ? 'La entidad '.$entidad->entidad.' fue eliminada con exito' : 'La entidad '.$entidad->entidad.' fue restaurada con exito';
+        if( $contador == 0)
+        {
+            $entidad->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
+            $entidad->save();
 
-        return response()->json([
-            'respuesta' => true,
-            'mensaje' => $mensaje
-        ]);
+            $mensaje = $accion ? 'La entidad '.$entidad->entidad.' fue desactivada con exito' : 'La entidad '.$entidad->entidad.' fue activada con exito';
+
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => $mensaje
+            ]);
+        } else 
+        {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'No se puede desactivar la entidad, debido que hay registros que hacen referencia a ella'
+            ]);
+        }
     }
 }
