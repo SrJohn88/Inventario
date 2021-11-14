@@ -82,7 +82,6 @@ export default {
         return {
             buscarMovimiento: '',
             TheadTable: [
-                { text: 'ID', value: 'id'},
                 { text: 'Tipo Movimiento', value: 'tipo_movimiento.tipo' },
                 { text: "Recibido por", value: "recibe" },
                 { text: "Aprobado por", value: "aprueba" },

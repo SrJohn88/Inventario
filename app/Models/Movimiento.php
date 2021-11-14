@@ -13,7 +13,7 @@ class Movimiento extends Model
 
     function inventario()
     {
-        return $this->belongsToMany('App\Models\Inventario')->withTimestamps();
+        return $this->belongsToMany('App\Models\Inventario')->withTimestamps()->withPivot('falla', 'observaciones');
     }
 
     function tipoMovimiento()
@@ -29,6 +29,11 @@ class Movimiento extends Model
     function aprueba() 
     {
         return $this->belongsTo('App\Models\Empleado', 'aprobado_por');
+    }
+
+    function aprobadoGerencia() 
+    {
+        return $this->belongsTo('App\Models\Empleado', 'aprobado_gerencia');
     }
 
     function user()

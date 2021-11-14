@@ -23,7 +23,7 @@ class CreateInventariosTable extends Migration
             $table->unsignedInteger('marca_id')->nullable();
             $table->foreign('marca_id')->references('id')->on('marcas');
 
-            $table->string('modelo',100);
+            $table->string('modelo',100)->nullable();
             $table->unsignedInteger('procedencia_id');
             $table->foreign('procedencia_id')->references('id')->on('procedencias');
 

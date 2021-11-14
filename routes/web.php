@@ -18,6 +18,7 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\HistorialInventarioController;
 use App\Http\Controllers\HistorialMovimientoController;
 use App\Http\Controllers\TipoMovimientoController;
+use App\Http\Controllers\UserController;
 use App\Models\HistorialInventario;
 use App\Models\HistorialMovimiento;
 
@@ -108,15 +109,17 @@ Route::delete('Api/empleados/{empleado}/{acccion}',[EmpleadoController::class,'d
 //MOVIMIENTO DE INVENTARIO
 Route::get('/inventario/movimientos',[ MovimientoController::class, 'index'])->name("movimiento.index");
 Route::get('/inventario/movimientos/crear',[ MovimientoController::class, 'crear'])->name("movimiento.crear");
+Route::get('/Api/inventario/movimientos/detalle',[ MovimientoController::class, 'detalleMovimiento'])->name("movimiento.detalle");
 
-
-//ok prueba
 
 //MOVIMIENTO API
 Route::get('/Api/inventario/movimientos',[ MovimientoController::class, 'obtenerMovimientos'])->name("movimiento.get");
 
 
+
 Route::post('/Api/inventario/movimientos/save',[ MovimientoController::class, 'save'])->name("movimiento.save");
+Route::get('/Api/inventario/{movimiento}/movimientos',[ MovimientoController::class, 'obtenerDetMovimiento'])->name("detMovimiento.get");
+Route::get('/Api/inventario/movimientos/update/{movimiento}',[ MovimientoController::class, 'updateMovimiento'])->name("movimiento.update");
 
 
 // HISTORIAL DE INVENTARIO
@@ -124,6 +127,9 @@ Route::get('/Api/historial/respaldos/{inventario}/{desde}/{hasta}',[ HistorialIn
 Route::get('/Api/historial/movimientos/{inventario}/{desde}/{hasta}',[ HistorialMovimientoController::class, 'obtenerHistorialMovimientos'])->name("historialMovimiento.get");
 
 
+// USUARIOS
+Route::get('/usuarios',[ UserController::class, 'index'])->name("usuarios.index");
 
-
+// API USUARIOS
+Route::get('/Api/usuarios',[ UserController::class, 'obtenerUsuarios'])->name("usuarios.get");
 

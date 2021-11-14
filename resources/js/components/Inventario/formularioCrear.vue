@@ -103,6 +103,7 @@
 
                 <v-col cols="6">
                   <v-select
+                    ref="autocompleteCuenta"
                     @keyup="errors['procedencia.id'] = []"
                     :error-messages="errors['procedencia.id']"
                     :items="procedencias"
@@ -111,6 +112,7 @@
                     item-value="id"
                     label="Procedencia"
                     return-object
+                    @change="onChangeProcedencia"
                     :disabled="detalle"
                     :menu-props="{ closeOnClick: true }"
                     :rules="[(v) => !!v || 'Procedencia es campo obligatorio']"
@@ -627,7 +629,6 @@ export default {
 
         menuFechaInicio: false, cpFechaInicio: '', menuFechaFinal: false, cpFechaFinal : '', formularioBuscarCopias: true,
         menuFechaInicioMovi: false, cpFechaInicioMovi: '', menuFechaFinalMovi: false, cpFechaFinalMovi : '', formularioBuscarMovimientos: true
-
     };
   },
   created() {
@@ -924,6 +925,12 @@ export default {
                 this.historial = historial
             })
             .catch(console.error);
+    },
+    onChangeProcedencia()
+    {
+        console.log('click en change')
+        //this.$refs.autocompleteCuenta.internalSearch = null;
+        //this.inventario.cuenta = { id: null, cuenta: ''}
     }
   },
 };

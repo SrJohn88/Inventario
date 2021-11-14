@@ -52,9 +52,14 @@ Vue.component('inventario-detalle', require('./components/Inventario/inventarioD
 // MOVIMIENTOS DE INVENTARIO
 Vue.component('movimiento-index', require('./components/Inventario/Movimientos/movimientoIndex.vue').default);
 Vue.component('movimiento-crear', require('./components/Inventario/Movimientos/formularioCrear.vue').default);
+Vue.component('update-movimiento', require('./components/Inventario/Movimientos/updateMovimiento.vue').default);
+
 
 //EMPLEADOS
 Vue.component('empleados', require('./components/Empleados.vue').default);
+
+// USUARIOS
+Vue.component('usuarios', require('./components/Usuarios.vue').default);
 
 
 import auth from './mixins/auth';

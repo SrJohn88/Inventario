@@ -133,4 +133,37 @@ class MovimientoController extends Controller
         }
         //}
     }
+
+    function updateMovimiento(Movimiento $movimiento )
+    {
+        try {
+            $movimiento->inventario()->updateExistingPivot( 3, [ 'falla' => 'NUEVA FALLAAA PUTA MADRE' ] );
+
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Bien hecho',
+            ]);
+            
+        } catch ( \Exception $e )
+        {
+            DB::rollBack();
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Ocurrio un error en el servidor'
+            ]);
+        }
+    }
+
+    function obtenerDetMovimiento( Movimiento $movimiento )
+    {
+        return response()->json([
+            'movimiento' => $movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'aprobadoGerencia', 'user', 'inventario', 'inventario.marca')->get()
+        ]);
+    }
+
+    function detalleMovimiento()
+    {
+        return view('Inventario.movimientos.actualizar');
+    }
+
 }
