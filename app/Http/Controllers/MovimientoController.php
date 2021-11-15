@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HistorialInventario;
 use App\Models\Inventario;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -134,30 +135,61 @@ class MovimientoController extends Controller
         //}
     }
 
-    function updateMovimiento(Movimiento $movimiento )
+    function updateMovimiento( Request $request, Movimiento $movimiento )
     {
-        try {
-            $movimiento->inventario()->updateExistingPivot( 3, [ 'falla' => 'NUEVA FALLAAA PUTA MADRE' ] );
+        
+        $validacion = Validator::make($request->all(), [
+                    
+        ]);
 
-            return response()->json([
-                'respuesta' => true,
-                'mensaje' => 'Bien hecho',
-            ]);
-            
-        } catch ( \Exception $e )
-        {
-            DB::rollBack();
+        if ($validacion->fails()) {
             return response()->json([
                 'respuesta' => false,
-                'mensaje' => 'Ocurrio un error en el servidor'
+                'mensaje' => '',
+                'inventario' => $validacion->errors()->get('')
             ]);
         }
+    
+    
+        foreach ( $request->input('activos') as $value )
+        {
+            $movimiento->inventario()->updateExistingPivot( $value['inventario_id'], 
+            [
+                'falla' => $value['falla'], 
+                'observaciones' => $value['observaciones'],
+                'recibido' => true
+            ]);
+        }
+
+        foreach ( $request->input('activos') as $value )
+        {
+            $inv = Inventario::find( $value['inventario_id'] );
+            $valorAnterior = $inv->estado->estado;
+            $inv->estado_id = 1;
+            $inv->save();
+
+            $historial = new HistorialMovimiento();
+            $historial->inventario_id = $inv->id;
+            $historial->campo = 'Estado';
+            $historial->valor_anterior = $valorAnterior;
+            $historial->valor_nuevo = 'DISPONIBLE';
+            $historial->save();
+
+        }
+            
+
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Movimiento actualizado con exito',
+        ]);
+            
     }
 
     function obtenerDetMovimiento( Movimiento $movimiento )
     {
         return response()->json([
-            'movimiento' => $movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'aprobadoGerencia', 'user', 'inventario', 'inventario.marca')->get()
+            'movimiento' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'aprobadoGerencia', 'user', 'inventario', 'inventario.marca')
+                            ->where('id', $movimiento->id )->get()
         ]);
     }
 

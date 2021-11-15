@@ -26,6 +26,7 @@ class CreateInventarioMovimientoTable extends Migration
 
             $table->String('falla')->nullable();
             $table->string('observaciones')->nullable();
+            $table->boolean('recibido')->default( false );
             $table->timestamps();
         });
     }

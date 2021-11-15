@@ -40,11 +40,10 @@
                 <v-col cols="6">
                   <v-text-field
                     append-icon=""
-                    :rules="[ reglas.requerido, reglas.min ]"
+                    :rules="[ reglas.noRequerido ]"
                     v-model="inventario.serie"
                     label="Serie"
-                    :disabled="detalle"
-                    required
+                    :disabled="detalle"                    
                   ></v-text-field>
                 </v-col>
 
@@ -576,6 +575,8 @@ export default {
           v.length == 0 ||
           /^[0-9. \s]+$/g.test(v) ||
           "No parece formato de dinero",
+        noRequerido: (v) => 
+          v.length == 0 || ( v.length >= 2 && v.length <= 100) || 'Verifica el valor'
       },
       menu: false,
       idPrueba: 0,

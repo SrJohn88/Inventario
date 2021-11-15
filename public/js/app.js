@@ -4398,8 +4398,7 @@ Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue 
       })["catch"](console.error);
     },
     onAddedItem: function onAddedItem(valores) {
-      this.inventarios = valores;
-      console.log(this.inventarios);
+      this.inventarios = valores; //console.log(this.inventarios);
     },
     getProductFromChild: function getProductFromChild() {},
     guardarMovimiento: function guardarMovimiento() {
@@ -4777,6 +4776,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -4837,6 +4858,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         text: "Observaciones",
         value: "pivot.observaciones",
         align: "left"
+      }, {
+        text: "Estado",
+        value: "estado",
+        align: "left"
       }]
     };
   },
@@ -4844,7 +4869,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     activosPendientes: function activosPendientes() {
       return this.movimiento.activos.map(function (activo) {
         return _objectSpread(_objectSpread({}, activo), {}, {
-          isSelected: activo.id != 1
+          isSelectable: activo.pivot.recibido == false
         });
       });
     }
@@ -4860,6 +4885,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   methods: {
+    fueRecibido: function fueRecibido(detalle) {
+      return detalle.recibido == true ? 'RECIBIDO' : 'PENDIENTE';
+    },
     obtenerMovimiento: function obtenerMovimiento() {
       var _this = this;
 
@@ -4882,20 +4910,61 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.movimiento.registro = created_at;
         _this.movimiento.usuario = _objectSpread({}, user);
         _this.movimiento.observaciones = descripcion;
+        inventario.forEach(function (inventario) {
+          if (!inventario.marca) {
+            inventario.marca = {
+              id: null,
+              marca: ''
+            };
+          }
+
+          inventario.estado = inventario.pivot.recibido == true ? 'RECIBIDO' : 'PENDIENTE';
+        });
         _this.movimiento.activos = _toConsumableArray(inventario);
+        console.log({
+          inventario: inventario
+        });
       })["catch"](console.error);
     },
     guardar: function guardar() {
-      console.log(this.getIdSeleccion());
+      var _this2 = this;
+
+      console.log(_objectSpread({}, this.prepararDatos()));
+      Swal.fire({
+        title: "¡Importante!",
+        text: "¿Estas seguro de realizar la operación?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Guardar",
+        cancelButtonText: "Cancelar"
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          _this2.loader = true;
+          var path = "/Api/inventario/movimientos/update/".concat(_this2.idMovimiento);
+          var datos = {
+            activos: _toConsumableArray(_this2.prepararDatos())
+          };
+          axios.post(path, _objectSpread({}, datos)).then(console.log)["catch"](console.error);
+        }
+      }); //console.log( this.getIdSeleccion() )
     },
     cancelar: function cancelar() {},
-    getIdSeleccion: function getIdSeleccion() {
+    prepararDatos: function prepararDatos() {
       var activosRecibidos = [];
       this.selected.forEach(function (activo) {
-        activosRecibidos.push(activo.id);
+        activosRecibidos.push({
+          inventario_id: activo.id,
+          falla: activo.pivot.falla,
+          observaciones: activo.pivot.observaciones,
+          recibido: true
+        });
       });
       return activosRecibidos;
-    }
+    },
+    guardarFallar: function guardarFallar(item) {},
+    cancelarFalla: function cancelarFalla(item) {}
   }
 });
 
@@ -4918,7 +4987,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//
 //
 //
 //
@@ -5492,6 +5560,9 @@ Vue.component("Ubicacion", __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
         },
         precio: function precio(v) {
           return v.length == 0 || /^[0-9. \s]+$/g.test(v) || "No parece formato de dinero";
+        },
+        noRequerido: function noRequerido(v) {
+          return v.length == 0 || v.length >= 2 && v.length <= 100 || 'Verifica el valor';
         }
       },
       menu: false,
@@ -51861,52 +51932,153 @@ var render = function() {
                       "item-per-page-options": [10, 20, 30],
                       showFirstLastPage: true
                     },
-                    "single-select": _vm.singleSelect,
                     "item-key": "codigo",
                     "show-select": ""
                   },
                   scopedSlots: _vm._u([
                     {
-                      key: "item",
-                      fn: function(ref) {
-                        var item = ref.item
+                      key: "item.pivot.falla",
+                      fn: function(props) {
                         return [
-                          _c("tr", [
-                            _c(
-                              "td",
-                              [
-                                _c("v-checkbox", {
-                                  staticClass: "pa-0 ma-0",
-                                  attrs: {
-                                    disabled: item.calories > 250,
-                                    ripple: false,
-                                    value: item,
-                                    "hide-details": ""
-                                  },
-                                  model: {
-                                    value: _vm.selected,
-                                    callback: function($$v) {
-                                      _vm.selected = $$v
+                          _c(
+                            "v-edit-dialog",
+                            {
+                              attrs: { "return-value": props.item.pivot.falla },
+                              on: {
+                                "update:returnValue": function($event) {
+                                  return _vm.$set(
+                                    props.item.pivot,
+                                    "falla",
+                                    $event
+                                  )
+                                },
+                                "update:return-value": function($event) {
+                                  return _vm.$set(
+                                    props.item.pivot,
+                                    "falla",
+                                    $event
+                                  )
+                                },
+                                save: _vm.guardarFallar,
+                                cancel: _vm.cancelarFalla
+                              },
+                              scopedSlots: _vm._u(
+                                [
+                                  {
+                                    key: "input",
+                                    fn: function() {
+                                      return [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            rules: [],
+                                            label: "Edit",
+                                            "single-line": "",
+                                            counter: ""
+                                          },
+                                          model: {
+                                            value: props.item.pivot.falla,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                props.item.pivot,
+                                                "falla",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "props.item.pivot.falla"
+                                          }
+                                        })
+                                      ]
                                     },
-                                    expression: "selected"
+                                    proxy: true
                                   }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(item.codigo))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(item.descripcion))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(item.marca.marca))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(item.modelo))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(item.modelo))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(item.modelo))])
-                          ])
+                                ],
+                                null,
+                                true
+                              )
+                            },
+                            [
+                              _vm._v(
+                                "\n                          " +
+                                  _vm._s(props.item.pivot.falla) +
+                                  "\n                          "
+                              )
+                            ]
+                          )
+                        ]
+                      }
+                    },
+                    {
+                      key: "item.pivot.observaciones",
+                      fn: function(props) {
+                        return [
+                          _c(
+                            "v-edit-dialog",
+                            {
+                              attrs: {
+                                "return-value": props.item.pivot.observaciones
+                              },
+                              on: {
+                                "update:returnValue": function($event) {
+                                  return _vm.$set(
+                                    props.item.pivot,
+                                    "observaciones",
+                                    $event
+                                  )
+                                },
+                                "update:return-value": function($event) {
+                                  return _vm.$set(
+                                    props.item.pivot,
+                                    "observaciones",
+                                    $event
+                                  )
+                                },
+                                save: _vm.guardarFallar,
+                                cancel: _vm.cancelarFalla
+                              },
+                              scopedSlots: _vm._u(
+                                [
+                                  {
+                                    key: "input",
+                                    fn: function() {
+                                      return [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            rules: [],
+                                            label: "Edit",
+                                            "single-line": "",
+                                            counter: ""
+                                          },
+                                          model: {
+                                            value:
+                                              props.item.pivot.observaciones,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                props.item.pivot,
+                                                "observaciones",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "props.item.pivot.observaciones"
+                                          }
+                                        })
+                                      ]
+                                    },
+                                    proxy: true
+                                  }
+                                ],
+                                null,
+                                true
+                              )
+                            },
+                            [
+                              _vm._v(
+                                "\n                          " +
+                                  _vm._s(props.item.pivot.observaciones) +
+                                  "\n                          "
+                              )
+                            ]
+                          )
                         ]
                       }
                     }
@@ -52072,13 +52244,9 @@ var render = function() {
                                 _c("v-text-field", {
                                   attrs: {
                                     "append-icon": "",
-                                    rules: [
-                                      _vm.reglas.requerido,
-                                      _vm.reglas.min
-                                    ],
+                                    rules: [_vm.reglas.noRequerido],
                                     label: "Serie",
-                                    disabled: _vm.detalle,
-                                    required: ""
+                                    disabled: _vm.detalle
                                   },
                                   model: {
                                     value: _vm.inventario.serie,

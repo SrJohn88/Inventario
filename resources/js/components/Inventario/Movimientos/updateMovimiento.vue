@@ -81,27 +81,49 @@
                         'item-per-page-options': [10, 20, 30],
                         showFirstLastPage: true,
                     }"
-                    :single-select="singleSelect"
                     item-key="codigo"
                     show-select
                     >
 
-                    <template #item="{ item }">
-                        <tr>
-                            <td><v-checkbox                                                       :disabled="item.calories > 250"
-                                class="pa-0 ma-0"
-                                :ripple="false"
-                                v-model="selected"
-                                :value="item"
-                                hide-details></v-checkbox></td>
-                            <td>{{item.codigo}}</td>
-                            <td>{{item.descripcion}}</td>
-                            <td>{{item.marca.marca}}</td>
-                            <td>{{item.modelo}}</td>
-                            <td>{{item.modelo}}</td>
-                            <td>{{item.modelo}}</td>
-                        </tr>
-                        </template>
+                    <template v-slot:item.pivot.falla="props">
+                        <v-edit-dialog
+                            :return-value.sync="props.item.pivot.falla"
+                            @save="guardarFallar"
+                            @cancel="cancelarFalla"
+                            >
+                            {{ props.item.pivot.falla }}
+                            <template v-slot:input>
+                                <v-text-field
+                                v-model="props.item.pivot.falla"
+                                :rules="[]"
+                                label="Edit"
+                                single-line
+                                counter
+                                ></v-text-field>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
+
+                    <template v-slot:item.pivot.observaciones="props">
+                        <v-edit-dialog
+                            :return-value.sync="props.item.pivot.observaciones"
+                            @save="guardarFallar"
+                            @cancel="cancelarFalla"
+                            >
+                            {{ props.item.pivot.observaciones }}
+                            <template v-slot:input>
+                                <v-text-field
+                                v-model="props.item.pivot.observaciones"
+                                :rules="[]"
+                                label="Edit"
+                                single-line
+                                counter
+                                ></v-text-field>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
+                    
+
                 </v-data-table>
 
                  <v-card-actions>
@@ -148,13 +170,14 @@ export default {
                 { text: "Modelo", value: "modelo", align: "left" },            
                 { text: "Falla", value: "pivot.falla", align: "left" },
                 { text: "Observaciones", value: "pivot.observaciones", align: "left" },
+                { text: "Estado", value: "estado", align: "left" },
             ],
         }
     },
     computed: {
         activosPendientes() 
         {
-            return this.movimiento.activos.map( activo => ({ ... activo, isSelected: activo.id != 1}))
+            return this.movimiento.activos.map( activo => ({ ... activo, isSelectable: activo.pivot.recibido == false }))
         }
     },
     created()
@@ -172,6 +195,9 @@ export default {
         }
     }, 
     methods: {
+        fueRecibido( detalle  ) {
+            return detalle.recibido == true ? 'RECIBIDO' : 'PENDIENTE' ;
+        },
         obtenerMovimiento()
         {
             this.loader = true;
@@ -196,30 +222,75 @@ export default {
                     this.movimiento.registro = created_at
                     this.movimiento.usuario = { ... user }
                     this.movimiento.observaciones = descripcion
+
+                    inventario.forEach( inventario => {
+                        if ( !inventario.marca )
+                        {
+                            inventario.marca = { id: null, marca: '' }
+                        }
+                        inventario.estado = inventario.pivot.recibido == true ? 'RECIBIDO': 'PENDIENTE'
+                        
+                    })
                     this.movimiento.activos = [ ... inventario ]
             
+                    console.log( { inventario })
 
                 }).catch( console.error )
 
         },
         guardar()
         {
-            console.log( this.getIdSeleccion() )
+            console.log( { ... this.prepararDatos() } )
+            Swal.fire({
+                title: "¡Importante!",
+                text: "¿Estas seguro de realizar la operación?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Guardar",
+                cancelButtonText: "Cancelar",
+            }).then( result => {
+                if (result.isConfirmed) {
+                    this.loader = true;
+                    const path = `/Api/inventario/movimientos/update/${ this.idMovimiento }`
+                    const datos = {
+                        activos: [ ...this.prepararDatos() ]                     
+                    }
+
+                    axios
+                        .post(path, { ...datos } )
+                        .then( console.log ).catch(console.error)                   
+                }
+            })
+            //console.log( this.getIdSeleccion() )
         }, 
         cancelar()
         {
 
         },
-        getIdSeleccion ()
+        prepararDatos ()
         {
             let activosRecibidos = []
 
             this.selected.forEach( activo => {
-                activosRecibidos.push( activo.id )
+                activosRecibidos.push({
+                    inventario_id : activo.id,
+                    falla: activo.pivot.falla,
+                    observaciones: activo.pivot.observaciones,
+                    recibido : true
+                })
             });
 
             return activosRecibidos
-        }
+        },
+        guardarFallar( item )
+        {
+        },
+        cancelarFalla( item )
+        {
+
+        },
     }
 }
 </script>

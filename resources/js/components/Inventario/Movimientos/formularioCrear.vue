@@ -339,7 +339,7 @@ export default {
     },
     onAddedItem(valores) {
       this.inventarios = valores;
-      console.log(this.inventarios);
+      //console.log(this.inventarios);
     },
     getProductFromChild() {},
     guardarMovimiento() {

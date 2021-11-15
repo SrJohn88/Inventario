@@ -119,7 +119,7 @@ Route::get('/Api/inventario/movimientos',[ MovimientoController::class, 'obtener
 
 Route::post('/Api/inventario/movimientos/save',[ MovimientoController::class, 'save'])->name("movimiento.save");
 Route::get('/Api/inventario/{movimiento}/movimientos',[ MovimientoController::class, 'obtenerDetMovimiento'])->name("detMovimiento.get");
-Route::get('/Api/inventario/movimientos/update/{movimiento}',[ MovimientoController::class, 'updateMovimiento'])->name("movimiento.update");
+Route::post('/Api/inventario/movimientos/update/{movimiento}',[ MovimientoController::class, 'updateMovimiento'])->name("movimiento.update");
 
 
 // HISTORIAL DE INVENTARIO
