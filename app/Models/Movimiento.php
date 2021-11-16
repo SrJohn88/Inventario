@@ -13,7 +13,7 @@ class Movimiento extends Model
 
     function inventario()
     {
-        return $this->belongsToMany('App\Models\Inventario')->withTimestamps()->withPivot('falla', 'observaciones', 'recibido');
+        return $this->belongsToMany('App\Models\Inventario')->withTimestamps()->withPivot('falla', 'observaciones', 'recibido', 'usuario');
     }
 
     function tipoMovimiento()

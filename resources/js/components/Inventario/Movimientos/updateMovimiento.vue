@@ -3,7 +3,7 @@
         <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
             <v-card>
                 <v-card-title>
-                    Detalle de Movimiento
+                     {{ isCompleto }}
                     <div class="flex-grow-1"></div>                    
                 </v-card-title>
             
@@ -62,7 +62,7 @@
                             <v-col cols="12" sm="12" >
                                 <v-text-field
                                     v-model="movimiento.observaciones"
-                                    label="Fecha de registro"
+                                    label="Observaciones"
                                     disabled
                                 ></v-text-field>
                             </v-col>
@@ -122,16 +122,98 @@
                             </template>
                         </v-edit-dialog>
                     </template>
+
+                    <template v-slot:item.action="{item}" v-slot:activator="{ on }">
+                        <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                            <v-btn
+                            v-if="item.pivot.recibido"
+                            color="success"
+                            elevation="8"
+                            small
+                            dark
+                            :disabled="item.id < 0"
+                            v-on="on"
+                            @click="mostrarModal(item)"
+                            >
+                            <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Actualizar Cuenta</span>
+                        </v-tooltip>
+                    </template>
                     
+                    <template v-slot:top>
+            <v-toolbar flat color="white">
+              <div class="flex-grow-1"></div>
+              <v-dialog v-model="modal" persistent max-width="700px">                
+                <v-card>
+                  <v-card-title class="headline lighten-2" primary-titles>
+                    <span class="headline" v-text="'Detalle de activo'"></span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container>
+                      <v-form
+                        :lazy-validation="true"
+                      >
+                        <v-row>
+                            <v-col cols="6" >
+                                <v-text-field
+                                    append-icon="mdi-folder-outline"
+                                    v-model="detalleActivo.usuario"
+                                    @keyup="errors = []"
+                                    :rules= "[]"
+                                    label="Usuario"
+                                    required
+                                    :readonly = "true"
+                                    :error-messages="errors"
+                                    ></v-text-field>
+                            </v-col>
+                            <v-col cols="6">
+                                    <v-text-field
+                                        append-icon="mdi-folder-outline"
+                                        v-model="detalleActivo.fecha"
+                                        @keyup="errors = []"
+                                        :rules= "[]"
+                                        label="Fecha de recibido"
+                                        required
+                                        :readonly = "true"
+                                        :error-messages="errors"
+                                        ></v-text-field>
+                            </v-col>
+                        </v-row>                                                
+                      </v-form>
+                    </v-container>
+                  </v-card-text>
+                  <v-divider></v-divider>
+                  <v-card-actions>
+                    <div class="flex-grow-1"></div>
+                    <v-btn
+                      color="info darken-1"
+                      text
+                      v-text="'Cerrar'"
+                      @click="ocultarModal"
+                    ></v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+                    </template>
 
                 </v-data-table>
 
                  <v-card-actions>
                     <div class="flex-grow-1"></div>
-                    <v-btn color="red darken-1" text @click="cancelar">Cerrar</v-btn>
+                    <v-btn
+                        v-if="mostrarBotones" 
+                        color="red darken-1" 
+                        text @click="cancelar">
+                            Cerrar
+                    </v-btn>
                     <v-btn
                         color="info darken-1"
                         text
+                        v-if="mostrarBotones"
                         :disabled="false"
                         @click="guardar"
                         >Guardar</v-btn
@@ -149,6 +231,8 @@ export default {
     data()
     {
         return {
+            errors: [], modal: false, detalleActivo: { usuario : null, fecha: null },
+            contadorPendientes : 0,
             singleSelect: false, selected: [],
             idMovimiento: null,
             movimiento: {
@@ -171,6 +255,7 @@ export default {
                 { text: "Falla", value: "pivot.falla", align: "left" },
                 { text: "Observaciones", value: "pivot.observaciones", align: "left" },
                 { text: "Estado", value: "estado", align: "left" },
+                { text: "Acciones", value: "action", align: "left" },
             ],
         }
     },
@@ -178,6 +263,16 @@ export default {
         activosPendientes() 
         {
             return this.movimiento.activos.map( activo => ({ ... activo, isSelectable: activo.pivot.recibido == false }))
+        },
+        mostrarBotones()
+        {
+            return this.contadorPendientes > 0 
+        },
+        isCompleto()
+        {
+            return this.contadorPendientes > 0 
+                            ? `Movimiento | Pendiente de completar` 
+                            : 'Movimiento | Completo'
         }
     },
     created()
@@ -230,6 +325,10 @@ export default {
                         }
                         inventario.estado = inventario.pivot.recibido == true ? 'RECIBIDO': 'PENDIENTE'
                         
+                        if ( ! inventario.pivot.recibido )
+                        {
+                            this.contadorPendientes++
+                        }
                     })
                     this.movimiento.activos = [ ... inventario ]
             
@@ -240,8 +339,14 @@ export default {
         },
         guardar()
         {
-            console.log( { ... this.prepararDatos() } )
-            Swal.fire({
+            if ( this.selected.length == 0 )
+            {
+                this.alerta(
+                    'Selecciona al menos un activo de la lista',
+                    'warning', '¡INFORMACION!')
+            } else
+            {
+                Swal.fire({
                 title: "¡Importante!",
                 text: "¿Estas seguro de realizar la operación?",
                 icon: "warning",
@@ -260,9 +365,27 @@ export default {
 
                     axios
                         .post(path, { ...datos } )
-                        .then( console.log ).catch(console.error)                   
+                        .then( response => {
+                            if (response.status == 200) 
+                            {
+                                const { respuesta, mensaje } = response.data
+
+                                if ( respuesta ) 
+                                {
+                                    this.alerta( mensaje, 'success', '¡Bien hecho!')
+                                        .then( () => {
+                                            window.location = '/inventario/movimientos'
+                                        })
+                                }
+                            } else {
+                                this.alerta('Ocurrio un error inesperado', 'error', '¡INFORMACION!')
+                            }
+                        }).catch( () => {
+                            this.alerta('Ocurrio un error inesperado', 'error', '¡INFORMACION!')
+                        })                   
                 }
             })
+            }      
             //console.log( this.getIdSeleccion() )
         }, 
         cancelar()
@@ -283,6 +406,30 @@ export default {
             });
 
             return activosRecibidos
+        },
+        alerta(mensaje, icono = "info", titulo = "") {
+            return new Promise((resolve, reject) => {
+                Swal.fire({
+                position: "top-end",
+                icon: icono,
+                title: titulo,
+                text: mensaje,
+                showConfirmButton: false,
+                timer: 1500,
+                }).then(resolve);
+            });
+        },
+        mostrarModal( item )
+        {
+            const fechaRecibido = new Date( item.pivot.updated_at)
+            this.detalleActivo.usuario = item.pivot.usuario            
+            this.detalleActivo.fecha = `${fechaRecibido.getDate()}-${fechaRecibido.getMonth()}-${fechaRecibido.getFullYear()} ${fechaRecibido.getHours()}:${fechaRecibido.getMinutes()}`
+            this.modal = true
+        },
+        ocultarModal()
+        {
+            this.modal = false
+            this.detalleActivo = { fecha: null, usuario: '' }
         },
         guardarFallar( item )
         {

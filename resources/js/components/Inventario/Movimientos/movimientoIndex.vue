@@ -58,7 +58,7 @@
                         dark
                         :disabled="item.id < 0"
                         v-on="on"
-                        @click="detalle()"
+                        @click="detalle( item )"
                         >
                         <v-icon>far fa-clipboard</v-icon>
                         </v-btn>
@@ -108,9 +108,9 @@ export default {
                 })
                 .catch( console.error )
         },
-        detalle ()
+        detalle ( movimiento )
         {
-
+            window.location = `/inventario/movimientos/detalle?id=${movimiento.id}`
         }
     }
 

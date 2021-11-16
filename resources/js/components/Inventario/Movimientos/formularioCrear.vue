@@ -28,6 +28,8 @@
                     item-value="id"
                     return-object
                     clearable
+                    @keyup="errors['tipoMovimiento.id'] = []"
+                    :error-messages="errors['tipoMovimiento.id']"
                     :menu-props="{ closeOnClick: true }"
                   ></v-autocomplete>
                 </v-col>
@@ -44,6 +46,8 @@
                     :item-text="EmpleadoNombreCompleto"
                     item-value="id"
                     return-object
+                    @keyup="errors['recibe.id'] = []"
+                    :error-messages="errors['recibe.id']"
                     clearable
                     :menu-props="{ closeOnClick: true }"
                   ></v-autocomplete>
@@ -62,6 +66,8 @@
                     item-value="id"
                     return-object
                     clearable
+                    @keyup="errors['aprueba.id'] = []"
+                    :error-messages="errors['aprueba.id']"
                     :menu-props="{ closeOnClick: true }"
                   ></v-autocomplete>
                 </v-col>
@@ -90,7 +96,7 @@
                     :nudge-right="40"
                     transition="scale-transition"
                     offset-y
-                    min-width="auto"
+                    min-width="auto"                    
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
@@ -98,7 +104,7 @@
                         label="Seleccione fecha de reingreso"
                         prepend-icon="mdi-calendar"
                         readonly
-                        required
+                        required                        
                         v-bind="attrs"
                         v-on="on"
                       ></v-text-field>
@@ -157,7 +163,6 @@
                     v-model="movimiento.observacion"
                     label="Observacion"
                     rows="2"
-                    :error-messages="errors"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -275,13 +280,13 @@ export default {
       errors: [],
       formularioMovimiento: true,
       modalNMovimientos: false,
+      fechaActual: new Date() ,
       movimiento: {
         tipoMovimiento: { id: null, tipo: "" },
         recibe: { id: null, nombre: "" },
         aprueba: { id: null, nombre: "" },
         gerencia: { id: null, nombre: "" },
         ubicacion: { id: null, ubicacion: "" },
-        fecha: "",
         observaciones: "",
         activos: [],
       },
@@ -292,7 +297,7 @@ export default {
       headMovimientos: [
         { text: "Codigo", value: "codigo", align: "left" },
         { text: "Descripción", value: "descripcion", align: "left" },
-        { text: "Marca", value: "marca.nombre", align: "left" },
+        { text: "Marca", value: "marca.marca", align: "left" },
         { text: "Modelo", value: "modelo", align: "left" },
         { text: "Serie", value: "serie", align: "left" },
         { text: "Falla", value: "falla", align: "left" },
@@ -300,7 +305,12 @@ export default {
       inventarios: [],
     };
   },
-  computed: {},
+  computed: {
+    getFechaActual () 
+    {
+      return `${this.fechaActual.getFullYear()} - ${ this.fechaActual.getMonth()}-${ this.fechaActual.getDay()} ${ this.fechaActual.getHours() }:${ this.fechaActual.getMinutes()}:${ this.fechaActual.getSeconds() }`
+    }
+  },
   mounted() {
     this.getEmpleados();
     this.getTiposMovimientos();
@@ -394,6 +404,10 @@ export default {
                         }
                       });
                     });
+                  } else 
+                  {
+                    const { errors } = response.data
+                    this.errors = errors
                   }
                 }
               })

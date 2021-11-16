@@ -38,14 +38,16 @@ class MovimientoController extends Controller
                 DB::beginTransaction();
 
                 $validacion = Validator::make($request->all(), [
-                    
+                    'recibe.id' => 'required',
+                    'tipoMovimiento.id' => 'required',
+                    'aprueba.id' => 'required'
                 ]);
 
                 if ($validacion->fails()) {
                     return response()->json([
                         'respuesta' => false,
                         'mensaje' => '',
-                        'inventario' => $validacion->errors()->get('codigo')
+                        'errors' => $validacion->errors()
                     ]);
                 }
 
@@ -65,7 +67,7 @@ class MovimientoController extends Controller
                 $movimiento->inventario()->attach( $detalleMovimiento  );
 
                 foreach ( $request->input('activos') as $value )
-                {
+                {               
                     if ( $movimiento->tipo_id == 1 ) 
                     {
                         $inv = Inventario::find( $value['inventario_id'] );
@@ -112,6 +114,20 @@ class MovimientoController extends Controller
                         $historial->valor_anterior = $valorAnterior;
                         $historial->valor_nuevo = 'EN MANTENIMIENTO';
                         $historial->save();
+
+                    } else if ( $movimiento->tipo_id == 4 )
+                    {
+                        $inv = Inventario::find( $value['inventario_id'] );
+                        $valorAnterior = $inv->estado->estado;
+                        $inv->estado_id = 4;
+                        $inv->save();
+
+                        $historial = new HistorialMovimiento();
+                        $historial->inventario_id = $inv->id;
+                        $historial->campo = 'Estado';
+                        $historial->valor_anterior = $valorAnterior;
+                        $historial->valor_nuevo = 'SALIDA';
+                        $historial->save();
                     }
                 }
 
@@ -157,7 +173,8 @@ class MovimientoController extends Controller
             [
                 'falla' => $value['falla'], 
                 'observaciones' => $value['observaciones'],
-                'recibido' => true
+                'recibido' => true,
+                'usuario' => \Auth::user()->name
             ]);
         }
 
@@ -177,7 +194,6 @@ class MovimientoController extends Controller
 
         }
             
-
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Movimiento actualizado con exito',

@@ -109,7 +109,7 @@ Route::delete('Api/empleados/{empleado}/{acccion}',[EmpleadoController::class,'d
 //MOVIMIENTO DE INVENTARIO
 Route::get('/inventario/movimientos',[ MovimientoController::class, 'index'])->name("movimiento.index");
 Route::get('/inventario/movimientos/crear',[ MovimientoController::class, 'crear'])->name("movimiento.crear");
-Route::get('/Api/inventario/movimientos/detalle',[ MovimientoController::class, 'detalleMovimiento'])->name("movimiento.detalle");
+Route::get('/inventario/movimientos/detalle',[ MovimientoController::class, 'detalleMovimiento'])->name("movimiento.detalle");
 
 
 //MOVIMIENTO API

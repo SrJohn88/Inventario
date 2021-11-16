@@ -4290,6 +4290,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
 Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue */ "./resources/js/components/Inventario/Modals/Movimiento.vue").default);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "movimiento-crear",
@@ -4300,6 +4305,7 @@ Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue 
       errors: [],
       formularioMovimiento: true,
       modalNMovimientos: false,
+      fechaActual: new Date(),
       movimiento: {
         tipoMovimiento: {
           id: null,
@@ -4321,7 +4327,6 @@ Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue 
           id: null,
           ubicacion: ""
         },
-        fecha: "",
         observaciones: "",
         activos: []
       },
@@ -4339,7 +4344,7 @@ Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue 
         align: "left"
       }, {
         text: "Marca",
-        value: "marca.nombre",
+        value: "marca.marca",
         align: "left"
       }, {
         text: "Modelo",
@@ -4357,7 +4362,11 @@ Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue 
       inventarios: []
     };
   },
-  computed: {},
+  computed: {
+    getFechaActual: function getFechaActual() {
+      return "".concat(this.fechaActual.getFullYear(), " - ").concat(this.fechaActual.getMonth(), "-").concat(this.fechaActual.getDay(), " ").concat(this.fechaActual.getHours(), ":").concat(this.fechaActual.getMinutes(), ":").concat(this.fechaActual.getSeconds());
+    }
+  },
   mounted: function mounted() {
     this.getEmpleados();
     this.getTiposMovimientos();
@@ -4448,6 +4457,9 @@ Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue 
                       }
                     });
                   });
+                } else {
+                  var errors = response.data.errors;
+                  _this4.errors = errors;
                 }
               }
             })["catch"](console.error);
@@ -4618,7 +4630,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.movimientos = movimientos;
       })["catch"](console.error);
     },
-    detalle: function detalle() {}
+    detalle: function detalle(movimiento) {
+      window.location = "/inventario/movimientos/detalle?id=".concat(movimiento.id);
+    }
   }
 });
 
@@ -4798,9 +4812,98 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      errors: [],
+      modal: false,
+      detalleActivo: {
+        usuario: null,
+        fecha: null
+      },
+      contadorPendientes: 0,
       singleSelect: false,
       selected: [],
       idMovimiento: null,
@@ -4862,6 +4965,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         text: "Estado",
         value: "estado",
         align: "left"
+      }, {
+        text: "Acciones",
+        value: "action",
+        align: "left"
       }]
     };
   },
@@ -4872,6 +4979,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           isSelectable: activo.pivot.recibido == false
         });
       });
+    },
+    mostrarBotones: function mostrarBotones() {
+      return this.contadorPendientes > 0;
+    },
+    isCompleto: function isCompleto() {
+      return this.contadorPendientes > 0 ? "Movimiento | Pendiente de completar" : 'Movimiento | Completo';
     }
   },
   created: function created() {
@@ -4919,6 +5032,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           }
 
           inventario.estado = inventario.pivot.recibido == true ? 'RECIBIDO' : 'PENDIENTE';
+
+          if (!inventario.pivot.recibido) {
+            _this.contadorPendientes++;
+          }
         });
         _this.movimiento.activos = _toConsumableArray(inventario);
         console.log({
@@ -4929,26 +5046,46 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     guardar: function guardar() {
       var _this2 = this;
 
-      console.log(_objectSpread({}, this.prepararDatos()));
-      Swal.fire({
-        title: "¡Importante!",
-        text: "¿Estas seguro de realizar la operación?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Guardar",
-        cancelButtonText: "Cancelar"
-      }).then(function (result) {
-        if (result.isConfirmed) {
-          _this2.loader = true;
-          var path = "/Api/inventario/movimientos/update/".concat(_this2.idMovimiento);
-          var datos = {
-            activos: _toConsumableArray(_this2.prepararDatos())
-          };
-          axios.post(path, _objectSpread({}, datos)).then(console.log)["catch"](console.error);
-        }
-      }); //console.log( this.getIdSeleccion() )
+      if (this.selected.length == 0) {
+        this.alerta('Selecciona al menos un activo de la lista', 'warning', '¡INFORMACION!');
+      } else {
+        Swal.fire({
+          title: "¡Importante!",
+          text: "¿Estas seguro de realizar la operación?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Guardar",
+          cancelButtonText: "Cancelar"
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            _this2.loader = true;
+            var path = "/Api/inventario/movimientos/update/".concat(_this2.idMovimiento);
+            var datos = {
+              activos: _toConsumableArray(_this2.prepararDatos())
+            };
+            axios.post(path, _objectSpread({}, datos)).then(function (response) {
+              if (response.status == 200) {
+                var _response$data = response.data,
+                    respuesta = _response$data.respuesta,
+                    mensaje = _response$data.mensaje;
+
+                if (respuesta) {
+                  _this2.alerta(mensaje, 'success', '¡Bien hecho!').then(function () {
+                    window.location = '/inventario/movimientos';
+                  });
+                }
+              } else {
+                _this2.alerta('Ocurrio un error inesperado', 'error', '¡INFORMACION!');
+              }
+            })["catch"](function () {
+              _this2.alerta('Ocurrio un error inesperado', 'error', '¡INFORMACION!');
+            });
+          }
+        });
+      } //console.log( this.getIdSeleccion() )
+
     },
     cancelar: function cancelar() {},
     prepararDatos: function prepararDatos() {
@@ -4962,6 +5099,33 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
       return activosRecibidos;
+    },
+    alerta: function alerta(mensaje) {
+      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "info";
+      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+      return new Promise(function (resolve, reject) {
+        Swal.fire({
+          position: "top-end",
+          icon: icono,
+          title: titulo,
+          text: mensaje,
+          showConfirmButton: false,
+          timer: 1500
+        }).then(resolve);
+      });
+    },
+    mostrarModal: function mostrarModal(item) {
+      var fechaRecibido = new Date(item.pivot.updated_at);
+      this.detalleActivo.usuario = item.pivot.usuario;
+      this.detalleActivo.fecha = "".concat(fechaRecibido.getDate(), "-").concat(fechaRecibido.getMonth(), "-").concat(fechaRecibido.getFullYear(), " ").concat(fechaRecibido.getHours(), ":").concat(fechaRecibido.getMinutes());
+      this.modal = true;
+    },
+    ocultarModal: function ocultarModal() {
+      this.modal = false;
+      this.detalleActivo = {
+        fecha: null,
+        usuario: ''
+      };
     },
     guardarFallar: function guardarFallar(item) {},
     cancelarFalla: function cancelarFalla(item) {}
@@ -50883,7 +51047,14 @@ var render = function() {
                                     "item-value": "id",
                                     "return-object": "",
                                     clearable: "",
+                                    "error-messages":
+                                      _vm.errors["tipoMovimiento.id"],
                                     "menu-props": { closeOnClick: true }
+                                  },
+                                  on: {
+                                    keyup: function($event) {
+                                      _vm.errors["tipoMovimiento.id"] = []
+                                    }
                                   },
                                   model: {
                                     value: _vm.movimiento.tipoMovimiento,
@@ -50921,8 +51092,14 @@ var render = function() {
                                     "item-text": _vm.EmpleadoNombreCompleto,
                                     "item-value": "id",
                                     "return-object": "",
+                                    "error-messages": _vm.errors["recibe.id"],
                                     clearable: "",
                                     "menu-props": { closeOnClick: true }
+                                  },
+                                  on: {
+                                    keyup: function($event) {
+                                      _vm.errors["recibe.id"] = []
+                                    }
                                   },
                                   model: {
                                     value: _vm.movimiento.recibe,
@@ -50957,7 +51134,13 @@ var render = function() {
                                     "item-value": "id",
                                     "return-object": "",
                                     clearable: "",
+                                    "error-messages": _vm.errors["aprueba.id"],
                                     "menu-props": { closeOnClick: true }
+                                  },
+                                  on: {
+                                    keyup: function($event) {
+                                      _vm.errors["aprueba.id"] = []
+                                    }
                                   },
                                   model: {
                                     value: _vm.movimiento.aprueba,
@@ -51186,11 +51369,7 @@ var render = function() {
                               { attrs: { cols: "12" } },
                               [
                                 _c("v-textarea", {
-                                  attrs: {
-                                    label: "Observacion",
-                                    rows: "2",
-                                    "error-messages": _vm.errors
-                                  },
+                                  attrs: { label: "Observacion", rows: "2" },
                                   model: {
                                     value: _vm.movimiento.observacion,
                                     callback: function($$v) {
@@ -51670,7 +51849,7 @@ var render = function() {
                                           },
                                           on: {
                                             click: function($event) {
-                                              return _vm.detalle()
+                                              return _vm.detalle(item)
                                             }
                                           }
                                         },
@@ -51742,7 +51921,9 @@ var render = function() {
           [
             _c("v-card-title", [
               _vm._v(
-                "\n                  Detalle de Movimiento\n                  "
+                "\n                   " +
+                  _vm._s(_vm.isCompleto) +
+                  "\n                  "
               ),
               _c("div", { staticClass: "flex-grow-1" })
             ]),
@@ -51894,10 +52075,7 @@ var render = function() {
                           { attrs: { cols: "12", sm: "12" } },
                           [
                             _c("v-text-field", {
-                              attrs: {
-                                label: "Fecha de registro",
-                                disabled: ""
-                              },
+                              attrs: { label: "Observaciones", disabled: "" },
                               model: {
                                 value: _vm.movimiento.observaciones,
                                 callback: function($$v) {
@@ -52081,6 +52259,272 @@ var render = function() {
                           )
                         ]
                       }
+                    },
+                    {
+                      key: "item.action",
+                      fn: function(ref) {
+                        var item = ref.item
+                        return [
+                          _c(
+                            "v-tooltip",
+                            {
+                              attrs: { top: "" },
+                              scopedSlots: _vm._u(
+                                [
+                                  {
+                                    key: "activator",
+                                    fn: function(ref) {
+                                      var on = ref.on
+                                      return [
+                                        item.pivot.recibido
+                                          ? _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                {
+                                                  attrs: {
+                                                    color: "success",
+                                                    elevation: "8",
+                                                    small: "",
+                                                    dark: "",
+                                                    disabled: item.id < 0
+                                                  },
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.mostrarModal(
+                                                        item
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                on
+                                              ),
+                                              [
+                                                _c("v-icon", [
+                                                  _vm._v("mdi-pencil")
+                                                ])
+                                              ],
+                                              1
+                                            )
+                                          : _vm._e()
+                                      ]
+                                    }
+                                  }
+                                ],
+                                null,
+                                true
+                              )
+                            },
+                            [
+                              _vm._v(" "),
+                              _c("span", [_vm._v("Actualizar Cuenta")])
+                            ]
+                          )
+                        ]
+                      }
+                    },
+                    {
+                      key: "top",
+                      fn: function() {
+                        return [
+                          _c(
+                            "v-toolbar",
+                            { attrs: { flat: "", color: "white" } },
+                            [
+                              _c("div", { staticClass: "flex-grow-1" }),
+                              _vm._v(" "),
+                              _c(
+                                "v-dialog",
+                                {
+                                  attrs: {
+                                    persistent: "",
+                                    "max-width": "700px"
+                                  },
+                                  model: {
+                                    value: _vm.modal,
+                                    callback: function($$v) {
+                                      _vm.modal = $$v
+                                    },
+                                    expression: "modal"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    [
+                                      _c(
+                                        "v-card-title",
+                                        {
+                                          staticClass: "headline lighten-2",
+                                          attrs: { "primary-titles": "" }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "headline",
+                                            domProps: {
+                                              textContent: _vm._s(
+                                                "Detalle de activo"
+                                              )
+                                            }
+                                          })
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-card-text",
+                                        [
+                                          _c(
+                                            "v-container",
+                                            [
+                                              _c(
+                                                "v-form",
+                                                {
+                                                  attrs: {
+                                                    "lazy-validation": true
+                                                  }
+                                                },
+                                                [
+                                                  _c(
+                                                    "v-row",
+                                                    [
+                                                      _c(
+                                                        "v-col",
+                                                        {
+                                                          attrs: { cols: "6" }
+                                                        },
+                                                        [
+                                                          _c("v-text-field", {
+                                                            attrs: {
+                                                              "append-icon":
+                                                                "mdi-folder-outline",
+                                                              rules: [],
+                                                              label: "Usuario",
+                                                              required: "",
+                                                              readonly: true,
+                                                              "error-messages":
+                                                                _vm.errors
+                                                            },
+                                                            on: {
+                                                              keyup: function(
+                                                                $event
+                                                              ) {
+                                                                _vm.errors = []
+                                                              }
+                                                            },
+                                                            model: {
+                                                              value:
+                                                                _vm
+                                                                  .detalleActivo
+                                                                  .usuario,
+                                                              callback: function(
+                                                                $$v
+                                                              ) {
+                                                                _vm.$set(
+                                                                  _vm.detalleActivo,
+                                                                  "usuario",
+                                                                  $$v
+                                                                )
+                                                              },
+                                                              expression:
+                                                                "detalleActivo.usuario"
+                                                            }
+                                                          })
+                                                        ],
+                                                        1
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "v-col",
+                                                        {
+                                                          attrs: { cols: "6" }
+                                                        },
+                                                        [
+                                                          _c("v-text-field", {
+                                                            attrs: {
+                                                              "append-icon":
+                                                                "mdi-folder-outline",
+                                                              rules: [],
+                                                              label:
+                                                                "Fecha de recibido",
+                                                              required: "",
+                                                              readonly: true,
+                                                              "error-messages":
+                                                                _vm.errors
+                                                            },
+                                                            on: {
+                                                              keyup: function(
+                                                                $event
+                                                              ) {
+                                                                _vm.errors = []
+                                                              }
+                                                            },
+                                                            model: {
+                                                              value:
+                                                                _vm
+                                                                  .detalleActivo
+                                                                  .fecha,
+                                                              callback: function(
+                                                                $$v
+                                                              ) {
+                                                                _vm.$set(
+                                                                  _vm.detalleActivo,
+                                                                  "fecha",
+                                                                  $$v
+                                                                )
+                                                              },
+                                                              expression:
+                                                                "detalleActivo.fecha"
+                                                            }
+                                                          })
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-card-actions",
+                                        [
+                                          _c("div", {
+                                            staticClass: "flex-grow-1"
+                                          }),
+                                          _vm._v(" "),
+                                          _c("v-btn", {
+                                            attrs: {
+                                              color: "info darken-1",
+                                              text: ""
+                                            },
+                                            domProps: {
+                                              textContent: _vm._s("Cerrar")
+                                            },
+                                            on: { click: _vm.ocultarModal }
+                                          })
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ]
+                      },
+                      proxy: true
                     }
                   ]),
                   model: {
@@ -52097,27 +52541,35 @@ var render = function() {
                   [
                     _c("div", { staticClass: "flex-grow-1" }),
                     _vm._v(" "),
-                    _c(
-                      "v-btn",
-                      {
-                        attrs: { color: "red darken-1", text: "" },
-                        on: { click: _vm.cancelar }
-                      },
-                      [_vm._v("Cerrar")]
-                    ),
+                    _vm.mostrarBotones
+                      ? _c(
+                          "v-btn",
+                          {
+                            attrs: { color: "red darken-1", text: "" },
+                            on: { click: _vm.cancelar }
+                          },
+                          [
+                            _vm._v(
+                              "\n                          Cerrar\n                  "
+                            )
+                          ]
+                        )
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c(
-                      "v-btn",
-                      {
-                        attrs: {
-                          color: "info darken-1",
-                          text: "",
-                          disabled: false
-                        },
-                        on: { click: _vm.guardar }
-                      },
-                      [_vm._v("Guardar")]
-                    )
+                    _vm.mostrarBotones
+                      ? _c(
+                          "v-btn",
+                          {
+                            attrs: {
+                              color: "info darken-1",
+                              text: "",
+                              disabled: false
+                            },
+                            on: { click: _vm.guardar }
+                          },
+                          [_vm._v("Guardar")]
+                        )
+                      : _vm._e()
                   ],
                   1
                 )

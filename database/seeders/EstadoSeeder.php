@@ -29,6 +29,10 @@ class EstadoSeeder extends Seeder
         $estado3->estado = 'A PRESTAMO';
         $estado3->save();
 
+        $estado4 = new Estado();
+        $estado4->estado = 'SALIDA';
+        $estado4->save();
+
         $cargo1 = new Cargo();
         $cargo1->cargo = 'DOCENTE';
         $cargo1->save();
@@ -47,6 +51,10 @@ class EstadoSeeder extends Seeder
 
         $tipo4 = new TipoMovimiento();
         $tipo4->tipo = 'SALIDA POR REPARACIÓN';
+        $tipo4->save();
+
+        $tipo4 = new TipoMovimiento();
+        $tipo4->tipo = 'SALIDA';
         $tipo4->save();
     }
 }
