@@ -333,9 +333,6 @@
       </v-card>
 
 
-
-
-
       <v-card v-if="detalle">
         <v-card-title>
           Historial de activo
@@ -640,6 +637,15 @@ export default {
     this.detalle = params.has("detalle")
       ? Boolean(params.get("detalle"))
       : false;
+    
+    if ( this.detalle )
+    {
+      let fechaActual = new Date();
+      this.cpFechaInicio = `${fechaActual.getFullYear()}-${fechaActual.getMonth()}-${fechaActual.getDate()}`
+      this.cpFechaFinal = `${fechaActual.getFullYear()}-${fechaActual.getMonth() + 1 }-${fechaActual.getDate()}`
+      this.cpFechaInicioMovi = `${fechaActual.getFullYear()}-${fechaActual.getMonth()}-${fechaActual.getDate()}`
+      this.cpFechaFinalMovi = `${fechaActual.getFullYear()}-${fechaActual.getMonth() + 1 }-${fechaActual.getDate()}`
+    }
   },
   mounted() {
     this.obtenerMarcar();
@@ -653,7 +659,8 @@ export default {
 
     if (this.idPrueba != null) {
       this.obtenerActivo();
-      console.log(this.historial);
+      this.buscarCopias();
+      this.buscarMovimientosActivos()
     }
   },
   computed: {

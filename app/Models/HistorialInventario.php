@@ -20,11 +20,15 @@ class HistorialInventario extends Model
 
     public function getCreatedAtAttribute( $date )
     {        
-        return Carbon::createFromDate( $date )->format('d-m-Y H:m A') ;
+        return Carbon::createFromDate($date)
+            ->setTimezone('America/El_Salvador')
+            ->format('d-m-Y h:i:s A');                
     }
 
     public function getUpdatedAtAttribute( $date )
     {        
-        return Carbon::createFromDate( $date )->format('d-m-Y H:m A') ;
+        return Carbon::createFromDate($date)
+            ->setTimezone('America/El_Salvador')
+            ->format('d-m-Y h:i:s A');
     }
 }

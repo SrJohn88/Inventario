@@ -11,8 +11,11 @@ class HistorialMovimientoController extends Controller
     function obtenerHistorialMovimientos ( Inventario $inventario, $desde, $hasta )
     {
         return response()->json([
-            'historial' => HistorialMovimiento::where('inventario_id', $inventario->id )
-                                            ->whereBetween('created_at', [$desde, $hasta ] )->get()
+            'historial' => HistorialMovimiento::where('inventario_id', '=', $inventario->id )
+                                            ->whereDate('created_at', '>=', $desde )
+                                            ->whereDate('created_at', '<=', $hasta )
+                                            ->orderBy('created_at', 'desc')
+                                            ->get()
         ]);
     }
 }

@@ -65,7 +65,7 @@ export default {
                 (v.length >= 2 && v.length <= 100) ||
                 "Nombre de la cuenta debe ser mayor a 2 caracteres",
                 expresion: (v) =>
-                /^[A-Za-z0-9-ñ \s]+$/g.test(v) ||
+                /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
                 "Nombre de la cuenta no puede tener caracteres especiales",
             },
         }

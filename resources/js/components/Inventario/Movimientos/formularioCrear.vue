@@ -4,7 +4,8 @@
       class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
     >
       <v-card>
-        <v-card-title v-text="'Movimientos de inventarios'">
+        <v-card-title v-text="getFechaActual">
+          {{ getFechaActual }}
           <div class="flex-row-1"></div>
         </v-card-title>
 
@@ -28,7 +29,7 @@
                     item-value="id"
                     return-object
                     clearable
-                    @keyup="errors['tipoMovimiento.id'] = []"
+                    @change="errors['tipoMovimiento.id'] = []"
                     :error-messages="errors['tipoMovimiento.id']"
                     :menu-props="{ closeOnClick: true }"
                   ></v-autocomplete>
@@ -46,7 +47,7 @@
                     :item-text="EmpleadoNombreCompleto"
                     item-value="id"
                     return-object
-                    @keyup="errors['recibe.id'] = []"
+                    @change="errors['recibe.id'] = []"
                     :error-messages="errors['recibe.id']"
                     clearable
                     :menu-props="{ closeOnClick: true }"
@@ -66,7 +67,7 @@
                     item-value="id"
                     return-object
                     clearable
-                    @keyup="errors['aprueba.id'] = []"
+                    @change="errors['aprueba.id'] = []"
                     :error-messages="errors['aprueba.id']"
                     :menu-props="{ closeOnClick: true }"
                   ></v-autocomplete>
@@ -112,6 +113,7 @@
                     <v-date-picker
                       v-model="movimiento.fecha"
                       @input="menu = false"
+                      :min="getFechaActual"
                     ></v-date-picker>
                   </v-menu>
                 </v-col>
@@ -308,7 +310,7 @@ export default {
   computed: {
     getFechaActual () 
     {
-      return `${this.fechaActual.getFullYear()} - ${ this.fechaActual.getMonth()}-${ this.fechaActual.getDay()} ${ this.fechaActual.getHours() }:${ this.fechaActual.getMinutes()}:${ this.fechaActual.getSeconds() }`
+      return `${this.fechaActual.getFullYear()}-${ this.fechaActual.getMonth() + 1}-${ this.fechaActual.getDate()}`
     }
   },
   mounted() {

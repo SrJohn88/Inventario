@@ -69,7 +69,7 @@ export default {
                 (v.length >= 2 && v.length <= 100) ||
                 "Nombre de la entidad debe ser mayor a 2 caracteres",
                 expresion: (v) =>
-                /^[A-Za-z0-9- \s]+$/g.test(v) ||
+                /^[A-ZáéíóúÁÉÍÓÚÑa-z0-9- \s]+$/g.test(v) ||
                 "Nombre de la entidad no puede tener caracteres especiales",
             },
         }

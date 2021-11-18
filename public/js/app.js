@@ -3148,7 +3148,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           return v.length >= 2 && v.length <= 100 || "Nombre de la cuenta debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la cuenta no puede tener caracteres especiales";
+          return /^[A-ZáéíóúÁÉÍÓÚÑa-z0-9- \s]+$/g.test(v) || "Nombre de la cuenta no puede tener caracteres especiales";
         }
       },
       loader: false,
@@ -3322,7 +3322,7 @@ __webpack_require__.r(__webpack_exports__);
           return v.length >= 2 && v.length <= 100 || "Nombre de la entidad debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9- \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
+          return /^[A-ZáéíóúÁÉÍÓÚÑa-z0-9- \s]+$/g.test(v) || "Nombre de la entidad no puede tener caracteres especiales";
         }
       }
     };
@@ -3768,7 +3768,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           return v.length >= 2 && v.length <= 100 || "Nombre de la cuenta debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9-ñ \s]+$/g.test(v) || "Nombre de la cuenta no puede tener caracteres especiales";
+          return /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) || "Nombre de la cuenta no puede tener caracteres especiales";
         }
       }
     };
@@ -4295,6 +4295,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
 Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue */ "./resources/js/components/Inventario/Modals/Movimiento.vue").default);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "movimiento-crear",
@@ -4364,7 +4366,7 @@ Vue.component("n-inventario", __webpack_require__(/*! ..//Modals/Movimiento.vue 
   },
   computed: {
     getFechaActual: function getFechaActual() {
-      return "".concat(this.fechaActual.getFullYear(), " - ").concat(this.fechaActual.getMonth(), "-").concat(this.fechaActual.getDay(), " ").concat(this.fechaActual.getHours(), ":").concat(this.fechaActual.getMinutes(), ":").concat(this.fechaActual.getSeconds());
+      return "".concat(this.fechaActual.getFullYear(), "-").concat(this.fechaActual.getMonth() + 1, "-").concat(this.fechaActual.getDate());
     }
   },
   mounted: function mounted() {
@@ -5696,9 +5698,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
 Vue.component("Entidad", __webpack_require__(/*! .//Modals/Entidad.vue */ "./resources/js/components/Inventario/Modals/Entidad.vue").default);
 Vue.component("Cuenta", __webpack_require__(/*! .//Modals/Cuenta.vue */ "./resources/js/components/Inventario/Modals/Cuenta.vue").default);
 Vue.component("Marca", __webpack_require__(/*! .//Modals/Marca.vue */ "./resources/js/components/Inventario/Modals/Marca.vue").default);
@@ -5833,6 +5832,14 @@ Vue.component("Ubicacion", __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
     var params = new URLSearchParams(uri);
     this.idPrueba = params.has("id") ? params.get("id") : null;
     this.detalle = params.has("detalle") ? Boolean(params.get("detalle")) : false;
+
+    if (this.detalle) {
+      var fechaActual = new Date();
+      this.cpFechaInicio = "".concat(fechaActual.getFullYear(), "-").concat(fechaActual.getMonth(), "-").concat(fechaActual.getDate());
+      this.cpFechaFinal = "".concat(fechaActual.getFullYear(), "-").concat(fechaActual.getMonth() + 1, "-").concat(fechaActual.getDate());
+      this.cpFechaInicioMovi = "".concat(fechaActual.getFullYear(), "-").concat(fechaActual.getMonth(), "-").concat(fechaActual.getDate());
+      this.cpFechaFinalMovi = "".concat(fechaActual.getFullYear(), "-").concat(fechaActual.getMonth() + 1, "-").concat(fechaActual.getDate());
+    }
   },
   mounted: function mounted() {
     this.obtenerMarcar();
@@ -5844,7 +5851,8 @@ Vue.component("Ubicacion", __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
 
     if (this.idPrueba != null) {
       this.obtenerActivo();
-      console.log(this.historial);
+      this.buscarCopias();
+      this.buscarMovimientosActivos();
     }
   },
   computed: {
@@ -50997,10 +51005,13 @@ var render = function() {
           [
             _c(
               "v-card-title",
-              {
-                domProps: { textContent: _vm._s("Movimientos de inventarios") }
-              },
-              [_c("div", { staticClass: "flex-row-1" })]
+              { domProps: { textContent: _vm._s(_vm.getFechaActual) } },
+              [
+                _vm._v(
+                  "\n        " + _vm._s(_vm.getFechaActual) + "\n        "
+                ),
+                _c("div", { staticClass: "flex-row-1" })
+              ]
             ),
             _vm._v(" "),
             _c(
@@ -51052,7 +51063,7 @@ var render = function() {
                                     "menu-props": { closeOnClick: true }
                                   },
                                   on: {
-                                    keyup: function($event) {
+                                    change: function($event) {
                                       _vm.errors["tipoMovimiento.id"] = []
                                     }
                                   },
@@ -51097,7 +51108,7 @@ var render = function() {
                                     "menu-props": { closeOnClick: true }
                                   },
                                   on: {
-                                    keyup: function($event) {
+                                    change: function($event) {
                                       _vm.errors["recibe.id"] = []
                                     }
                                   },
@@ -51138,7 +51149,7 @@ var render = function() {
                                     "menu-props": { closeOnClick: true }
                                   },
                                   on: {
-                                    keyup: function($event) {
+                                    change: function($event) {
                                       _vm.errors["aprueba.id"] = []
                                     }
                                   },
@@ -51259,6 +51270,7 @@ var render = function() {
                                   [
                                     _vm._v(" "),
                                     _c("v-date-picker", {
+                                      attrs: { min: _vm.getFechaActual },
                                       on: {
                                         input: function($event) {
                                           _vm.menu = false

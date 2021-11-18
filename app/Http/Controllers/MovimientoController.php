@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\DB;
 
 class MovimientoController extends Controller
 {
+    private $mensajes = [
+        'required' => 'Este campo es requerido',
+        'min' => 'El campo debe tener al menos :min caracteres.',
+        'unique' => 'La :attribute ya existe',
+    ];
+
     function crear() 
     {
         return view('Inventario.movimientos.crear');
@@ -25,7 +31,8 @@ class MovimientoController extends Controller
     function obtenerMovimientos()
     {
         return response()->json([
-            'movimientos' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'user')->get()
+            'movimientos' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'user')
+                    ->orderBy('created_at', 'desc')->get()
         ]);
     }
 
@@ -41,7 +48,7 @@ class MovimientoController extends Controller
                     'recibe.id' => 'required',
                     'tipoMovimiento.id' => 'required',
                     'aprueba.id' => 'required'
-                ]);
+                ], $this->mensajes);
 
                 if ($validacion->fails()) {
                     return response()->json([
