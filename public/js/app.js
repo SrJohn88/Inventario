@@ -3077,6 +3077,44 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Modals/Cuenta.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Modals/Cuenta.vue?vue&type=script&lang=js& ***!
@@ -6903,11 +6941,10 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
     return {
       loader: false,
       encabezados: [{
-        text: "ID",
-        value: "id"
-      }, {
         text: "Rubro",
-        value: "rubro"
+        value: "rubro",
+        sortable: false,
+        align: "center"
       }, {
         text: "Acciones",
         value: "action",
@@ -7715,7 +7752,10 @@ vue__WEBPACK_IMPORTED_MODULE_2__.default.component('inventario-detalle', __webpa
 
 vue__WEBPACK_IMPORTED_MODULE_2__.default.component('movimiento-index', __webpack_require__(/*! ./components/Inventario/Movimientos/movimientoIndex.vue */ "./resources/js/components/Inventario/Movimientos/movimientoIndex.vue").default);
 vue__WEBPACK_IMPORTED_MODULE_2__.default.component('movimiento-crear', __webpack_require__(/*! ./components/Inventario/Movimientos/formularioCrear.vue */ "./resources/js/components/Inventario/Movimientos/formularioCrear.vue").default);
-vue__WEBPACK_IMPORTED_MODULE_2__.default.component('update-movimiento', __webpack_require__(/*! ./components/Inventario/Movimientos/updateMovimiento.vue */ "./resources/js/components/Inventario/Movimientos/updateMovimiento.vue").default); //EMPLEADOS
+vue__WEBPACK_IMPORTED_MODULE_2__.default.component('update-movimiento', __webpack_require__(/*! ./components/Inventario/Movimientos/updateMovimiento.vue */ "./resources/js/components/Inventario/Movimientos/updateMovimiento.vue").default); // DESCARGOS DE INVENTARIO
+
+vue__WEBPACK_IMPORTED_MODULE_2__.default.component('formulario-descargos', __webpack_require__(/*! ./components/Inventario/Descargos/formularioDescargos.vue */ "./resources/js/components/Inventario/Descargos/formularioDescargos.vue").default);
+vue__WEBPACK_IMPORTED_MODULE_2__.default.component('descargos', __webpack_require__(/*! ./components/Inventario/Descargos/descargos.vue */ "./resources/js/components/Inventario/Descargos/descargos.vue").default); //EMPLEADOS
 
 vue__WEBPACK_IMPORTED_MODULE_2__.default.component('empleados', __webpack_require__(/*! ./components/Empleados.vue */ "./resources/js/components/Empleados.vue").default); // USUARIOS
 
@@ -47255,6 +47295,84 @@ component.options.__file = "resources/js/components/Entidades.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/Inventario/Descargos/descargos.vue":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/Inventario/Descargos/descargos.vue ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _descargos_vue_vue_type_template_id_1340ec20___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./descargos.vue?vue&type=template&id=1340ec20& */ "./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=template&id=1340ec20&");
+/* harmony import */ var _descargos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./descargos.vue?vue&type=script&lang=js& */ "./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _descargos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _descargos_vue_vue_type_template_id_1340ec20___WEBPACK_IMPORTED_MODULE_0__.render,
+  _descargos_vue_vue_type_template_id_1340ec20___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Inventario/Descargos/descargos.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Inventario/Descargos/formularioDescargos.vue":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Descargos/formularioDescargos.vue ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _formularioDescargos_vue_vue_type_template_id_9d76f344___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./formularioDescargos.vue?vue&type=template&id=9d76f344& */ "./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=template&id=9d76f344&");
+/* harmony import */ var _formularioDescargos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./formularioDescargos.vue?vue&type=script&lang=js& */ "./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _formularioDescargos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _formularioDescargos_vue_vue_type_template_id_9d76f344___WEBPACK_IMPORTED_MODULE_0__.render,
+  _formularioDescargos_vue_vue_type_template_id_9d76f344___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Inventario/Descargos/formularioDescargos.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/Inventario/Modals/Cuenta.vue":
 /*!**************************************************************!*\
   !*** ./resources/js/components/Inventario/Modals/Cuenta.vue ***!
@@ -47927,6 +48045,38 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_descargos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./descargos.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_descargos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioDescargos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./formularioDescargos.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioDescargos_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
 /***/ "./resources/js/components/Inventario/Modals/Cuenta.vue?vue&type=script&lang=js&":
 /*!***************************************************************************************!*\
   !*** ./resources/js/components/Inventario/Modals/Cuenta.vue?vue&type=script&lang=js& ***!
@@ -48230,6 +48380,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Entidades_vue_vue_type_template_id_39579208___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Entidades_vue_vue_type_template_id_39579208___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Entidades.vue?vue&type=template&id=39579208& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Entidades.vue?vue&type=template&id=39579208&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=template&id=1340ec20&":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=template&id=1340ec20& ***!
+  \***************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_descargos_vue_vue_type_template_id_1340ec20___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_descargos_vue_vue_type_template_id_1340ec20___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_descargos_vue_vue_type_template_id_1340ec20___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./descargos.vue?vue&type=template&id=1340ec20& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=template&id=1340ec20&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=template&id=9d76f344&":
+/*!*************************************************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=template&id=9d76f344& ***!
+  \*************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioDescargos_vue_vue_type_template_id_9d76f344___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioDescargos_vue_vue_type_template_id_9d76f344___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_formularioDescargos_vue_vue_type_template_id_9d76f344___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./formularioDescargos.vue?vue&type=template&id=9d76f344& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=template&id=9d76f344&");
 
 
 /***/ }),
@@ -50097,6 +50281,56 @@ var render = function() {
       1
     )
   ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=template&id=1340ec20&":
+/*!******************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=template&id=1340ec20& ***!
+  \******************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("h1", [_vm._v("Listado descargos")])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=template&id=9d76f344&":
+/*!****************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/formularioDescargos.vue?vue&type=template&id=9d76f344& ***!
+  \****************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("h1", [_vm._v("Formulario")])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -55005,7 +55239,7 @@ var render = function() {
                                         staticClass: "mx-10",
                                         staticStyle: { "margin-top": "1.5rem" },
                                         attrs: {
-                                          label: "Mostrar Los Rubros Removidas",
+                                          label: "Mostrar rubros desactivados",
                                           value: "false"
                                         },
                                         model: {
@@ -55277,40 +55511,46 @@ var render = function() {
                                   fn: function(ref) {
                                     var on = ref.on
                                     return [
-                                      !_vm.estadoUbicacion
-                                        ? _c(
-                                            "v-btn",
-                                            _vm._g(
+                                      _c(
+                                        "v-btn",
+                                        _vm._g(
+                                          {
+                                            directives: [
                                               {
-                                                staticClass: "mb-2",
-                                                attrs: {
-                                                  elevation: "10",
-                                                  color: "blue  darken-3",
-                                                  dark: ""
-                                                }
-                                              },
-                                              on
-                                            ),
-                                            [
-                                              _vm._v(
-                                                "\n                    Agregar Ubicación \n                    "
-                                              ),
-                                              _c("v-icon", [
-                                                _vm._v(
-                                                  "mdi-plus-box-multiple-outline"
-                                                )
-                                              ])
+                                                name: "show",
+                                                rawName: "v-show",
+                                                value: !_vm.estadoUbicacion,
+                                                expression: "!estadoUbicacion"
+                                              }
                                             ],
-                                            1
-                                          )
-                                        : _vm._e(),
+                                            staticClass: "mb-2",
+                                            attrs: {
+                                              elevation: "10",
+                                              color: "blue  darken-3",
+                                              dark: ""
+                                            }
+                                          },
+                                          on
+                                        ),
+                                        [
+                                          _vm._v(
+                                            "\n                    Agregar Ubicación \n                    "
+                                          ),
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              "mdi-plus-box-multiple-outline"
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      ),
                                       _vm._v(" "),
                                       _c("v-checkbox", {
                                         staticClass: "mx-10",
                                         staticStyle: { "margin-top": "1.5rem" },
                                         attrs: {
                                           label:
-                                            "Mostrar Las Ubicaciones Removidas",
+                                            "Mostrar ubicaciones desactivadas",
                                           value: "false"
                                         },
                                         model: {
@@ -55579,7 +55819,10 @@ var render = function() {
                             true
                           )
                         },
-                        [_vm._v(" "), _c("span", [_vm._v("Eliminar Entidad")])]
+                        [
+                          _vm._v(" "),
+                          _c("span", [_vm._v("Desactivar ubicación")])
+                        ]
                       ),
                       _vm._v(" "),
                       _c(
@@ -55632,7 +55875,10 @@ var render = function() {
                             true
                           )
                         },
-                        [_vm._v(" "), _c("span", [_vm._v("Eliminar Entidad")])]
+                        [
+                          _vm._v(" "),
+                          _c("span", [_vm._v("Restaurar ubicación")])
+                        ]
                       )
                     ]
                   }

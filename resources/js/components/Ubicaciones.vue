@@ -35,7 +35,7 @@
               <div class="flex-grow-1"></div>
               <v-dialog v-model="modal" persistent max-width="700px">
                 <template v-slot:activator="{ on }">
-                  <v-btn elevation="10" v-if="!estadoUbicacion" color="blue  darken-3" dark class="mb-2" v-on="on">
+                  <v-btn elevation="10" v-show="!estadoUbicacion" color="blue  darken-3" dark class="mb-2" v-on="on">
                     Agregar Ubicación&nbsp;
                     <v-icon>mdi-plus-box-multiple-outline</v-icon>
                   </v-btn>
@@ -45,7 +45,7 @@
                         v-model="estadoUbicacion"
                         class="mx-10"
                         style="margin-top: 1.5rem;"
-                        label="Mostrar Las Ubicaciones Removidas"
+                        label="Mostrar ubicaciones desactivadas"
                         value="false"
                     />
                 </template>
@@ -124,7 +124,7 @@
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
-              <span>Eliminar Entidad</span>
+              <span>Desactivar ubicación</span>
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -142,7 +142,7 @@
                   <v-icon>mdi-restore</v-icon>
                 </v-btn>
               </template>
-              <span>Eliminar Entidad</span>
+              <span>Restaurar ubicación</span>
             </v-tooltip>
           </template>
 

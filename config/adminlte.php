@@ -276,6 +276,11 @@ return [
                     'text' => 'Movimientos',
                     'route' => 'movimiento.index',
                     'icon'  => 'fas fw fa-registered',
+                ],                
+                [
+                    'text' => 'Usuarios',
+                    'route' => 'usuarios.index',
+                    'icon'  => 'fas fw fa-registered',
                 ]
             ],
         ],

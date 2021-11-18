@@ -106,7 +106,7 @@
                         v-model="EstadoRubro"
                         class="mx-10"
                         style="margin-top: 1.5rem;"
-                        label="Mostrar Los Rubros Removidas"
+                        label="Mostrar rubros desactivados"
                         value="false"
                     />
 
@@ -169,8 +169,7 @@ export default {
     return {
       loader: false,
       encabezados: [
-        { text: "ID", value: "id" },
-        { text: "Rubro", value: "rubro" },
+        { text: "Rubro", value: "rubro", sortable: false, align: "center" },
         { text: "Acciones", value: "action", sortable: false, align: "center" },
       ],
       rubro: { id: null, rubro: "" },
