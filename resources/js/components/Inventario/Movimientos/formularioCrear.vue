@@ -4,8 +4,7 @@
       class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
     >
       <v-card>
-        <v-card-title v-text="getFechaActual">
-          {{ getFechaActual }}
+        <v-card-title v-text="'Movimientos de Inventario'">
           <div class="flex-row-1"></div>
         </v-card-title>
 

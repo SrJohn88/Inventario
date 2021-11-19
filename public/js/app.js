@@ -3111,7 +3111,248 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      formDescargos: false,
+      errors: [],
+      tiposDescargos: [],
+      inventarios: [],
+      encabezadosTbl: [{
+        text: "Codigo",
+        value: "codigo",
+        align: "left"
+      }, {
+        text: "Descripción",
+        value: "descripcion",
+        align: "left"
+      }, {
+        text: "Marca",
+        value: "marca.marca",
+        align: "left"
+      }, {
+        text: "Modelo",
+        value: "modelo",
+        align: "left"
+      }, {
+        text: "Serie",
+        value: "serie",
+        align: "left"
+      }, {
+        text: "Observación",
+        value: "observaciones",
+        align: "left"
+      }],
+      buscarActivo: '',
+      descargo: {
+        tipoDescargo: {
+          id: null,
+          tipo: ''
+        },
+        observacion: '',
+        acta: '',
+        activo: []
+      },
+      formTitle: 'Agregar activo',
+      modalInventario: false
+    };
+  },
+  mounted: function mounted() {
+    this.obtenerTiposDescargos();
+  },
+  methods: {
+    obtenerTiposDescargos: function obtenerTiposDescargos() {
+      var _this = this;
+
+      axios.get("/Api/inventario/descargos/tipos").then(function (_ref) {
+        var tiposDescargos = _ref.data.tiposDescargos;
+        _this.tiposDescargos = tiposDescargos;
+      });
+    },
+    onAddedItem: function onAddedItem(valores) {
+      this.inventarios = valores;
+    },
+    guardar: function guardar() {
+      var _this2 = this;
+
+      if (this.inventarios.length > 0) {
+        Swal.fire({
+          title: "¡Importante!",
+          text: "Estas seguro/as que los datos son correctos ¿Deseas hacer el descargos de estos activos?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Guardar",
+          cancelButtonText: "Cancelar"
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            _this2.inventarios.forEach(function (activo) {
+              _this2.descargo.activo.push({
+                inventario_id: activo.id,
+                observacion: activo.observaciones
+              });
+            });
+
+            console.log(_this2.descargo);
+            console.log('guardando');
+          } else {
+            console.log('cancelado');
+          }
+        });
+      } else {
+        this.alerta('Datos incompletos', 'warning', '¡IMPORTANTE!');
+      }
+    },
+    cancelar: function cancelar() {},
+    alerta: function alerta(mensaje) {
+      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "info";
+      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+      return new Promise(function (resolve, reject) {
+        Swal.fire({
+          position: "top-end",
+          icon: icono,
+          title: titulo,
+          text: mensaje,
+          showConfirmButton: false,
+          timer: 1500
+        }).then(resolve);
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -4063,7 +4304,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-//
 //
 //
 //
@@ -50330,7 +50570,325 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("h1", [_vm._v("Formulario")])
+  return _c("div", { staticClass: "content" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+      },
+      [
+        _c(
+          "v-card",
+          [
+            _c(
+              "v-card-title",
+              { domProps: { textContent: _vm._s("Descargo de inventario") } },
+              [_c("div", { staticClass: "flex-row-1" })]
+            ),
+            _vm._v(" "),
+            _c(
+              "v-container",
+              { attrs: { fluid: "" } },
+              [
+                _c(
+                  "v-form",
+                  {
+                    ref: "formMovimiento",
+                    attrs: { "lazy-validation": true },
+                    model: {
+                      value: _vm.formDescargos,
+                      callback: function($$v) {
+                        _vm.formDescargos = $$v
+                      },
+                      expression: "formDescargos"
+                    }
+                  },
+                  [
+                    _c(
+                      "v-row",
+                      [
+                        _c(
+                          "v-col",
+                          { attrs: { cols: "6" } },
+                          [
+                            _c("v-select", {
+                              ref: "cboTipoDescargo",
+                              attrs: {
+                                "error-messages": _vm.errors["tipoDescargo.id"],
+                                items: _vm.tiposDescargos,
+                                "item-text": "tipoDescargo",
+                                "item-value": "id",
+                                label: "Tipo de descargo",
+                                "return-object": "",
+                                "menu-props": { closeOnClick: true },
+                                rules: [
+                                  function(v) {
+                                    return (
+                                      !!v ||
+                                      "Tipo de descargo es campo obligatorio"
+                                    )
+                                  }
+                                ],
+                                required: ""
+                              },
+                              on: {
+                                change: function($event) {
+                                  _vm.errors["tipoDescargo.id"] = []
+                                }
+                              },
+                              model: {
+                                value: _vm.descargo.tipoDescargo,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.descargo, "tipoDescargo", $$v)
+                                },
+                                expression: "descargo.tipoDescargo"
+                              }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-col",
+                          { attrs: { cols: "6" } },
+                          [
+                            _c("v-text-field", {
+                              attrs: {
+                                "append-icon": "fas fa-tags",
+                                rules: [],
+                                label: "Numero de acta"
+                              },
+                              model: {
+                                value: _vm.descargo.acta,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.descargo, "acta", $$v)
+                                },
+                                expression: "descargo.acta"
+                              }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-col",
+                          { attrs: { cols: "12" } },
+                          [
+                            _c("v-textarea", {
+                              attrs: {
+                                label: "Observación",
+                                "no-resize": "",
+                                rows: "1",
+                                "row-height": "10"
+                              },
+                              model: {
+                                value: _vm.descargo.observacion,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.descargo, "observacion", $$v)
+                                },
+                                expression: "descargo.observacion"
+                              }
+                            })
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c("v-data-table", {
+                  attrs: {
+                    headers: _vm.encabezadosTbl,
+                    items: _vm.inventarios,
+                    "no-data-text": "No hay activos seleccionados",
+                    "items-per-page": 10,
+                    search: _vm.buscarActivo,
+                    "footer-props": {
+                      "item-per-page-options": [10, 20, 30],
+                      showFirstLastPage: true
+                    }
+                  },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "top",
+                      fn: function() {
+                        return [
+                          _c(
+                            "v-toolbar",
+                            { attrs: { flat: "", color: "white" } },
+                            [
+                              _c("div", { staticClass: "flex-grow-1" }),
+                              _vm._v(" "),
+                              _c(
+                                "v-dialog",
+                                {
+                                  attrs: {
+                                    persistent: "",
+                                    "max-width": "1240px",
+                                    scrollable: ""
+                                  },
+                                  scopedSlots: _vm._u([
+                                    {
+                                      key: "activator",
+                                      fn: function(ref) {
+                                        var on = ref.on
+                                        return [
+                                          _c(
+                                            "v-btn",
+                                            _vm._g(
+                                              {
+                                                staticClass: "mb-2",
+                                                attrs: {
+                                                  elevation: "10",
+                                                  color: "blue  darken-3",
+                                                  dark: ""
+                                                }
+                                              },
+                                              on
+                                            ),
+                                            [
+                                              _vm._v(
+                                                "\n                      Agregar activo \n                      "
+                                              ),
+                                              _c("v-icon", [
+                                                _vm._v(
+                                                  "mdi-plus-box-multiple-outline"
+                                                )
+                                              ])
+                                            ],
+                                            1
+                                          )
+                                        ]
+                                      }
+                                    }
+                                  ]),
+                                  model: {
+                                    value: _vm.modalInventario,
+                                    callback: function($$v) {
+                                      _vm.modalInventario = $$v
+                                    },
+                                    expression: "modalInventario"
+                                  }
+                                },
+                                [
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-card",
+                                    [
+                                      _c(
+                                        "v-card-title",
+                                        {
+                                          staticClass:
+                                            "headline grey lighten-2",
+                                          attrs: { "primary-title": "" }
+                                        },
+                                        [
+                                          _c("span", {
+                                            staticClass: "headline",
+                                            domProps: {
+                                              textContent: _vm._s(_vm.formTitle)
+                                            }
+                                          })
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-card-text",
+                                        [
+                                          _c("n-inventario", {
+                                            ref: "inventario",
+                                            on: { added: _vm.onAddedItem }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-card-actions",
+                                        [
+                                          _c("div", {
+                                            staticClass: "flex-grow-1"
+                                          }),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-btn",
+                                            {
+                                              attrs: {
+                                                color: "success darken-1",
+                                                text: ""
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  _vm.modalInventario = false
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _vm._v(
+                                                "Finalizar\n                      "
+                                              )
+                                            ]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ]
+                      },
+                      proxy: true
+                    }
+                  ])
+                })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "v-card-actions",
+              [
+                _c("div", { staticClass: "flex-grow-1" }),
+                _vm._v(" "),
+                _c(
+                  "v-btn",
+                  {
+                    attrs: { color: "red darken-1", text: "" },
+                    on: { click: _vm.cancelar }
+                  },
+                  [_vm._v("Cancelar")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-btn",
+                  {
+                    attrs: { color: "info darken-1", text: "" },
+                    on: { click: _vm.guardar }
+                  },
+                  [_vm._v("Guardar")]
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -51239,13 +51797,10 @@ var render = function() {
           [
             _c(
               "v-card-title",
-              { domProps: { textContent: _vm._s(_vm.getFechaActual) } },
-              [
-                _vm._v(
-                  "\n        " + _vm._s(_vm.getFechaActual) + "\n        "
-                ),
-                _c("div", { staticClass: "flex-row-1" })
-              ]
+              {
+                domProps: { textContent: _vm._s("Movimientos de Inventario") }
+              },
+              [_c("div", { staticClass: "flex-row-1" })]
             ),
             _vm._v(" "),
             _c(

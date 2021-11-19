@@ -9,6 +9,7 @@ use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\EntidadController;
 use App\Http\Controllers\RubroController;
 use App\Http\Controllers\CuentaController;
+use App\Http\Controllers\DescargoController;
 use App\Http\Controllers\UbicacionController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\ProcedenciaController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\HistorialInventarioController;
 use App\Http\Controllers\HistorialMovimientoController;
+use App\Http\Controllers\TipoDescargosController;
 use App\Http\Controllers\TipoMovimientoController;
 use App\Http\Controllers\UserController;
 use App\Models\HistorialInventario;
@@ -116,10 +118,18 @@ Route::get('/inventario/movimientos/detalle',[ MovimientoController::class, 'det
 Route::get('/Api/inventario/movimientos',[ MovimientoController::class, 'obtenerMovimientos'])->name("movimiento.get");
 
 
-
 Route::post('/Api/inventario/movimientos/save',[ MovimientoController::class, 'save'])->name("movimiento.save");
 Route::get('/Api/inventario/{movimiento}/movimientos',[ MovimientoController::class, 'obtenerDetMovimiento'])->name("detMovimiento.get");
 Route::post('/Api/inventario/movimientos/update/{movimiento}',[ MovimientoController::class, 'updateMovimiento'])->name("movimiento.update");
+
+
+// DESCARGOS DE INVENTARIO
+Route::get('/inventario/descargos',[ DescargoController::class, 'index'])->name("descargos.index");
+Route::get('/inventario/descargos/crear',[ DescargoController::class, 'crear'])->name("descargos.crear");
+
+// API DESCARGOS DE INVENTARIO
+Route::get('/Api/inventario/descargos/tipos',[ TipoDescargosController::class, 'obtenerTiposDescargos'])->name("TiposDescargos.get");
+Route::post('/inventario/descargos',[ DescargoController::class, 'save'])->name("descargos.save");
 
 
 // HISTORIAL DE INVENTARIO
