@@ -76,11 +76,8 @@
                 <v-col cols="5">
                   <v-autocomplete
                     v-model="movimiento.aprueba"
-                    :items="empleados"
-                    required
-                    :rules="[
-                      (v) => !!v || 'Tipo cuenta del activo es requerido',
-                    ]"
+                    :items="empleados"                    
+                    :rules="[]"
                     label="Aprobado"
                     :item-text="EmpleadoNombreCompleto"
                     item-value="id"
@@ -114,11 +111,8 @@
                 <v-col cols="5">
                   <v-autocomplete
                     v-model="movimiento.gerencia"
-                    :items="empleados"
-                    required
-                    :rules="[
-                      (v) => !!v || 'Tipo cuenta del activo es requerido',
-                    ]"
+                    :items="empleados"                    
+                    :rules="[]"
                     label="Aprobado por gerencia"
                     :item-text="EmpleadoNombreCompleto"
                     item-value="id"

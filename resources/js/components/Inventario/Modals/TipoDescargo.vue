@@ -37,6 +37,17 @@
                     </v-container>
                 </v-card-text>
 
+                <v-card-actions>
+                    <div class="flex-grow-1"></div>
+                    <v-btn color="red darken-1" text @click="cerrarModal()">Cerrar</v-btn>
+                    <v-btn
+                        color="info darken-1"
+                        @click="save()"
+                        text
+                        v-text="'Guardar'"
+                    ></v-btn>
+                </v-card-actions>
+
             </v-card>
         </v-dialog>
     </v-row>
@@ -58,20 +69,73 @@ export default {
                 (v && v.length >= 2 && v.length <= 100) ||
                 "Este campo debe ser mayor a 2 caracteres",
                 expresion: (v) =>
-                /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
+                /^[A-Za-z0-9-ÑñáéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
                 "Este campo no puede tener caracteres especiales",
             }
         }
     },
     methods: {
-
         mostrarModal ()
         {
+            setTimeout(() => {
+                this.tipoDescargo = { id: null, tipoDescargo: '' }
+                this.$refs.formTipoDescargo.resetValidation()
+            }, 100);
+            
             this.dialog = true
         },
         cerrarModal ()
         {
+            setTimeout(() => {
+                this.tipoDescargo = { id: null, tipoDescargo: '' }
+                this.$refs.formTipoDescargo.resetValidation()
+            }, 100);
             this.dialog = false
+        },
+        save ()
+        {
+            this.loader = true
+            const path = '/Api/inventario/descargo/tiposDescargo'
+
+            axios.post(path, this.tipoDescargo )
+                .then( response => {
+
+                    this.loader = false
+                    
+                    if (response.status == 200) 
+                    {
+                        const { respuesta, mensaje } = response.data;
+
+                        if ( respuesta ) 
+                        { 
+                            const { tipoDescargo } = response.data
+                        
+                            this.alerta( mensaje, 'success', 'Buena hecho')
+                            this.cerrarModal()
+                            this.$emit("saved", { ...tipoDescargo } )
+                        } else 
+                        {
+                            const { tipoDescargo } = response.data;
+                            this.errors = tipoDescargo
+                        }
+                    } else 
+                    {
+                        this.alerta('Ocurrio un error en el servidor', 'error', 'IMPORTANTE')
+                    }
+                }).catch( () => {
+                    this.alerta('Ocurrio un error en el servidor', 'error', 'IMPORTANTE')
+                })
+        },
+        alerta (mensaje, icono = 'info', titulo = '')
+        {
+            Swal.fire({
+                position: "top-end",
+                icon: icono,
+                title: titulo,
+                text: mensaje,
+                showConfirmButton: false,
+                timer: 1500,
+                });
         }
     }
 }

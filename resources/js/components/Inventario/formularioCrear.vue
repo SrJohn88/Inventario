@@ -655,7 +655,7 @@ export default {
 
     //console.log( this.detalle )
 
-    if (this.idPrueba != null) {
+    if (this.idPrueba != null && this.detalle ) {
       this.obtenerActivo();
       this.buscarCopias();
       this.buscarMovimientosActivos()

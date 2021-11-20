@@ -17,7 +17,7 @@
 
               <v-row>
 
-                  <v-col cols="6">
+                  <v-col cols="5">
                     <v-select
                       ref="cboTipoDescargo"
                       :error-messages="errors['tipoDescargo.id']"
@@ -32,6 +32,21 @@
                       :rules="[(v) => !!v || 'Tipo de descargo es campo obligatorio']"
                       required
                     ></v-select>
+                  </v-col>
+
+                  <v-col cols="1" md="1">
+                    <tipo-descargo @saved="onSavedTipoDescargo" ref="tipoDescargo" />
+                    <v-btn
+                      elevation="5"
+                      class="mt-8"
+                      text
+                      icon
+                      color="primary"
+                      @click="mostarModalTipoDescargos()"
+                      dark
+                    >
+                      <v-icon>mdi-plus-circle</v-icon>
+                    </v-btn>
                   </v-col>
 
                   <v-col cols="6">
@@ -135,10 +150,12 @@
 </template>
 
 <script>
+import TipoDescargo from '../Modals/TipoDescargo.vue';
 
 Vue.component("tipo-descargo", require("../Modals/TipoDescargo.vue").default);
 
 export default {
+  components: { TipoDescargo },
   name: 'formulario-descargo',
   data()
   {
@@ -235,6 +252,14 @@ export default {
         }).then(resolve);
       });
     },
+    mostarModalTipoDescargos()
+    {
+      this.$refs.tipoDescargo.mostrarModal()
+    },
+    onSavedTipoDescargo( tipoDescargo )
+    {
+      this.tiposDescargos.push( {...tipoDescargo } )
+    }
   }
 }
 </script>

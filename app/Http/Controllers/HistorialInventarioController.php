@@ -12,7 +12,10 @@ class HistorialInventarioController extends Controller
     {
         return response()->json([
             'historial' => HistorialInventario::where('inventario_id', $inventario->id )
-                                            ->whereBetween('created_at', [$desde, $hasta ] )->get()
+                                            ->whereDate('created_at', '>=', $desde )
+                                            ->whereDate('created_at', '<=', $hasta )
+                                            ->orderBy('created_at', 'desc')
+                                            ->get()
         ]);
     }
 }

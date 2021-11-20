@@ -132,6 +132,14 @@ Route::get('/Api/inventario/descargos/tipos',[ TipoDescargosController::class, '
 Route::post('/inventario/descargos',[ DescargoController::class, 'save'])->name("descargos.save");
 
 
+// TIPOS DE DESCARGOS 
+
+
+// API TIPOS DE DESCARGOS 
+Route::post('/Api/inventario/descargo/tiposDescargo',[ TipoDescargosController::class, 'save'])->name("tipoDescargo.save");
+
+
+
 // HISTORIAL DE INVENTARIO
 Route::get('/Api/historial/respaldos/{inventario}/{desde}/{hasta}',[ HistorialInventarioController::class, 'obtenerHistorialActivo'])->name("historialInventario.get");
 Route::get('/Api/historial/movimientos/{inventario}/{desde}/{hasta}',[ HistorialMovimientoController::class, 'obtenerHistorialMovimientos'])->name("historialMovimiento.get");

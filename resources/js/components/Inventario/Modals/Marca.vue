@@ -45,7 +45,7 @@
                         text
                         v-text="'Guardar'"
                     ></v-btn>
-                    </v-card-actions>
+                </v-card-actions>
             </v-card>
         </v-dialog>
     </v-row>

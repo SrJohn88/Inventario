@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TipoDescargos extends Model
 {
     use HasFactory;
+
+    protected $table = 'tipo_descargos';
+
+    public function descargos ( ) 
+    {
+        return $this->hasMany('App\Models\Descargo');
+    }
 }

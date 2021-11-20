@@ -3107,6 +3107,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _Modals_TipoDescargo_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Modals/TipoDescargo.vue */ "./resources/js/components/Inventario/Modals/TipoDescargo.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -3243,8 +3250,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 Vue.component("tipo-descargo", __webpack_require__(/*! ../Modals/TipoDescargo.vue */ "./resources/js/components/Inventario/Modals/TipoDescargo.vue").default);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    TipoDescargo: _Modals_TipoDescargo_vue__WEBPACK_IMPORTED_MODULE_0__.default
+  },
   name: 'formulario-descargo',
   data: function data() {
     return {
@@ -3352,6 +3378,12 @@ Vue.component("tipo-descargo", __webpack_require__(/*! ../Modals/TipoDescargo.vu
           timer: 1500
         }).then(resolve);
       });
+    },
+    mostarModalTipoDescargos: function mostarModalTipoDescargos() {
+      this.$refs.tipoDescargo.mostrarModal();
+    },
+    onSavedTipoDescargo: function onSavedTipoDescargo(tipoDescargo) {
+      this.tiposDescargos.push(_objectSpread({}, tipoDescargo));
     }
   }
 });
@@ -4370,6 +4402,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4433,17 +4482,81 @@ __webpack_require__.r(__webpack_exports__);
           return v && v.length >= 2 && v.length <= 100 || "Este campo debe ser mayor a 2 caracteres";
         },
         expresion: function expresion(v) {
-          return /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ\s]+$/g.test(v) || "Este campo no puede tener caracteres especiales";
+          return /^[A-Za-z0-9-ÑñáéíóúÁÉÍÓÚ\s]+$/g.test(v) || "Este campo no puede tener caracteres especiales";
         }
       }
     };
   },
   methods: {
     mostrarModal: function mostrarModal() {
+      var _this = this;
+
+      setTimeout(function () {
+        _this.tipoDescargo = {
+          id: null,
+          tipoDescargo: ''
+        };
+
+        _this.$refs.formTipoDescargo.resetValidation();
+      }, 100);
       this.dialog = true;
     },
     cerrarModal: function cerrarModal() {
+      var _this2 = this;
+
+      setTimeout(function () {
+        _this2.tipoDescargo = {
+          id: null,
+          tipoDescargo: ''
+        };
+
+        _this2.$refs.formTipoDescargo.resetValidation();
+      }, 100);
       this.dialog = false;
+    },
+    save: function save() {
+      var _this3 = this;
+
+      this.loader = true;
+      var path = '/Api/inventario/descargo/tiposDescargo';
+      axios.post(path, this.tipoDescargo).then(function (response) {
+        _this3.loader = false;
+
+        if (response.status == 200) {
+          var _response$data = response.data,
+              respuesta = _response$data.respuesta,
+              mensaje = _response$data.mensaje;
+
+          if (respuesta) {
+            var tipoDescargo = response.data.tipoDescargo;
+
+            _this3.alerta(mensaje, 'success', 'Buena hecho');
+
+            _this3.cerrarModal();
+
+            _this3.$emit("saved", _objectSpread({}, tipoDescargo));
+          } else {
+            var _tipoDescargo = response.data.tipoDescargo;
+            _this3.errors = _tipoDescargo;
+          }
+        } else {
+          _this3.alerta('Ocurrio un error en el servidor', 'error', 'IMPORTANTE');
+        }
+      })["catch"](function () {
+        _this3.alerta('Ocurrio un error en el servidor', 'error', 'IMPORTANTE');
+      });
+    },
+    alerta: function alerta(mensaje) {
+      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
+      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+      Swal.fire({
+        position: "top-end",
+        icon: icono,
+        title: titulo,
+        text: mensaje,
+        showConfirmButton: false,
+        timer: 1500
+      });
     }
   }
 });
@@ -4636,12 +4749,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -5728,6 +5835,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           id: null,
           nombre: ''
         },
+        created_at: '',
         observaciones: "",
         activos: []
       },
@@ -5817,6 +5925,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.movimiento.registro = created_at;
         _this.movimiento.usuario = _objectSpread({}, user);
         _this.movimiento.observaciones = descripcion;
+        _this.movimiento.created_at = created_at;
         inventario.forEach(function (inventario) {
           if (!inventario.marca) {
             inventario.marca = {
@@ -5881,7 +5990,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       } //console.log( this.getIdSeleccion() )
 
     },
-    cancelar: function cancelar() {},
+    cancelar: function cancelar() {
+      window.location = '/inventario/movimientos';
+    },
     prepararDatos: function prepararDatos() {
       var activosRecibidos = [];
       this.selected.forEach(function (activo) {
@@ -6639,7 +6750,7 @@ Vue.component("Ubicacion", __webpack_require__(/*! .//Modals/Ubicacion.vue */ ".
     this.obtenerUbicaciones();
     this.obtenerProcedencias(); //console.log( this.detalle )
 
-    if (this.idPrueba != null) {
+    if (this.idPrueba != null && this.detalle) {
       this.obtenerActivo();
       this.buscarCopias();
       this.buscarMovimientosActivos();
@@ -51268,7 +51379,7 @@ var render = function() {
                       [
                         _c(
                           "v-col",
-                          { attrs: { cols: "6" } },
+                          { attrs: { cols: "5" } },
                           [
                             _c("v-select", {
                               ref: "cboTipoDescargo",
@@ -51303,6 +51414,39 @@ var render = function() {
                                 expression: "descargo.tipoDescargo"
                               }
                             })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-col",
+                          { attrs: { cols: "1", md: "1" } },
+                          [
+                            _c("tipo-descargo", {
+                              ref: "tipoDescargo",
+                              on: { saved: _vm.onSavedTipoDescargo }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                staticClass: "mt-8",
+                                attrs: {
+                                  elevation: "5",
+                                  text: "",
+                                  icon: "",
+                                  color: "primary",
+                                  dark: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.mostarModalTipoDescargos()
+                                  }
+                                }
+                              },
+                              [_c("v-icon", [_vm._v("mdi-plus-circle")])],
+                              1
+                            )
                           ],
                           1
                         ),
@@ -52631,6 +52775,37 @@ var render = function() {
                   )
                 ],
                 1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c("div", { staticClass: "flex-grow-1" }),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "red darken-1", text: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.cerrarModal()
+                        }
+                      }
+                    },
+                    [_vm._v("Cerrar")]
+                  ),
+                  _vm._v(" "),
+                  _c("v-btn", {
+                    attrs: { color: "info darken-1", text: "" },
+                    domProps: { textContent: _vm._s("Guardar") },
+                    on: {
+                      click: function($event) {
+                        return _vm.save()
+                      }
+                    }
+                  })
+                ],
+                1
               )
             ],
             1
@@ -52988,15 +53163,7 @@ var render = function() {
                                 _c("v-autocomplete", {
                                   attrs: {
                                     items: _vm.empleados,
-                                    required: "",
-                                    rules: [
-                                      function(v) {
-                                        return (
-                                          !!v ||
-                                          "Tipo cuenta del activo es requerido"
-                                        )
-                                      }
-                                    ],
+                                    rules: [],
                                     label: "Aprobado",
                                     "item-text": _vm.EmpleadoNombreCompleto,
                                     "item-value": "id",
@@ -53062,15 +53229,7 @@ var render = function() {
                                 _c("v-autocomplete", {
                                   attrs: {
                                     items: _vm.empleados,
-                                    required: "",
-                                    rules: [
-                                      function(v) {
-                                        return (
-                                          !!v ||
-                                          "Tipo cuenta del activo es requerido"
-                                        )
-                                      }
-                                    ],
+                                    rules: [],
                                     label: "Aprobado por gerencia",
                                     "item-text": _vm.EmpleadoNombreCompleto,
                                     "item-value": "id",
@@ -54133,7 +54292,7 @@ var render = function() {
                           { attrs: { cols: "12", sm: "6" } },
                           [
                             _c("v-text-field", {
-                              attrs: { label: "Usuario", disabled: "" },
+                              attrs: { label: "Entregado por", disabled: "" },
                               model: {
                                 value: _vm.movimiento.usuario.name,
                                 callback: function($$v) {
@@ -54156,15 +54315,11 @@ var render = function() {
                                 disabled: ""
                               },
                               model: {
-                                value: _vm.movimiento.gerencia.nombre,
+                                value: _vm.movimiento.created_at,
                                 callback: function($$v) {
-                                  _vm.$set(
-                                    _vm.movimiento.gerencia,
-                                    "nombre",
-                                    $$v
-                                  )
+                                  _vm.$set(_vm.movimiento, "created_at", $$v)
                                 },
-                                expression: "movimiento.gerencia.nombre"
+                                expression: "movimiento.created_at"
                               }
                             })
                           ],

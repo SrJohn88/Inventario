@@ -46,14 +46,14 @@
                             <v-col cols="12" sm="6" >
                                 <v-text-field
                                     v-model="movimiento.usuario.name"
-                                    label="Usuario"
+                                    label="Entregado por"
                                     disabled
                                 ></v-text-field>
                             </v-col>
 
                             <v-col cols="12" sm="6" >
                                 <v-text-field
-                                    v-model="movimiento.gerencia.nombre"
+                                    v-model="movimiento.created_at"
                                     label="Fecha de registro"
                                     disabled
                                 ></v-text-field>
@@ -244,6 +244,7 @@ export default {
                 fecha: "",
                 registro: null,
                 usuario: { id: null, nombre: ''},
+                created_at: '',
                 observaciones: "",
                 activos: [],
             },
@@ -307,7 +308,7 @@ export default {
                         aprobado_gerencia,
                         created_at,
                         descripcion,
-                        inventario
+                        inventario                        
                     } = movimiento[0]
 
                     this.movimiento.tipoMovimiento = { ... tipo_movimiento }
@@ -317,6 +318,7 @@ export default {
                     this.movimiento.registro = created_at
                     this.movimiento.usuario = { ... user }
                     this.movimiento.observaciones = descripcion
+                    this.movimiento.created_at = created_at
 
                     inventario.forEach( inventario => {
                         if ( !inventario.marca )
@@ -390,7 +392,7 @@ export default {
         }, 
         cancelar()
         {
-
+            window.location = '/inventario/movimientos'
         },
         prepararDatos ()
         {
