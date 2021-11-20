@@ -36,7 +36,7 @@
 
                   <v-col cols="6">
                     <v-text-field
-                      append-icon="fas fa-tags"
+                      append-icon="mdi-file"
                       v-model="descargo.acta"
                       :rules="[]"
                       label="Numero de acta"
@@ -135,7 +135,11 @@
 </template>
 
 <script>
+
+Vue.component("tipo-descargo", require("../Modals/TipoDescargo.vue").default);
+
 export default {
+  name: 'formulario-descargo',
   data()
   {
     return {

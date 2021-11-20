@@ -92,7 +92,7 @@ export default {
 
                 if (response.status == 200) {
                     
-                    let { respuesta, mensaje } = response.data;
+                    let { respuesta, mensaje, entidad } = response.data;
 
                     if (respuesta) {
 
@@ -104,7 +104,7 @@ export default {
                             showConfirmButton: false,
                             timer: 1500,
                         }).then( () => {
-                            this.$emit("saved", this.entidad ); 
+                            this.$emit("saved", { ... entidad } ); 
                             this.cerrarModal()
                         });   
                     } else 

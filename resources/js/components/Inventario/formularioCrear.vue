@@ -323,8 +323,7 @@
           <v-btn color="red darken-1" text @click="cancelar()">Cancelar</v-btn>
           <v-btn
             ref="btnGuardarInventario"
-            color="info darken-1"
-            :disabled="!inventarioValido"
+            color="info darken-1"            
             @click="save()"
             v-text="textButton"
           ></v-btn>
@@ -894,6 +893,7 @@ export default {
     },
     onSaveEntidad(value) {
       if (value) {
+        console.log( value )
         this.entidades.push({ ...value });
       }
     },

@@ -53,7 +53,8 @@ class EntidadController extends Controller
 
             return response()->json([
                 'respuesta' => true,
-                'mensaje' => 'La entidad ha sido agregada exitosamente'
+                'mensaje' => 'La entidad ha sido agregada exitosamente',
+                'entidad' => [ 'id' => $entidad->id, 'entidad' => $entidad->entidad, 'eliminado' => 0]
             ]);
         }
     }
