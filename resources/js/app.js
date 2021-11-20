@@ -58,6 +58,13 @@ Vue.component('update-movimiento', require('./components/Inventario/Movimientos/
 Vue.component('formulario-descargos', require('./components/Inventario/Descargos/formularioDescargos.vue').default);
 Vue.component('descargos', require('./components/Inventario/Descargos/descargos.vue').default);
 
+// TIPOS DE DESCARGOS
+Vue.component('tipo-descargo', require('./components/Inventario/Descargos/TipoDescargo.vue').default);
+
+// CARGOS
+Vue.component('cargo', require('./components/Cargo.vue').default);
+
+
 //EMPLEADOS
 Vue.component('empleados', require('./components/Empleados.vue').default);
 

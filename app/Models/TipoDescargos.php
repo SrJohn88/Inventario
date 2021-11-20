@@ -13,6 +13,6 @@ class TipoDescargos extends Model
 
     public function descargos ( ) 
     {
-        return $this->hasMany('App\Models\Descargo');
+        return $this->hasMany('App\Models\Descargo', 'tipoDescargo_id');
     }
 }

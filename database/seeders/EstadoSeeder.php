@@ -33,6 +33,10 @@ class EstadoSeeder extends Seeder
         $estado4->estado = 'SALIDA';
         $estado4->save();
 
+        $estado5 = new Estado();
+        $estado5->estado = 'FUERA DE INVENTARIO';
+        $estado5->save();
+
         $cargo1 = new Cargo();
         $cargo1->cargo = 'DOCENTE';
         $cargo1->save();

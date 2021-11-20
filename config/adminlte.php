@@ -231,22 +231,29 @@ return [
             'url'         => '/home',
             'icon'        => 'fas fw fa-home',
         ],
-        ['header' => ''],
         [
             'text'    => 'Catálogos',
             'icon_color' => 'red',
             'icon'    => 'fas fa-align-justify',
             'submenu' => [
                 [
-                    'text' => 'Marcas',
-                    'route' => 'admin.marcas.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'text' => 'Cuentas',
+                    'route' => 'cuentas.index',
+                    'icon_color' => 'yelow',
+                    'icon'  => 'far fa-credit-card',
                 ],
                 [
                     'text' => 'Entidades',
                     'route' => 'entidades.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon_color' => 'green',
+                    'icon'  => 'far fa-building',
                 ],
+                [
+                    'text' => 'Marcas',
+                    'route' => 'admin.marcas.index',
+                    'icon_color' => 'blue',
+                    'icon'  => 'fas fa-archway',
+                ],                
                 [
                     'text' => 'Rubros',
                     'route' => 'rubros.index',
@@ -256,15 +263,22 @@ return [
                     'text' => 'Ubicaciones',
                     'route' => 'ubicaciones.index',
                     'icon'  => 'fas fw fa-registered',
-                ],                
-                [
-                    'text' => 'Cuentas',
-                    'route' => 'cuentas.index',
-                    'icon'  => 'fas fw fa-registered',
                 ],
                 [
-                    'text' => 'Empleados',
-                    'route' => 'empleados.index',
+                    'text' => 'Tipos de descargos',
+                    'route' => 'tipoDescargos.index',
+                    'icon'  => 'fas fw fa-registered',
+                ],                                                                                               
+            ],
+        ],
+        [
+            'text'    => 'Inventario',
+            'icon_color' => 'red',
+            'icon'    => 'fas fa-align-justify',
+            'submenu' => [
+                [
+                    'text' => 'Descargos',
+                    'route' => 'descargos.index',
                     'icon'  => 'fas fw fa-registered',
                 ],
                 [
@@ -276,15 +290,31 @@ return [
                     'text' => 'Movimientos',
                     'route' => 'movimiento.index',
                     'icon'  => 'fas fw fa-registered',
-                ],                
-                [
-                    'text' => 'Usuarios',
-                    'route' => 'usuarios.index',
-                    'icon'  => 'fas fw fa-registered',
-                ]
+                ], 
             ],
         ],
-
+        [
+            'text'    => 'Personal',
+            'icon_color' => 'red',
+            'icon'    => 'fas fa-align-justify',
+            'submenu' => [
+                [
+                    'text' => 'Empleados',
+                    'route' => 'empleados.index',
+                    'icon'  => 'fas fw fa-registered',
+                ],
+                [
+                    'text' => 'Cargos',
+                    'route' => 'Cargos.index',
+                    'icon'  => 'fas fw fa-registered',
+                ],
+            ],
+        ],
+        [
+            'text' => 'Usuarios',
+            'route' => 'usuarios.index',
+            'icon'  => 'fas fw fa-registered',            
+        ],
     ],
 
     /*

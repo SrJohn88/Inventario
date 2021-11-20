@@ -1834,6 +1834,363 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Cargo.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Cargo.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      validForm: false,
+      loader: false,
+      modal: false,
+      buscarCargo: '',
+      estado: false,
+      encabezadosTbl: [{
+        text: "Nombre del cargo",
+        value: "cargo",
+        align: "center"
+      }, {
+        text: "Acciones",
+        value: "action",
+        sortable: false,
+        align: "center"
+      }],
+      cargos: [],
+      cargosDesactivados: [],
+      cargo: {
+        id: null,
+        cargo: ''
+      },
+      reglas: {
+        requerido: function requerido(v) {
+          return !!v || "Campo requerido";
+        },
+        min: function min(v) {
+          return v && v.length >= 2 && v.length <= 100 || "Este campo debe ser mayor a 2 caracteres";
+        },
+        expresion: function expresion(v) {
+          return /^[A-Za-z0-9-ÑñáéíóúÁÉÍÓÚ \s]+$/g.test(v) || "Este campo no puede tener caracteres especiales";
+        }
+      },
+      errors: []
+    };
+  },
+  computed: {
+    formTitle: function formTitle() {
+      return this.cargo.id != null ? 'Actualizar Cargo' : 'Guardar Cargo';
+    },
+    btnTitle: function btnTitle() {
+      return this.cargo.id != null ? 'Actualizar' : 'Guardar';
+    }
+  },
+  mounted: function mounted() {
+    this.obtenerCargos();
+  },
+  methods: {
+    obtenerCargos: function obtenerCargos() {
+      var _this = this;
+
+      this.loader = true;
+      axios.get("/Api/cargos").then(function (_ref) {
+        var cargos = _ref.data.cargos;
+        _this.loader = false;
+        _this.cargos = cargos.filter(function (r) {
+          return r.eliminado == false;
+        });
+        _this.cargosDesactivados = cargos.filter(function (r) {
+          return r.eliminado == true;
+        });
+      })["catch"](function (e) {
+        _this.loader = false;
+      });
+    },
+    save: function save() {
+      var _this2 = this;
+
+      this.loader = true;
+      var path = this.cargo.id != null ? "/Api/empleados/cargos/".concat(this.cargo.id, "/edit") : '/Api/empleados/cargos';
+      axios.post(path, this.cargo).then(function (response) {
+        _this2.loader = false;
+
+        if (response.status == 200) {
+          var _response$data = response.data,
+              respuesta = _response$data.respuesta,
+              mensaje = _response$data.mensaje;
+
+          if (respuesta) {
+            _this2.obtenerCargos();
+
+            _this2.alerta(mensaje, 'success', '¡Bien hecho!');
+
+            _this2.cerrarModal();
+          } else {
+            var cargo = response.data.cargo;
+            _this2.errors = cargo;
+          }
+        } else {
+          _this2.alerta('Algo salio mal', 'error', '¡IMPORTANTE!');
+        }
+      })["catch"](function () {
+        _this2.loader = false;
+
+        _this2.alerta('Algo salio mal', 'error', '¡IMPORTANTE!');
+      });
+    },
+    mostrarModal: function mostrarModal(_ref2) {
+      var cargo = _extends({}, _ref2);
+
+      this.cargo = cargo;
+      this.modal = true;
+    },
+    cerrarModal: function cerrarModal() {
+      var _this3 = this;
+
+      this.modal = false;
+      setTimeout(function () {
+        _this3.cargo = {
+          id: null,
+          cargo: ''
+        };
+
+        _this3.resetValidation();
+      }, 200);
+    },
+    resetValidation: function resetValidation() {
+      this.errors = [];
+      this.$refs.formCargos.resetValidation();
+    },
+    eliminar: function eliminar(_ref3) {
+      var _this4 = this;
+
+      var cargo = _extends({}, _ref3);
+
+      Swal.fire({
+        title: "INFORMACION",
+        text: "\xBFEstas que quieres desactivar el cargo ".concat(cargo.cargo, " ?"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then(function (result) {
+        _this4.cambiarEstado(cargo);
+      });
+    },
+    restaurar: function restaurar(_ref4) {
+      var _this5 = this;
+
+      var cargo = _extends({}, _ref4);
+
+      Swal.fire({
+        title: "INFORMACION",
+        text: "\xBFEstas que quieres activar el cargo ".concat(cargo.cargo, " ?"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then(function (result) {
+        _this5.cambiarEstado(cargo, false);
+      });
+    },
+    cambiarEstado: function cambiarEstado(cargo) {
+      var _this6 = this;
+
+      var eliminar = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      axios["delete"]("/Api/empleados/cargos/".concat(cargo.id, "/").concat(eliminar)).then(function (response) {
+        console.log(response.status);
+
+        if (response.status == 200) {
+          var _response$data2 = response.data,
+              respuesta = _response$data2.respuesta,
+              mensaje = _response$data2.mensaje;
+
+          if (respuesta) {
+            _this6.obtenerCargos();
+
+            _this6.alerta(mensaje, 'success', '¡Bien hecho!');
+          } else {
+            _this6.alerta(mensaje, 'error', '¡Importante!');
+          }
+        }
+      })["catch"](console.error);
+    },
+    alerta: function alerta(mensaje) {
+      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
+      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+      Swal.fire({
+        position: "top-end",
+        icon: icono,
+        title: titulo,
+        text: mensaje,
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Cuentas.vue?vue&type=script&lang=js&":
 /*!**************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Cuentas.vue?vue&type=script&lang=js& ***!
@@ -3077,6 +3434,361 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      validForm: false,
+      loader: false,
+      modal: false,
+      buscarTipoDescargo: '',
+      estado: false,
+      encabezadosTbl: [{
+        text: "Tipo de descargo",
+        value: "tipoDescargo",
+        align: "center"
+      }, {
+        text: "Acciones",
+        value: "action",
+        sortable: false,
+        align: "center"
+      }],
+      tiposDescargos: [],
+      tiposDescargosDesactivos: [],
+      tipoDescargo: {
+        id: null,
+        tipoDescargo: ''
+      },
+      reglas: {
+        requerido: function requerido(v) {
+          return !!v || "Campo requerido";
+        },
+        min: function min(v) {
+          return v && v.length >= 2 && v.length <= 100 || "Este campo debe ser mayor a 2 caracteres";
+        },
+        expresion: function expresion(v) {
+          return /^[A-Za-z0-9-ÑñáéíóúÁÉÍÓÚ \s]+$/g.test(v) || "Este campo no puede tener caracteres especiales";
+        }
+      },
+      errors: []
+    };
+  },
+  computed: {
+    formTitle: function formTitle() {
+      return this.tipoDescargo.id != null ? 'Actualizar tipo de descargo' : 'Guardar tipo de descargo';
+    },
+    btnTitle: function btnTitle() {
+      return this.tipoDescargo.id != null ? 'Actualizar' : 'Guardar';
+    }
+  },
+  mounted: function mounted() {
+    this.obtenerTiposDescargos();
+  },
+  methods: {
+    obtenerTiposDescargos: function obtenerTiposDescargos() {
+      var _this = this;
+
+      this.loader = true;
+      axios.get("/Api/inventario/descargos/tipos").then(function (_ref) {
+        var tiposDescargos = _ref.data.tiposDescargos;
+        _this.loader = false;
+        _this.tiposDescargos = tiposDescargos.filter(function (r) {
+          return r.eliminado == false;
+        });
+        _this.tiposDescargosDesactivos = tiposDescargos.filter(function (r) {
+          return r.eliminado == true;
+        });
+      })["catch"](function (e) {
+        _this.loader = false;
+      });
+    },
+    save: function save() {
+      var _this2 = this;
+
+      var path = this.tipoDescargo.id != null ? "/Api/inventario/descargo/tiposDescargo/".concat(this.tipoDescargo.id, "/edit") : '/Api/inventario/descargo/tiposDescargo';
+      axios.post(path, this.tipoDescargo).then(function (response) {
+        _this2.loader = false;
+
+        if (response.status == 200) {
+          var _response$data = response.data,
+              respuesta = _response$data.respuesta,
+              mensaje = _response$data.mensaje;
+
+          if (respuesta) {
+            var tipoDescargo = response.data.tipoDescargo;
+
+            _this2.alerta(mensaje, 'success', 'Buena hecho');
+
+            _this2.obtenerTiposDescargos();
+
+            _this2.cerrarModal();
+          } else {
+            var _tipoDescargo = response.data.tipoDescargo;
+            _this2.errors = _tipoDescargo;
+          }
+        } else {
+          _this2.alerta('Ocurrio un error en el servidor', 'error', 'IMPORTANTE');
+        }
+      })["catch"](function () {
+        _this2.alerta('Ocurrio un error en el servidor', 'error', 'IMPORTANTE');
+      });
+    },
+    mostrarModal: function mostrarModal(_ref2) {
+      var tipoDescargo = _extends({}, _ref2);
+
+      this.tipoDescargo = tipoDescargo;
+      this.modal = true;
+    },
+    cerrarModal: function cerrarModal() {
+      var _this3 = this;
+
+      this.modal = false;
+      setTimeout(function () {
+        _this3.tipoDescargo = {
+          id: null,
+          tipoDescargo: ''
+        };
+
+        _this3.resetValidation();
+      }, 200);
+    },
+    resetValidation: function resetValidation() {
+      this.errors = [];
+      this.$refs.formTipoDescargo.resetValidation();
+    },
+    eliminar: function eliminar(_ref3) {
+      var _this4 = this;
+
+      var tipoDescargo = _extends({}, _ref3);
+
+      Swal.fire({
+        title: "INFORMACION",
+        text: "\xBFEstas que quieres desactivar el tipo de descargo ".concat(tipoDescargo.tipoDescargo, " ?"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then(function (result) {
+        _this4.cambiarEstado(tipoDescargo);
+      });
+    },
+    restaurar: function restaurar(_ref4) {
+      var _this5 = this;
+
+      var tipoDescargo = _extends({}, _ref4);
+
+      Swal.fire({
+        title: "INFORMACION",
+        text: "\xBFEstas que quieres activar el tipo de descargo ".concat(tipoDescargo.tipoDescargo, " ?"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3698e3",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: 'No'
+      }).then(function (result) {
+        _this5.cambiarEstado(tipoDescargo, false);
+      });
+    },
+    cambiarEstado: function cambiarEstado(tipoDescargo) {
+      var _this6 = this;
+
+      var eliminar = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      axios["delete"]("/Api/inventario/descargo/tiposDescargo/".concat(tipoDescargo.id, "/").concat(eliminar)).then(function (response) {
+        if (response.status == 200) {
+          var _response$data2 = response.data,
+              respuesta = _response$data2.respuesta,
+              mensaje = _response$data2.mensaje;
+
+          if (respuesta) {
+            _this6.obtenerTiposDescargos();
+
+            _this6.alerta(mensaje, 'success', '¡Bien hecho!');
+          } else {
+            _this6.alerta(mensaje, 'error', '¡Importante!');
+          }
+        }
+      })["catch"](console.error);
+    },
+    alerta: function alerta(mensaje) {
+      var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
+      var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+      Swal.fire({
+        position: "top-end",
+        icon: icono,
+        title: titulo,
+        text: mensaje,
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=script&lang=js& ***!
@@ -3088,11 +3800,133 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 //
 //
 //
 //
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      descargos: [],
+      encabezadosTbl: [{
+        text: "Tipo Descargo",
+        value: "tipo_descargo.tipoDescargo"
+      }, {
+        text: "Realizado por",
+        value: "user.name"
+      }, {
+        text: "N° acta",
+        value: "acta"
+      }, {
+        text: "Fecha de acta",
+        value: "fechaActa"
+      }, {
+        text: "Fecha de registro",
+        value: "created_at"
+      }, {
+        text: "Acciones",
+        value: "action",
+        sortable: false,
+        align: "center"
+      }],
+      buscarDescargo: ""
+    };
+  },
+  mounted: function mounted() {
+    this.obtenerDescargos();
+  },
+  methods: {
+    obtenerDescargos: function obtenerDescargos() {
+      var _this = this;
+
+      axios.get("/Api/inventario/descargos").then(function (_ref) {
+        var descargos = _ref.data.descargos;
+        _this.descargos = _toConsumableArray(descargos);
+      })["catch"](console.error);
+    },
+    formDescargo: function formDescargo() {
+      window.location = "/inventario/descargos/crear";
+    },
+    detalle: function detalle(item) {
+      window.location = "/inventario/descargos/crear?id=".concat(item.id);
+    }
+  }
+});
 
 /***/ }),
 
@@ -3265,6 +4099,96 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 Vue.component("tipo-descargo", __webpack_require__(/*! ../Modals/TipoDescargo.vue */ "./resources/js/components/Inventario/Modals/TipoDescargo.vue").default);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -3274,6 +4198,7 @@ Vue.component("tipo-descargo", __webpack_require__(/*! ../Modals/TipoDescargo.vu
   name: 'formulario-descargo',
   data: function data() {
     return {
+      menu: false,
       formDescargos: false,
       errors: [],
       tiposDescargos: [],
@@ -3305,35 +4230,85 @@ Vue.component("tipo-descargo", __webpack_require__(/*! ../Modals/TipoDescargo.vu
       }],
       buscarActivo: '',
       descargo: {
+        id: null,
         tipoDescargo: {
           id: null,
           tipo: ''
         },
-        observacion: '',
+        observaciones: '',
         acta: '',
+        fecha: '',
+        fechaRegistro: null,
+        usuario: '',
         activo: []
       },
+      fechaActual: new Date(),
       formTitle: 'Agregar activo',
       modalInventario: false
     };
   },
+  computed: {
+    getFechaActual: function getFechaActual() {
+      return "".concat(this.fechaActual.getFullYear(), "-").concat(this.fechaActual.getMonth() + 1, "-").concat(this.fechaActual.getDate());
+    },
+    title: function title() {
+      return this.descargo.id == null ? 'Descargo de inventario' : 'Detalle de descargo';
+    }
+  },
+  created: function created() {
+    var uri = window.location.search.substring(1);
+    var params = new URLSearchParams(uri);
+    this.descargo.id = params.has("id") ? params.get("id") : null;
+  },
   mounted: function mounted() {
     this.obtenerTiposDescargos();
+
+    if (this.descargo.id != null) {
+      this.obtenerDescargo();
+    }
   },
   methods: {
-    obtenerTiposDescargos: function obtenerTiposDescargos() {
+    obtenerDescargo: function obtenerDescargo() {
       var _this = this;
 
-      axios.get("/Api/inventario/descargos/tipos").then(function (_ref) {
-        var tiposDescargos = _ref.data.tiposDescargos;
-        _this.tiposDescargos = tiposDescargos;
+      axios.get("/Api/inventario/descargos/".concat(this.descargo.id)).then(function (_ref) {
+        var _ref$data$descargo = _ref.data.descargo,
+            descargo = _ref$data$descargo === void 0 ? {} : _ref$data$descargo;
+        _this.descargo.tipoDescargo = descargo.tipo_descargo;
+        _this.descargo.acta = descargo.acta;
+        _this.descargo.fecha = descargo.fechaActa;
+        _this.descargo.observaciones = descargo.observaciones;
+        _this.descargo.fechaRegistro = descargo.created_at;
+        _this.descargo.usuario = "".concat(descargo.user.name, " ").concat(descargo.user.lastName);
+        _this.inventarios = descargo.inventario;
+        descargo.inventario.forEach(function (activo) {
+          activo.observaciones = activo.pivot.observacion;
+
+          _this.inventarios.push({
+            activo: activo
+          });
+        });
+      })["catch"](function () {
+        _this.alerta('Ocurrio un error en el servidor', 'error', '¡IMPORTANTE!').then(function () {
+          window.location = '/inventario/descargos';
+        });
+      });
+    },
+    obtenerTiposDescargos: function obtenerTiposDescargos() {
+      var _this2 = this;
+
+      axios.get("/Api/inventario/descargos/tipos").then(function (_ref2) {
+        var tiposDescargos = _ref2.data.tiposDescargos;
+        _this2.tiposDescargos = tiposDescargos.filter(function (r) {
+          return r.eliminado == false;
+        });
       });
     },
     onAddedItem: function onAddedItem(valores) {
       this.inventarios = valores;
     },
     guardar: function guardar() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.inventarios.length > 0) {
         Swal.fire({
@@ -3347,24 +4322,56 @@ Vue.component("tipo-descargo", __webpack_require__(/*! ../Modals/TipoDescargo.vu
           cancelButtonText: "Cancelar"
         }).then(function (result) {
           if (result.isConfirmed) {
-            _this2.inventarios.forEach(function (activo) {
-              _this2.descargo.activo.push({
+            _this3.descargo.activo = [];
+
+            _this3.inventarios.forEach(function (activo) {
+              _this3.descargo.activo.push({
                 inventario_id: activo.id,
-                observacion: activo.observaciones
+                observaciones: activo.observaciones
               });
             });
 
-            console.log(_this2.descargo);
-            console.log('guardando');
-          } else {
-            console.log('cancelado');
+            var path = "/Api/inventario/descargos/save";
+            axios.post(path, _this3.descargo).then(function (response) {
+              if (response.status == 200) {
+                var _response$data = response.data,
+                    respuesta = _response$data.respuesta,
+                    mensaje = _response$data.mensaje;
+
+                if (respuesta) {
+                  _this3.alerta(mensaje, "success", "¡Bien hecho!").then(function () {
+                    window.location = '/inventario/descargos';
+                  });
+                } else {
+                  var errors = response.data.errors;
+                  _this3.errors = errors;
+                }
+              }
+            })["catch"](function () {
+              _this3.alerta('Ocurrio un error en el servidor', 'error', '¡IMPORTANTE!');
+            });
           }
         });
       } else {
         this.alerta('Datos incompletos', 'warning', '¡IMPORTANTE!');
       }
     },
-    cancelar: function cancelar() {},
+    cancelar: function cancelar() {
+      Swal.fire({
+        title: "¡Importante!",
+        text: "¿ Estas seguro/as que quieres abandonar esta pantalla ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "No"
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          window.location = '/inventario/descargos';
+        }
+      });
+    },
     alerta: function alerta(mensaje) {
       var icono = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "info";
       var titulo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
@@ -5941,9 +6948,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           }
         });
         _this.movimiento.activos = _toConsumableArray(inventario);
-        console.log({
-          inventario: inventario
-        });
       })["catch"](console.error);
     },
     guardar: function guardar() {
@@ -7427,6 +8431,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -8620,7 +9625,11 @@ vue__WEBPACK_IMPORTED_MODULE_2__.default.component('movimiento-crear', __webpack
 vue__WEBPACK_IMPORTED_MODULE_2__.default.component('update-movimiento', __webpack_require__(/*! ./components/Inventario/Movimientos/updateMovimiento.vue */ "./resources/js/components/Inventario/Movimientos/updateMovimiento.vue").default); // DESCARGOS DE INVENTARIO
 
 vue__WEBPACK_IMPORTED_MODULE_2__.default.component('formulario-descargos', __webpack_require__(/*! ./components/Inventario/Descargos/formularioDescargos.vue */ "./resources/js/components/Inventario/Descargos/formularioDescargos.vue").default);
-vue__WEBPACK_IMPORTED_MODULE_2__.default.component('descargos', __webpack_require__(/*! ./components/Inventario/Descargos/descargos.vue */ "./resources/js/components/Inventario/Descargos/descargos.vue").default); //EMPLEADOS
+vue__WEBPACK_IMPORTED_MODULE_2__.default.component('descargos', __webpack_require__(/*! ./components/Inventario/Descargos/descargos.vue */ "./resources/js/components/Inventario/Descargos/descargos.vue").default); // TIPOS DE DESCARGOS
+
+vue__WEBPACK_IMPORTED_MODULE_2__.default.component('tipo-descargo', __webpack_require__(/*! ./components/Inventario/Descargos/TipoDescargo.vue */ "./resources/js/components/Inventario/Descargos/TipoDescargo.vue").default); // CARGOS
+
+vue__WEBPACK_IMPORTED_MODULE_2__.default.component('cargo', __webpack_require__(/*! ./components/Cargo.vue */ "./resources/js/components/Cargo.vue").default); //EMPLEADOS
 
 vue__WEBPACK_IMPORTED_MODULE_2__.default.component('empleados', __webpack_require__(/*! ./components/Empleados.vue */ "./resources/js/components/Empleados.vue").default); // USUARIOS
 
@@ -48043,6 +49052,45 @@ if (typeof this !== 'undefined' && this.Sweetalert2){  this.swal = this.sweetAle
 
 /***/ }),
 
+/***/ "./resources/js/components/Cargo.vue":
+/*!*******************************************!*\
+  !*** ./resources/js/components/Cargo.vue ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Cargo_vue_vue_type_template_id_6ca5bb3e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Cargo.vue?vue&type=template&id=6ca5bb3e& */ "./resources/js/components/Cargo.vue?vue&type=template&id=6ca5bb3e&");
+/* harmony import */ var _Cargo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Cargo.vue?vue&type=script&lang=js& */ "./resources/js/components/Cargo.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _Cargo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _Cargo_vue_vue_type_template_id_6ca5bb3e___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Cargo_vue_vue_type_template_id_6ca5bb3e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Cargo.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/Cuentas.vue":
 /*!*********************************************!*\
   !*** ./resources/js/components/Cuentas.vue ***!
@@ -48156,6 +49204,45 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 /* hot reload */
 if (false) { var api; }
 component.options.__file = "resources/js/components/Entidades.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Inventario/Descargos/TipoDescargo.vue":
+/*!***********************************************************************!*\
+  !*** ./resources/js/components/Inventario/Descargos/TipoDescargo.vue ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TipoDescargo_vue_vue_type_template_id_459d1687___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TipoDescargo.vue?vue&type=template&id=459d1687& */ "./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=template&id=459d1687&");
+/* harmony import */ var _TipoDescargo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TipoDescargo.vue?vue&type=script&lang=js& */ "./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _TipoDescargo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _TipoDescargo_vue_vue_type_template_id_459d1687___WEBPACK_IMPORTED_MODULE_0__.render,
+  _TipoDescargo_vue_vue_type_template_id_459d1687___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Inventario/Descargos/TipoDescargo.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
@@ -48940,6 +50027,22 @@ component.options.__file = "resources/js/components/Usuarios.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/Cargo.vue?vue&type=script&lang=js&":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/Cargo.vue?vue&type=script&lang=js& ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Cargo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Cargo.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Cargo.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Cargo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
 /***/ "./resources/js/components/Cuentas.vue?vue&type=script&lang=js&":
 /*!**********************************************************************!*\
   !*** ./resources/js/components/Cuentas.vue?vue&type=script&lang=js& ***!
@@ -48985,6 +50088,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Entidades_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Entidades.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Entidades.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Entidades_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TipoDescargo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TipoDescargo.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TipoDescargo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
 
 /***/ }),
 
@@ -49308,6 +50427,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Cargo.vue?vue&type=template&id=6ca5bb3e&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/Cargo.vue?vue&type=template&id=6ca5bb3e& ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Cargo_vue_vue_type_template_id_6ca5bb3e___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Cargo_vue_vue_type_template_id_6ca5bb3e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Cargo_vue_vue_type_template_id_6ca5bb3e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Cargo.vue?vue&type=template&id=6ca5bb3e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Cargo.vue?vue&type=template&id=6ca5bb3e&");
+
+
+/***/ }),
+
 /***/ "./resources/js/components/Cuentas.vue?vue&type=template&id=50d4e5e0&":
 /*!****************************************************************************!*\
   !*** ./resources/js/components/Cuentas.vue?vue&type=template&id=50d4e5e0& ***!
@@ -49355,6 +50491,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Entidades_vue_vue_type_template_id_39579208___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Entidades_vue_vue_type_template_id_39579208___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Entidades.vue?vue&type=template&id=39579208& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Entidades.vue?vue&type=template&id=39579208&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=template&id=459d1687&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=template&id=459d1687& ***!
+  \******************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TipoDescargo_vue_vue_type_template_id_459d1687___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TipoDescargo_vue_vue_type_template_id_459d1687___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TipoDescargo_vue_vue_type_template_id_459d1687___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TipoDescargo.vue?vue&type=template&id=459d1687& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=template&id=459d1687&");
 
 
 /***/ }),
@@ -49695,6 +50848,479 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Usuarios_vue_vue_type_template_id_0d357df0___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Usuarios_vue_vue_type_template_id_0d357df0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Usuarios.vue?vue&type=template&id=0d357df0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Usuarios.vue?vue&type=template&id=0d357df0&");
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Cargo.vue?vue&type=template&id=6ca5bb3e&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Cargo.vue?vue&type=template&id=6ca5bb3e& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "content" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+      },
+      [
+        _c(
+          "v-overlay",
+          { attrs: { value: _vm.loader, "z-index": "99999999" } },
+          [
+            _c("v-progress-circular", {
+              attrs: { indeterminate: "", size: "80", color: "grey darken-4" }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "v-card",
+          [
+            _c(
+              "v-card-title",
+              [
+                _vm._v("\n                CARGOS DE ITCHA\n                "),
+                _c("div", { staticClass: "flex-grow-1" }),
+                _vm._v(" "),
+                _c("v-text-field", {
+                  attrs: { label: "Buscar cargos", "hide-details": "" },
+                  model: {
+                    value: _vm.buscarCargo,
+                    callback: function($$v) {
+                      _vm.buscarCargo = $$v
+                    },
+                    expression: "buscarCargo"
+                  }
+                })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("v-data-table", {
+              staticClass: "elevation-1",
+              attrs: {
+                headers: _vm.encabezadosTbl,
+                items: _vm.estado ? _vm.cargosDesactivados : _vm.cargos,
+                "footer-props": {
+                  "items-per-page-options": [5, 10, 20, 30, 40],
+                  "items-per-page-text": "Registros Por Página"
+                },
+                "items-per-page": 5,
+                search: _vm.buscarCargo,
+                "multi-sort": "",
+                "no-data-text": "No hay cargos para mostrar"
+              },
+              scopedSlots: _vm._u([
+                {
+                  key: "top",
+                  fn: function() {
+                    return [
+                      _c(
+                        "v-toolbar",
+                        { attrs: { flat: "", color: "white" } },
+                        [
+                          _c("div", { staticClass: "flex-grow-1" }),
+                          _vm._v(" "),
+                          _c(
+                            "v-dialog",
+                            {
+                              attrs: { persistent: "", "max-width": "700px" },
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "activator",
+                                  fn: function(ref) {
+                                    var on = ref.on
+                                    return [
+                                      _c(
+                                        "v-btn",
+                                        _vm._g(
+                                          {
+                                            directives: [
+                                              {
+                                                name: "show",
+                                                rawName: "v-show",
+                                                value: !_vm.estado,
+                                                expression: "!estado"
+                                              }
+                                            ],
+                                            staticClass: "mb-2",
+                                            attrs: {
+                                              elevation: "10",
+                                              color: "blue  darken-3",
+                                              dark: ""
+                                            }
+                                          },
+                                          on
+                                        ),
+                                        [
+                                          _vm._v(
+                                            "\n                                    Agregar cargo  \n                                    "
+                                          ),
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              "mdi-plus-box-multiple-outline"
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-checkbox", {
+                                        staticClass: "mx-10",
+                                        staticStyle: { "margin-top": "1.5rem" },
+                                        attrs: {
+                                          label: "Cargos desactivados",
+                                          value: "false"
+                                        },
+                                        model: {
+                                          value: _vm.estado,
+                                          callback: function($$v) {
+                                            _vm.estado = $$v
+                                          },
+                                          expression: "estado"
+                                        }
+                                      })
+                                    ]
+                                  }
+                                }
+                              ]),
+                              model: {
+                                value: _vm.modal,
+                                callback: function($$v) {
+                                  _vm.modal = $$v
+                                },
+                                expression: "modal"
+                              }
+                            },
+                            [
+                              _vm._v(" "),
+                              _c(
+                                "v-card",
+                                [
+                                  _c(
+                                    "v-card-title",
+                                    {
+                                      staticClass: "headline grey lighten-2",
+                                      attrs: { "primary-titles": "" }
+                                    },
+                                    [
+                                      _c("span", {
+                                        staticClass: "headline",
+                                        domProps: {
+                                          textContent: _vm._s(_vm.formTitle)
+                                        }
+                                      })
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-card-text",
+                                    [
+                                      _c(
+                                        "v-container",
+                                        [
+                                          _c(
+                                            "v-form",
+                                            {
+                                              ref: "formCargos",
+                                              attrs: {
+                                                "lazy-validation": true
+                                              },
+                                              model: {
+                                                value: _vm.validForm,
+                                                callback: function($$v) {
+                                                  _vm.validForm = $$v
+                                                },
+                                                expression: "validForm"
+                                              }
+                                            },
+                                            [
+                                              _c("v-text-field", {
+                                                attrs: {
+                                                  "append-icon":
+                                                    "mdi-folder-outline",
+                                                  rules: [
+                                                    _vm.reglas.min,
+                                                    _vm.reglas.requerido,
+                                                    _vm.reglas.expresion
+                                                  ],
+                                                  label: "Cargo",
+                                                  required: "",
+                                                  "error-messages": _vm.errors
+                                                },
+                                                on: {
+                                                  keyup: function($event) {
+                                                    _vm.errors = []
+                                                  }
+                                                },
+                                                model: {
+                                                  value: _vm.cargo.cargo,
+                                                  callback: function($$v) {
+                                                    _vm.$set(
+                                                      _vm.cargo,
+                                                      "cargo",
+                                                      $$v
+                                                    )
+                                                  },
+                                                  expression: "cargo.cargo"
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c("v-divider"),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-card-actions",
+                                    [
+                                      _c("div", { staticClass: "flex-grow-1" }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            color: "red darken-1",
+                                            text: ""
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.cerrarModal()
+                                            }
+                                          }
+                                        },
+                                        [_vm._v("Cerrar")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-btn", {
+                                        attrs: {
+                                          color: "info darken-1",
+                                          disabled: !_vm.validForm,
+                                          text: ""
+                                        },
+                                        domProps: {
+                                          textContent: _vm._s(_vm.btnTitle)
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.save()
+                                          }
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ]
+                  },
+                  proxy: true
+                },
+                {
+                  key: "item.action",
+                  fn: function(ref) {
+                    var item = ref.item
+                    return [
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.estado,
+                                              expression: "!estado"
+                                            }
+                                          ],
+                                          attrs: {
+                                            color: "success",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.mostrarModal(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-pencil")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Actualizar cargo")])]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.estado,
+                                              expression: "!estado"
+                                            }
+                                          ],
+                                          staticClass: "mx-1",
+                                          attrs: {
+                                            color: "info",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.eliminar(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-delete")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Desactivar cargo")])]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.estado,
+                                              expression: "estado"
+                                            }
+                                          ],
+                                          staticClass: "mx-1",
+                                          attrs: {
+                                            color: "teal",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.restaurar(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-restore")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Activar cargo")])]
+                      )
+                    ]
+                  }
+                }
+              ])
+            })
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
 
 
 /***/ }),
@@ -51298,6 +52924,496 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=template&id=459d1687&":
+/*!*********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/TipoDescargo.vue?vue&type=template&id=459d1687& ***!
+  \*********************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "content" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+      },
+      [
+        _c(
+          "v-overlay",
+          { attrs: { value: _vm.loader, "z-index": "99999999" } },
+          [
+            _c("v-progress-circular", {
+              attrs: { indeterminate: "", size: "80", color: "grey darken-4" }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "v-card",
+          [
+            _c(
+              "v-card-title",
+              [
+                _vm._v(
+                  "\n                CATALOGO DE TIPOS DE DESCARGOS\n                "
+                ),
+                _c("div", { staticClass: "flex-grow-1" }),
+                _vm._v(" "),
+                _c("v-text-field", {
+                  attrs: { label: "Buscar tipo descargo", "hide-details": "" },
+                  model: {
+                    value: _vm.buscarTipoDescargo,
+                    callback: function($$v) {
+                      _vm.buscarTipoDescargo = $$v
+                    },
+                    expression: "buscarTipoDescargo"
+                  }
+                })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("v-data-table", {
+              staticClass: "elevation-1",
+              attrs: {
+                headers: _vm.encabezadosTbl,
+                items: _vm.estado
+                  ? _vm.tiposDescargosDesactivos
+                  : _vm.tiposDescargos,
+                "footer-props": {
+                  "items-per-page-options": [5, 10, 20, 30, 40],
+                  "items-per-page-text": "Registros Por Página"
+                },
+                "items-per-page": 5,
+                search: _vm.buscarTipoDescargo,
+                "multi-sort": "",
+                "no-data-text": "No hay tipos de descargos para mostrar"
+              },
+              scopedSlots: _vm._u([
+                {
+                  key: "top",
+                  fn: function() {
+                    return [
+                      _c(
+                        "v-toolbar",
+                        { attrs: { flat: "", color: "white" } },
+                        [
+                          _c("div", { staticClass: "flex-grow-1" }),
+                          _vm._v(" "),
+                          _c(
+                            "v-dialog",
+                            {
+                              attrs: { persistent: "", "max-width": "700px" },
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "activator",
+                                  fn: function(ref) {
+                                    var on = ref.on
+                                    return [
+                                      _c(
+                                        "v-btn",
+                                        _vm._g(
+                                          {
+                                            directives: [
+                                              {
+                                                name: "show",
+                                                rawName: "v-show",
+                                                value: !_vm.estado,
+                                                expression: "!estado"
+                                              }
+                                            ],
+                                            staticClass: "mb-2",
+                                            attrs: {
+                                              elevation: "10",
+                                              color: "blue  darken-3",
+                                              dark: ""
+                                            }
+                                          },
+                                          on
+                                        ),
+                                        [
+                                          _vm._v(
+                                            "\n                        Agregar tipo de descargo  \n                        "
+                                          ),
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              "mdi-plus-box-multiple-outline"
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-checkbox", {
+                                        staticClass: "mx-10",
+                                        staticStyle: { "margin-top": "1.5rem" },
+                                        attrs: {
+                                          label:
+                                            "Tipos de descargo desactivados",
+                                          value: "false"
+                                        },
+                                        model: {
+                                          value: _vm.estado,
+                                          callback: function($$v) {
+                                            _vm.estado = $$v
+                                          },
+                                          expression: "estado"
+                                        }
+                                      })
+                                    ]
+                                  }
+                                }
+                              ]),
+                              model: {
+                                value: _vm.modal,
+                                callback: function($$v) {
+                                  _vm.modal = $$v
+                                },
+                                expression: "modal"
+                              }
+                            },
+                            [
+                              _vm._v(" "),
+                              _c(
+                                "v-card",
+                                [
+                                  _c(
+                                    "v-card-title",
+                                    {
+                                      staticClass: "headline grey lighten-2",
+                                      attrs: { "primary-titles": "" }
+                                    },
+                                    [
+                                      _c("span", {
+                                        staticClass: "headline",
+                                        domProps: {
+                                          textContent: _vm._s(_vm.formTitle)
+                                        }
+                                      })
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-card-text",
+                                    [
+                                      _c(
+                                        "v-container",
+                                        [
+                                          _c(
+                                            "v-form",
+                                            {
+                                              ref: "formTipoDescargo",
+                                              attrs: {
+                                                "lazy-validation": true
+                                              },
+                                              model: {
+                                                value: _vm.validForm,
+                                                callback: function($$v) {
+                                                  _vm.validForm = $$v
+                                                },
+                                                expression: "validForm"
+                                              }
+                                            },
+                                            [
+                                              _c("v-text-field", {
+                                                attrs: {
+                                                  "append-icon":
+                                                    "mdi-folder-outline",
+                                                  rules: [
+                                                    _vm.reglas.min,
+                                                    _vm.reglas.requerido,
+                                                    _vm.reglas.expresion
+                                                  ],
+                                                  label: "Tipo de descargo",
+                                                  required: "",
+                                                  "error-messages": _vm.errors
+                                                },
+                                                on: {
+                                                  keyup: function($event) {
+                                                    _vm.errors = []
+                                                  }
+                                                },
+                                                model: {
+                                                  value:
+                                                    _vm.tipoDescargo
+                                                      .tipoDescargo,
+                                                  callback: function($$v) {
+                                                    _vm.$set(
+                                                      _vm.tipoDescargo,
+                                                      "tipoDescargo",
+                                                      $$v
+                                                    )
+                                                  },
+                                                  expression:
+                                                    "tipoDescargo.tipoDescargo"
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c("v-divider"),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-card-actions",
+                                    [
+                                      _c("div", { staticClass: "flex-grow-1" }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            color: "red darken-1",
+                                            text: ""
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.cerrarModal()
+                                            }
+                                          }
+                                        },
+                                        [_vm._v("Cerrar")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-btn", {
+                                        attrs: {
+                                          color: "info darken-1",
+                                          disabled: !_vm.validForm,
+                                          text: ""
+                                        },
+                                        domProps: {
+                                          textContent: _vm._s(_vm.btnTitle)
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.save()
+                                          }
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ]
+                  },
+                  proxy: true
+                },
+                {
+                  key: "item.action",
+                  fn: function(ref) {
+                    var item = ref.item
+                    return [
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.estado,
+                                              expression: "!estado"
+                                            }
+                                          ],
+                                          attrs: {
+                                            color: "success",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.mostrarModal(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-pencil")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [
+                          _vm._v(" "),
+                          _c("span", [_vm._v("Actualizar tipo descargo")])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !_vm.estado,
+                                              expression: "!estado"
+                                            }
+                                          ],
+                                          staticClass: "mx-1",
+                                          attrs: {
+                                            color: "info",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.eliminar(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-delete")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [
+                          _vm._v(" "),
+                          _c("span", [_vm._v("Desactivar tipo descargo")])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.estado,
+                                              expression: "estado"
+                                            }
+                                          ],
+                                          staticClass: "mx-1",
+                                          attrs: {
+                                            color: "teal",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.restaurar(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [_c("v-icon", [_vm._v("mdi-restore")])],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [
+                          _vm._v(" "),
+                          _c("span", [_vm._v("Activar tipo descargo")])
+                        ]
+                      )
+                    ]
+                  }
+                }
+              ])
+            })
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=template&id=1340ec20&":
 /*!******************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Inventario/Descargos/descargos.vue?vue&type=template&id=1340ec20& ***!
@@ -51314,7 +53430,143 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("h1", [_vm._v("Listado descargos")])
+  return _c("div", { staticClass: "content" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+      },
+      [
+        _c(
+          "v-card",
+          [
+            _c(
+              "v-card-title",
+              [
+                _vm._v("\n        Descargos de inventario\n        "),
+                _c("div", { staticClass: "flex-grow-1" }),
+                _vm._v(" "),
+                _c("v-text-field", {
+                  attrs: { label: "Buscar Movimiento", "hide-details": "" },
+                  model: {
+                    value: _vm.buscarDescargo,
+                    callback: function($$v) {
+                      _vm.buscarDescargo = $$v
+                    },
+                    expression: "buscarDescargo"
+                  }
+                }),
+                _vm._v(" "),
+                [
+                  _c(
+                    "div",
+                    { staticClass: "text-center ma-2" },
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            color: "primary",
+                            dark: "",
+                            elevation: "2",
+                            small: ""
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.formDescargo()
+                            }
+                          }
+                        },
+                        [_vm._v("\n              Nuevo Descargo\n            ")]
+                      )
+                    ],
+                    1
+                  )
+                ]
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c("v-data-table", {
+              staticClass: "elevation-1",
+              attrs: {
+                headers: _vm.encabezadosTbl,
+                items: _vm.descargos,
+                "footer-props": {
+                  "items-per-page-options": [10, 15, 25, 35, 45],
+                  "items-per-page-text": "Registros Por Página"
+                },
+                "items-per-page": 10,
+                search: _vm.buscarDescargo,
+                "multi-sort": ""
+              },
+              scopedSlots: _vm._u([
+                {
+                  key: "item.action",
+                  fn: function(ref) {
+                    var item = ref.item
+                    return [
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        {
+                                          staticClass: "mx-1",
+                                          attrs: {
+                                            color: "success",
+                                            elevation: "8",
+                                            small: "",
+                                            dark: "",
+                                            disabled: item.id < 0
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.detalle(item)
+                                            }
+                                          }
+                                        },
+                                        on
+                                      ),
+                                      [
+                                        _c("v-icon", [
+                                          _vm._v("far fa-clipboard")
+                                        ])
+                                      ],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Ver Detalle")])]
+                      )
+                    ]
+                  }
+                }
+              ])
+            })
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -51352,7 +53604,7 @@ var render = function() {
           [
             _c(
               "v-card-title",
-              { domProps: { textContent: _vm._s("Descargo de inventario") } },
+              { domProps: { textContent: _vm._s(_vm.title) } },
               [_c("div", { staticClass: "flex-row-1" })]
             ),
             _vm._v(" "),
@@ -51399,7 +53651,7 @@ var render = function() {
                                     )
                                   }
                                 ],
-                                required: ""
+                                disabled: _vm.descargo.id != null
                               },
                               on: {
                                 change: function($event) {
@@ -51427,26 +53679,28 @@ var render = function() {
                               on: { saved: _vm.onSavedTipoDescargo }
                             }),
                             _vm._v(" "),
-                            _c(
-                              "v-btn",
-                              {
-                                staticClass: "mt-8",
-                                attrs: {
-                                  elevation: "5",
-                                  text: "",
-                                  icon: "",
-                                  color: "primary",
-                                  dark: ""
-                                },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.mostarModalTipoDescargos()
-                                  }
-                                }
-                              },
-                              [_c("v-icon", [_vm._v("mdi-plus-circle")])],
-                              1
-                            )
+                            _vm.descargo.id == null
+                              ? _c(
+                                  "v-btn",
+                                  {
+                                    staticClass: "mt-8",
+                                    attrs: {
+                                      elevation: "5",
+                                      text: "",
+                                      icon: "",
+                                      color: "primary",
+                                      dark: ""
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.mostarModalTipoDescargos()
+                                      }
+                                    }
+                                  },
+                                  [_c("v-icon", [_vm._v("mdi-plus-circle")])],
+                                  1
+                                )
+                              : _vm._e()
                           ],
                           1
                         ),
@@ -51459,7 +53713,8 @@ var render = function() {
                               attrs: {
                                 "append-icon": "mdi-file",
                                 rules: [],
-                                label: "Numero de acta"
+                                label: "Numero de acta",
+                                disabled: _vm.descargo.id != null
                               },
                               model: {
                                 value: _vm.descargo.acta,
@@ -51475,23 +53730,171 @@ var render = function() {
                         _vm._v(" "),
                         _c(
                           "v-col",
-                          { attrs: { cols: "12" } },
+                          { attrs: { cols: "6" } },
+                          [
+                            _c(
+                              "v-menu",
+                              {
+                                attrs: {
+                                  "close-on-content-click": false,
+                                  "nudge-right": 40,
+                                  transition: "scale-transition",
+                                  "offset-y": "",
+                                  "min-width": "auto"
+                                },
+                                scopedSlots: _vm._u([
+                                  {
+                                    key: "activator",
+                                    fn: function(ref) {
+                                      var on = ref.on
+                                      var attrs = ref.attrs
+                                      return [
+                                        _c(
+                                          "v-text-field",
+                                          _vm._g(
+                                            _vm._b(
+                                              {
+                                                attrs: {
+                                                  label:
+                                                    "Seleccione la fecha del acta",
+                                                  "prepend-icon":
+                                                    "mdi-calendar",
+                                                  readonly: "",
+                                                  required: "",
+                                                  disabled:
+                                                    _vm.descargo.id != null
+                                                },
+                                                model: {
+                                                  value: _vm.descargo.fecha,
+                                                  callback: function($$v) {
+                                                    _vm.$set(
+                                                      _vm.descargo,
+                                                      "fecha",
+                                                      $$v
+                                                    )
+                                                  },
+                                                  expression: "descargo.fecha"
+                                                }
+                                              },
+                                              "v-text-field",
+                                              attrs,
+                                              false
+                                            ),
+                                            on
+                                          )
+                                        )
+                                      ]
+                                    }
+                                  }
+                                ]),
+                                model: {
+                                  value: _vm.menu,
+                                  callback: function($$v) {
+                                    _vm.menu = $$v
+                                  },
+                                  expression: "menu"
+                                }
+                              },
+                              [
+                                _vm._v(" "),
+                                _c("v-date-picker", {
+                                  attrs: { max: _vm.getFechaActual },
+                                  on: {
+                                    input: function($event) {
+                                      _vm.menu = false
+                                    }
+                                  },
+                                  model: {
+                                    value: _vm.descargo.fecha,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.descargo, "fecha", $$v)
+                                    },
+                                    expression: "descargo.fecha"
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-col",
+                          { attrs: { cols: "6" } },
                           [
                             _c("v-textarea", {
                               attrs: {
                                 label: "Observación",
                                 "no-resize": "",
                                 rows: "1",
-                                "row-height": "10"
+                                "row-height": "10",
+                                disabled: _vm.descargo.id != null
                               },
                               model: {
-                                value: _vm.descargo.observacion,
+                                value: _vm.descargo.observaciones,
                                 callback: function($$v) {
-                                  _vm.$set(_vm.descargo, "observacion", $$v)
+                                  _vm.$set(_vm.descargo, "observaciones", $$v)
                                 },
-                                expression: "descargo.observacion"
+                                expression: "descargo.observaciones"
                               }
                             })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-col",
+                          { attrs: { cols: "6" } },
+                          [
+                            _vm.descargo.id != null
+                              ? _c("v-textarea", {
+                                  attrs: {
+                                    disabled: "",
+                                    label: "Creado por:",
+                                    "no-resize": "",
+                                    rows: "1",
+                                    "row-height": "10"
+                                  },
+                                  model: {
+                                    value: _vm.descargo.usuario,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.descargo, "usuario", $$v)
+                                    },
+                                    expression: "descargo.usuario"
+                                  }
+                                })
+                              : _vm._e()
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-col",
+                          { attrs: { cols: "6" } },
+                          [
+                            _vm.descargo.id != null
+                              ? _c("v-textarea", {
+                                  attrs: {
+                                    disabled: "",
+                                    label: "Fecha de Registro",
+                                    "no-resize": "",
+                                    rows: "1",
+                                    "row-height": "10"
+                                  },
+                                  model: {
+                                    value: _vm.descargo.fechaRegistro,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.descargo,
+                                        "fechaRegistro",
+                                        $$v
+                                      )
+                                    },
+                                    expression: "descargo.fechaRegistro"
+                                  }
+                                })
+                              : _vm._e()
                           ],
                           1
                         )
@@ -51514,146 +53917,238 @@ var render = function() {
                       showFirstLastPage: true
                     }
                   },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "top",
-                      fn: function() {
-                        return [
-                          _c(
-                            "v-toolbar",
-                            { attrs: { flat: "", color: "white" } },
-                            [
-                              _c("div", { staticClass: "flex-grow-1" }),
-                              _vm._v(" "),
-                              _c(
-                                "v-dialog",
-                                {
-                                  attrs: {
-                                    persistent: "",
-                                    "max-width": "1240px",
-                                    scrollable: ""
-                                  },
-                                  scopedSlots: _vm._u([
-                                    {
-                                      key: "activator",
-                                      fn: function(ref) {
-                                        var on = ref.on
-                                        return [
-                                          _c(
-                                            "v-btn",
-                                            _vm._g(
-                                              {
-                                                staticClass: "mb-2",
-                                                attrs: {
-                                                  elevation: "10",
-                                                  color: "blue  darken-3",
-                                                  dark: ""
-                                                }
-                                              },
-                                              on
-                                            ),
-                                            [
-                                              _vm._v(
-                                                "\n                      Agregar activo \n                      "
-                                              ),
-                                              _c("v-icon", [
-                                                _vm._v(
-                                                  "mdi-plus-box-multiple-outline"
-                                                )
-                                              ])
-                                            ],
-                                            1
-                                          )
-                                        ]
-                                      }
-                                    }
-                                  ]),
-                                  model: {
-                                    value: _vm.modalInventario,
-                                    callback: function($$v) {
-                                      _vm.modalInventario = $$v
+                  scopedSlots: _vm._u(
+                    [
+                      {
+                        key: "top",
+                        fn: function() {
+                          return [
+                            _c(
+                              "v-toolbar",
+                              { attrs: { flat: "", color: "white" } },
+                              [
+                                _c("div", { staticClass: "flex-grow-1" }),
+                                _vm._v(" "),
+                                _c(
+                                  "v-dialog",
+                                  {
+                                    attrs: {
+                                      persistent: "",
+                                      "max-width": "1240px",
+                                      scrollable: ""
                                     },
-                                    expression: "modalInventario"
-                                  }
-                                },
-                                [
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-card",
-                                    [
-                                      _c(
-                                        "v-card-title",
-                                        {
-                                          staticClass:
-                                            "headline grey lighten-2",
-                                          attrs: { "primary-title": "" }
-                                        },
-                                        [
-                                          _c("span", {
-                                            staticClass: "headline",
-                                            domProps: {
-                                              textContent: _vm._s(_vm.formTitle)
-                                            }
-                                          })
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-card-text",
-                                        [
-                                          _c("n-inventario", {
-                                            ref: "inventario",
-                                            on: { added: _vm.onAddedItem }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c("v-divider"),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-card-actions",
-                                        [
-                                          _c("div", {
-                                            staticClass: "flex-grow-1"
-                                          }),
-                                          _vm._v(" "),
-                                          _c(
-                                            "v-btn",
-                                            {
-                                              attrs: {
-                                                color: "success darken-1",
-                                                text: ""
-                                              },
-                                              on: {
-                                                click: function($event) {
-                                                  _vm.modalInventario = false
-                                                }
+                                    scopedSlots: _vm._u([
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          return [
+                                            _vm.descargo.id == null
+                                              ? _c(
+                                                  "v-btn",
+                                                  _vm._g(
+                                                    {
+                                                      staticClass: "mb-2",
+                                                      attrs: {
+                                                        elevation: "10",
+                                                        color: "blue  darken-3",
+                                                        dark: ""
+                                                      }
+                                                    },
+                                                    on
+                                                  ),
+                                                  [
+                                                    _vm._v(
+                                                      "\n                      Agregar activo \n                      "
+                                                    ),
+                                                    _c("v-icon", [
+                                                      _vm._v(
+                                                        "mdi-plus-box-multiple-outline"
+                                                      )
+                                                    ])
+                                                  ],
+                                                  1
+                                                )
+                                              : _vm._e()
+                                          ]
+                                        }
+                                      }
+                                    ]),
+                                    model: {
+                                      value: _vm.modalInventario,
+                                      callback: function($$v) {
+                                        _vm.modalInventario = $$v
+                                      },
+                                      expression: "modalInventario"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-card",
+                                      [
+                                        _c(
+                                          "v-card-title",
+                                          {
+                                            staticClass:
+                                              "headline grey lighten-2",
+                                            attrs: { "primary-title": "" }
+                                          },
+                                          [
+                                            _c("span", {
+                                              staticClass: "headline",
+                                              domProps: {
+                                                textContent: _vm._s(
+                                                  _vm.formTitle
+                                                )
                                               }
-                                            },
-                                            [
-                                              _vm._v(
-                                                "Finalizar\n                      "
-                                              )
-                                            ]
-                                          )
-                                        ],
-                                        1
-                                      )
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              )
-                            ],
-                            1
-                          )
-                        ]
+                                            })
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-card-text",
+                                          [
+                                            _c("n-inventario", {
+                                              ref: "inventario",
+                                              on: { added: _vm.onAddedItem }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c("v-divider"),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-card-actions",
+                                          [
+                                            _c("div", {
+                                              staticClass: "flex-grow-1"
+                                            }),
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-btn",
+                                              {
+                                                attrs: {
+                                                  color: "success darken-1",
+                                                  text: ""
+                                                },
+                                                on: {
+                                                  click: function($event) {
+                                                    _vm.modalInventario = false
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "Finalizar\n                      "
+                                                )
+                                              ]
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        },
+                        proxy: true
                       },
-                      proxy: true
-                    }
-                  ])
+                      _vm.descargo.id == null
+                        ? {
+                            key: "item.observaciones",
+                            fn: function(props) {
+                              return [
+                                _c(
+                                  "v-edit-dialog",
+                                  {
+                                    attrs: {
+                                      "return-value": props.item.observaciones,
+                                      large: "",
+                                      persistent: ""
+                                    },
+                                    on: {
+                                      "update:returnValue": function($event) {
+                                        return _vm.$set(
+                                          props.item,
+                                          "observaciones",
+                                          $event
+                                        )
+                                      },
+                                      "update:return-value": function($event) {
+                                        return _vm.$set(
+                                          props.item,
+                                          "observaciones",
+                                          $event
+                                        )
+                                      }
+                                    },
+                                    scopedSlots: _vm._u(
+                                      [
+                                        {
+                                          key: "input",
+                                          fn: function() {
+                                            return [
+                                              _c(
+                                                "div",
+                                                { staticClass: "mt-4 text-h6" },
+                                                [_vm._v("Observaciones:")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c("v-text-field", {
+                                                attrs: {
+                                                  rules: [],
+                                                  label: "Observaciones",
+                                                  "single-line": "",
+                                                  counter: "",
+                                                  autofocus: ""
+                                                },
+                                                model: {
+                                                  value:
+                                                    props.item.observaciones,
+                                                  callback: function($$v) {
+                                                    _vm.$set(
+                                                      props.item,
+                                                      "observaciones",
+                                                      $$v
+                                                    )
+                                                  },
+                                                  expression:
+                                                    "props.item.observaciones"
+                                                }
+                                              })
+                                            ]
+                                          },
+                                          proxy: true
+                                        }
+                                      ],
+                                      null,
+                                      true
+                                    )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                " +
+                                        _vm._s(props.item.observaciones) +
+                                        "\n                "
+                                    )
+                                  ]
+                                )
+                              ]
+                            }
+                          }
+                        : null
+                    ],
+                    null,
+                    true
+                  )
                 })
               ],
               1
@@ -51664,23 +54159,38 @@ var render = function() {
               [
                 _c("div", { staticClass: "flex-grow-1" }),
                 _vm._v(" "),
-                _c(
-                  "v-btn",
-                  {
-                    attrs: { color: "red darken-1", text: "" },
-                    on: { click: _vm.cancelar }
-                  },
-                  [_vm._v("Cancelar")]
-                ),
+                _vm.descargo.id == null
+                  ? _c(
+                      "v-btn",
+                      {
+                        attrs: { color: "red darken-1", text: "" },
+                        on: { click: _vm.cancelar }
+                      },
+                      [_vm._v("\n                Cancelar\n          ")]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
-                _c(
-                  "v-btn",
-                  {
-                    attrs: { color: "info darken-1", text: "" },
-                    on: { click: _vm.guardar }
-                  },
-                  [_vm._v("Guardar")]
-                )
+                _vm.descargo.id == null
+                  ? _c(
+                      "v-btn",
+                      {
+                        attrs: { color: "info darken-1", text: "" },
+                        on: { click: _vm.guardar }
+                      },
+                      [_vm._v("Guardar")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.descargo.id != null
+                  ? _c(
+                      "v-btn",
+                      {
+                        attrs: { color: "amber darken-1", text: "" },
+                        on: { click: _vm.cancelar }
+                      },
+                      [_vm._v("Regresar")]
+                    )
+                  : _vm._e()
               ],
               1
             )

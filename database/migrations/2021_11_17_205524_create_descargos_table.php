@@ -22,6 +22,9 @@ class CreateDescargosTable extends Migration
             $table->unsignedInteger('tipoDescargo_id');
             $table->foreign('tipoDescargo_id')->references('id')->on('tipo_descargos');
 
+            $table->string('acta', 100 )->nullable();
+            $table->date('fechaActa')->nullable();
+
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 

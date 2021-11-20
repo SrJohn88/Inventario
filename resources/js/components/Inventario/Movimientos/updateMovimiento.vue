@@ -332,9 +332,7 @@ export default {
                             this.contadorPendientes++
                         }
                     })
-                    this.movimiento.activos = [ ... inventario ]
-            
-                    console.log( { inventario })
+                    this.movimiento.activos = [ ... inventario ]                    
 
                 }).catch( console.error )
 

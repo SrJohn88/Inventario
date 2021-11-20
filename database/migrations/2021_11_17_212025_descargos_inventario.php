@@ -13,7 +13,7 @@ class DescargosInventario extends Migration
      */
     public function up()
     {
-        Schema::create('descargos_inventario', function (Blueprint $table) {
+        Schema::create('descargo_inventario', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->increments('id');
@@ -21,10 +21,10 @@ class DescargosInventario extends Migration
             $table->unsignedInteger('descargo_id');
             $table->foreign('descargo_id')->references('id')->on('descargos');
 
-
             $table->unsignedInteger('inventario_id');
             $table->foreign('inventario_id')->references('id')->on('inventarios');
 
+            $table->string('observacion', 300)->nullable();
         
             $table->boolean('eliminado')->default(false);
 
@@ -39,6 +39,6 @@ class DescargosInventario extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('descargos_inventario');
+        Schema::dropIfExists('descargo_inventario');        
     }
 }

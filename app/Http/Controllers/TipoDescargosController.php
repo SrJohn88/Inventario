@@ -15,10 +15,15 @@ class TipoDescargosController extends Controller
         'unique' => 'La :attribute ya existe',
     ];
 
+    function index ()
+    {
+        return view('Inventario.descargos.tiposDescargos');
+    }
+
     function obtenerTiposDescargos()
     {
         return response()->json([
-            'tiposDescargos' => TipoDescargos::where('eliminado', false )->get()
+            'tiposDescargos' => TipoDescargos::all()      
         ]);
     }
 
@@ -50,10 +55,10 @@ class TipoDescargosController extends Controller
         }
     }
 
-    function update ( Request $request, TipoDescargos $tipo )
+    function update ( Request $request, TipoDescargos $tipoDescargo )
     {
         $validacion = Validator::make($request->all(), [
-            'tipoDescargo' => 'required|unique:tipo_descargos, tipoDescargo,'.$tipo->id.'|min:2|max:200',
+            'tipoDescargo' => 'required|unique:tipo_descargos,tipoDescargo,'.$tipoDescargo->id.'|min:2|max:200',
         ], $this->mensajes);
 
         if ($validacion->fails()) {
@@ -64,31 +69,31 @@ class TipoDescargosController extends Controller
             ]);
         }
 
-        $tipo->tipoDescargo = $request->input('tipoDescargo');
-        $tipo->save();
+        $tipoDescargo->tipoDescargo = $request->input('tipoDescargo');
+        $tipoDescargo->save();
 
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'El tipo de descargo fue actualizado con exito',
-            'tipoDescargo' => [ 'id' => $tipo->id, 'tipoDescargo' => $tipo->tipoDescargo, 'eliminado' => 0 ]
+            'tipoDescargo' => [ 'id' => $tipoDescargo->id, 'tipoDescargo' => $tipoDescargo->tipoDescargo, 'eliminado' => 0 ]
         ]);
     }
 
-    function delete ( TipoDescargos $tipo , $accion )
+    function delete ( TipoDescargos $tipoDescargo , $accion )
     {
         $contador = 0;
 
         if ( filter_var($accion, FILTER_VALIDATE_BOOLEAN) )
         {
-            $contador = $tipo->descargos->count();
+            $contador = $tipoDescargo->descargos->count();
         }
 
         if ( $contador == 0)
         {
-            $tipo->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
-            $tipo->save();
+            $tipoDescargo->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
+            $tipoDescargo->save();
 
-            $mensaje = $accion ? 'Tipo de descargo'. $tipo->tipoDescargo.' ha sido desactivada con exito' : 'Tipo de descargo '. $tipo->tipoDescargo.' ha sido restaurado con exito';
+            $mensaje = $accion ? 'Tipo de descargo '. $tipoDescargo->tipoDescargo.' ha sido desactivado con exito' : 'Tipo de descargo '. $tipoDescargo->tipoDescargo.' ha sido restaurado con exito';
             
             return response()->json([
                 'respuesta' => true,
@@ -98,7 +103,7 @@ class TipoDescargosController extends Controller
         {
             return response()->json([
                 'respuesta' => false,
-                'mensaje' => 'No se puede desactivar el tipo de descargo, debido que hay registros que hacen referencia a ella'
+                'mensaje' => 'No se puede desactivar el tipo de descargo, debido que hay registros que hacen referencia a el'
             ]);
         }
     }

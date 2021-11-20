@@ -4,7 +4,7 @@
       class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
     >
       <v-card>
-        <v-card-title v-text="'Descargo de inventario'">
+        <v-card-title v-text="title">
           <div class="flex-row-1"></div>
         </v-card-title>
 
@@ -30,7 +30,7 @@
                       @change="errors['tipoDescargo.id'] = []"                    
                       :menu-props="{ closeOnClick: true }"
                       :rules="[(v) => !!v || 'Tipo de descargo es campo obligatorio']"
-                      required
+                      :disabled = "descargo.id != null"
                     ></v-select>
                   </v-col>
 
@@ -41,6 +41,7 @@
                       class="mt-8"
                       text
                       icon
+                      v-if="descargo.id == null"
                       color="primary"
                       @click="mostarModalTipoDescargos()"
                       dark
@@ -55,16 +56,71 @@
                       v-model="descargo.acta"
                       :rules="[]"
                       label="Numero de acta"
+                      :disabled= "descargo.id != null"
                   ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12">
+                  <v-col cols="6">
+                  <v-menu
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"                    
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="descargo.fecha"
+                        label="Seleccione la fecha del acta"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        required                        
+                        v-bind="attrs"
+                        v-on="on"
+                        :disabled = "descargo.id != null"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="descargo.fecha"
+                      @input="menu = false"
+                      :max="getFechaActual"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+
+                  <v-col cols="6">
                     <v-textarea                    
                       label="Observación"
-                      v-model="descargo.observacion"
+                      v-model="descargo.observaciones"
                       no-resize
                       rows="1"
                       row-height="10"
+                      :disabled = " descargo.id != null "
+                    ></v-textarea>                    
+                  </v-col>
+
+                  <v-col cols="6">
+                    <v-textarea
+                      disabled                    
+                      label="Creado por:"
+                      v-model="descargo.usuario"
+                      no-resize
+                      rows="1"
+                      row-height="10"
+                      v-if = " descargo.id != null "
+                    ></v-textarea>                    
+                  </v-col>
+
+                  <v-col cols="6">
+                    <v-textarea   
+                      disabled                 
+                      label="Fecha de Registro"
+                      v-model="descargo.fechaRegistro"
+                      no-resize
+                      rows="1"
+                      row-height="10"
+                      v-if = "descargo.id != null "
                     ></v-textarea>                    
                   </v-col>
 
@@ -99,6 +155,7 @@
                         dark
                         class="mb-2"
                         v-on="on"
+                        v-if="descargo.id == null"
                       >
                         Agregar activo&nbsp;
                         <v-icon>mdi-plus-box-multiple-outline</v-icon>
@@ -130,19 +187,52 @@
                 </v-toolbar>
               </template>
 
+              <template v-slot:item.observaciones="props" v-if="descargo.id == null">
+                <v-edit-dialog
+                  :return-value.sync="props.item.observaciones"
+                  large
+                  persistent
+                >
+                  {{ props.item.observaciones }}
+                  <template v-slot:input>
+                    <div class="mt-4 text-h6">Observaciones:</div>
+                    <v-text-field
+                      v-model="props.item.observaciones"
+                      :rules="[]"
+                      label="Observaciones"
+                      single-line
+                      counter
+                      autofocus
+                    ></v-text-field>
+                  </template>
+                </v-edit-dialog>
+              </template>
+
             </v-data-table>
 
           </v-container>
 
           <v-card-actions>
             <div class="flex-grow-1"></div>
-            <v-btn color="red darken-1" text @click="cancelar">Cancelar</v-btn>
+            <v-btn color="red darken-1" 
+                text 
+                v-if="descargo.id == null"
+                @click="cancelar">
+                  Cancelar
+            </v-btn>
             <v-btn
               color="info darken-1"
               text
               @click="guardar"
-              >Guardar</v-btn
-            >
+              v-if="descargo.id == null"
+              >Guardar</v-btn>
+
+            <v-btn
+              color="amber darken-1"
+              text
+              @click="cancelar"
+              v-if="descargo.id != null"
+              >Regresar</v-btn>
         </v-card-actions>
       </v-card>
     </div>
@@ -160,6 +250,7 @@ export default {
   data()
   {
     return {
+      menu: false,
       formDescargos: false,
       errors: [],
       tiposDescargos: [],
@@ -174,26 +265,78 @@ export default {
       ],
       buscarActivo: '',
       descargo : {
+        id: null,
         tipoDescargo: { id: null, tipo: '' }, 
-        observacion: '',
+        observaciones: '',
         acta: '',
+        fecha : '',
+        fechaRegistro: null, usuario: '',
         activo: []
       },
-
+      fechaActual: new Date(),
       formTitle: 'Agregar activo',
       modalInventario: false,
     }
   },
+  computed : 
+  {
+    getFechaActual () 
+    {
+      return `${this.fechaActual.getFullYear()}-${ this.fechaActual.getMonth() + 1}-${ this.fechaActual.getDate()}`
+    },
+    title ()
+    {
+      return this.descargo.id == null ? 'Descargo de inventario' : 'Detalle de descargo'
+    }
+  },
+  created ()
+  {
+    let uri = window.location.search.substring(1);
+    let params = new URLSearchParams(uri);
+
+    this.descargo.id = params.has("id") ? params.get("id") : null;
+  },
   mounted ()
   {
       this.obtenerTiposDescargos()
+
+      if ( this.descargo.id != null )
+      {
+          this.obtenerDescargo()
+      }
   },
   methods : {
+    obtenerDescargo()
+    {
+      axios.get(`/Api/inventario/descargos/${ this.descargo.id }`)
+        .then(({ data: { descargo = {} } }) => {
+          
+          this.descargo.tipoDescargo = descargo.tipo_descargo
+          this.descargo.acta = descargo.acta
+          this.descargo.fecha = descargo.fechaActa
+          this.descargo.observaciones = descargo.observaciones
+          this.descargo.fechaRegistro = descargo.created_at
+          this.descargo.usuario = `${descargo.user.name} ${descargo.user.lastName}`
+
+          this.inventarios = descargo.inventario
+          
+          descargo.inventario.forEach( activo => {
+            activo.observaciones = activo.pivot.observacion
+            this.inventarios.push( { activo } )
+          })
+
+      }).catch(() =>{
+          this.alerta('Ocurrio un error en el servidor', 'error', '¡IMPORTANTE!')
+            .then( () => {
+              window.location = '/inventario/descargos'
+            })
+      });
+    },
     obtenerTiposDescargos()
     {
       axios.get(`/Api/inventario/descargos/tipos`)
         .then(({ data: { tiposDescargos } }) => {
-          this.tiposDescargos = tiposDescargos
+          this.tiposDescargos = tiposDescargos.filter((r) => r.eliminado == false )
       });
     },
     onAddedItem ( valores )
@@ -216,18 +359,40 @@ export default {
           }).then( result => {
             if (result.isConfirmed) 
             {
+              this.descargo.activo = []
+
               this.inventarios.forEach( activo => {
                 this.descargo.activo.push({
                   inventario_id: activo.id,
-                  observacion: activo.observaciones,                  
+                  observaciones: activo.observaciones,                  
                 })
               })
 
-              console.log( this.descargo )
-               console.log( 'guardando' )
-            } else 
-            {
-              console.log('cancelado')
+               const path = `/Api/inventario/descargos/save`;
+
+              axios
+                .post(path, this.descargo)
+                .then( response => {
+
+                  if (response.status == 200) 
+                  {
+                      const { respuesta, mensaje } = response.data;
+
+                      if (respuesta) 
+                      {
+                          this.alerta(mensaje, "success", "¡Bien hecho!")
+                            .then( () => {
+                              window.location = '/inventario/descargos'
+                            })
+                      } else 
+                      {
+                        const { errors } = response.data
+                        this.errors = errors
+                      }
+                  }
+                }).catch( () => {
+                    this.alerta('Ocurrio un error en el servidor', 'error', '¡IMPORTANTE!')
+                })              
             }
           })
 
@@ -238,7 +403,21 @@ export default {
     },
     cancelar()
     {
-
+      Swal.fire({
+        title: "¡Importante!",
+        text: "¿ Estas seguro/as que quieres abandonar esta pantalla ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+      }).then( result => {
+          if (result.isConfirmed) 
+          { 
+              window.location = '/inventario/descargos';
+          } 
+      })
     },
     alerta(mensaje, icono = "info", titulo = "") {
       return new Promise((resolve, reject) => {

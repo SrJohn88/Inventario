@@ -56,4 +56,9 @@ class Inventario extends Model
     public function respaldos (){
         return $this->hasMany('App\Models\HistorialInventario');
     }
+
+    function descargo()
+    {
+        return $this->belongsToMany('App\Models\Descargo')->withTimestamps()->withPivot('observacion');
+    }
 }

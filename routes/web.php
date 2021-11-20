@@ -129,15 +129,27 @@ Route::get('/inventario/descargos/crear',[ DescargoController::class, 'crear'])-
 
 // API DESCARGOS DE INVENTARIO
 Route::get('/Api/inventario/descargos/tipos',[ TipoDescargosController::class, 'obtenerTiposDescargos'])->name("TiposDescargos.get");
-Route::post('/inventario/descargos',[ DescargoController::class, 'save'])->name("descargos.save");
+Route::get('/Api/inventario/descargos',[ DescargoController::class, 'obtenerDescargos'])->name("descargos.get");
+Route::get('/Api/inventario/descargos/{descargo}',[ DescargoController::class, 'obtenerDescargo'])->name("descargos.getOne");
+Route::post('/Api/inventario/descargos/save',[ DescargoController::class, 'save'])->name("descargos.save");
 
 
 // TIPOS DE DESCARGOS 
-
+Route::get('/inventario/descargos/tiposDescargos',[ TipoDescargosController::class, 'index'])->name("tipoDescargos.index");
 
 // API TIPOS DE DESCARGOS 
 Route::post('/Api/inventario/descargo/tiposDescargo',[ TipoDescargosController::class, 'save'])->name("tipoDescargo.save");
+Route::post('/Api/inventario/descargo/tiposDescargo/{tipoDescargo}/edit',[ TipoDescargosController::class, 'update'])->name("tipoDescargo.update");
+Route::delete('/Api/inventario/descargo/tiposDescargo/{tipoDescargo}/{acccion}',[TipoDescargosController::class,'delete'])->name("tipoDescargo.delete");
 
+
+// CARGOS
+Route::get('/empleados/cargos',[ CargoController::class, 'index'])->name("Cargos.index");
+
+//CARGOS API
+Route::post('/Api/empleados/cargos',[ CargoController::class, 'save'])->name("cargo.save");
+Route::post('/Api/empleados/cargos/{cargo}/edit',[ CargoController::class, 'update'])->name("cargo.update");
+Route::delete('/Api/empleados/cargos/{cargo}/{acccion}',[CargoController::class,'delete'])->name("cargo.delete");
 
 
 // HISTORIAL DE INVENTARIO
