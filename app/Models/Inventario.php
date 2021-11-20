@@ -46,7 +46,7 @@ class Inventario extends Model
 
     function movimiento() 
     {
-        return $this->belongsToMany('App\Models\Movimiento')->withTimestamps();;
+        return $this->belongsToMany('App\Models\Movimiento')->withTimestamps()->withPivot('falla', 'observaciones', 'recibido', 'usuario');
     }
 
     public function historial(){

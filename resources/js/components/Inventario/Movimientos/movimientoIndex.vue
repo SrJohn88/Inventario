@@ -48,24 +48,37 @@
                     </template>
 
                     <template v-slot:item.action="{item}" v-slot:activator="{ on }">
-                    <v-tooltip top >
-                    <template v-slot:activator="{ on }" >
-                        <v-btn
-                        color="success"
-                        class="mx-1"
-                        elevation="8"
-                        small
-                        dark
-                        :disabled="item.id < 0"
-                        v-on="on"
-                        @click="detalle( item )"
-                        >
-                        <v-icon>far fa-clipboard</v-icon>
-                        </v-btn>
+                        <v-tooltip top >
+                        <template v-slot:activator="{ on }" >
+                            <v-btn
+                            color="success"
+                            class="mx-1"
+                            elevation="8"
+                            small
+                            dark
+                            :disabled="item.id < 0"
+                            v-on="on"
+                            @click="detalle( item )"
+                            >
+                            <v-icon>far fa-clipboard</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Ver Detalle</span>
+                        </v-tooltip>
                     </template>
-                    <span>Ver Detalle</span>
-                    </v-tooltip>
-                </template>
+
+                    <template v-slot:item.recibidos="{item}" v-slot:activator="{ on }">
+                        <v-progress-linear
+                            color="amber"
+                            height="15"
+                            :value=" item.porcentaje"
+                            striped
+                        >
+                            <template v-slot:default="{ value }">
+                                <strong>{{ Math.ceil(value) }}%</strong>
+                            </template>
+                        </v-progress-linear>
+                    </template>
 
 
                  </v-data-table>
@@ -84,10 +97,10 @@ export default {
             TheadTable: [
                 { text: 'Tipo Movimiento', value: 'tipo_movimiento.tipo' },
                 { text: "Recibido por", value: "recibe" },
-                { text: "Aprobado por", value: "aprueba" },
                 { text: "Entregado por", value: "user" },
                 { text: "Descripcion", value: "descripcion" }, 
-                { text: "Fecha registro", value: "created_at" },                
+                { text: "Fecha registro", value: "created_at" },
+                { text: "Recibidos", value: "recibidos" },                
                 { text: "Acciones", value: "action", sortable: false, align: "center" },
             ],
             movimientos: []
@@ -103,8 +116,22 @@ export default {
         obtenerMovimientos () {
             axios.get(`/Api/inventario/movimientos`)
                 .then( ( { data: { movimientos } } ) => {
-                    console.log( movimientos)
-                    this.movimientos = movimientos;
+
+                    movimientos.forEach( movimiento => {                        
+                        const { 
+                           id, tipo_movimiento, recibe, user, descripcion, created_at
+                        } = movimiento
+                        
+                        let totalActivos = movimiento.inventario.length
+                        let activosRecibidos = movimiento.inventario.filter(activo=>activo.pivot.recibido == true).length
+
+                        let porcentaje = ( activosRecibidos * 100 ) / totalActivos
+                        this.movimientos.push( { 
+                            id, tipo_movimiento, recibe, user, descripcion, 
+                            created_at, porcentaje
+                        })
+                    });
+                    console.log( this.movimientos)
                 })
                 .catch( console.error )
         },

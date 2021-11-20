@@ -253,7 +253,7 @@ export default {
                 /^[A-Za-záéíóúÁÉÍÓÚ\s]+$/g.test(v) ||
                 "Nombre del empleado solo puede contener letras",
                 dui: (v) => 
-                /^[0-9]{8}-[0-9]{1}$/.test(v) || "Ingresa un numero de DUI valido"
+                v && /^[0-9]{8}-[0-9]{1}$/.test(v) || "Ingresa un numero de DUI valido"
             },
             cargos: [],
 

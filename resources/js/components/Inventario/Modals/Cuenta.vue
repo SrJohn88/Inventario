@@ -96,7 +96,6 @@ export default {
         });
     },
     mostrarModal() {
-      //this.cuenta = { id: null, cuenta: "" };
       this.dialog = true;
     },
     cerrarModal() {

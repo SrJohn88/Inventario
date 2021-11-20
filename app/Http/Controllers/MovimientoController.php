@@ -31,8 +31,8 @@ class MovimientoController extends Controller
     function obtenerMovimientos()
     {
         return response()->json([
-            'movimientos' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'user')
-                    ->orderBy('created_at', 'desc')->get()
+            'movimientos' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'user', 'inventario')
+            ->orderBy('created_at', 'desc')->get()
         ]);
     }
 
@@ -47,7 +47,6 @@ class MovimientoController extends Controller
                 $validacion = Validator::make($request->all(), [
                     'recibe.id' => 'required',
                     'tipoMovimiento.id' => 'required',
-                    'aprueba.id' => 'required'
                 ], $this->mensajes);
 
                 if ($validacion->fails()) {
@@ -64,14 +63,40 @@ class MovimientoController extends Controller
                 $movimiento->aprobado_gerencia = $request->input('gerencia.id');
                 $movimiento->aprobado_por = $request->input('aprueba.id');
                 $movimiento->user_id = \Auth::user()->id;
-                $movimiento->seTranslada = $request->input('ubicacion.id');
+
+                if ( $movimiento->tipo_id == 1 || $movimiento->tipo_id == 3 )
+                {
+                    $movimiento->seTranslada = $request->input('ubicacion.id');
+                }
+
+                 if ( $movimiento->tipo_id == 4 )
+                 {
+                    $movimiento->detalleSalida = $request->input('detalleSalida');
+                 }
+
+                if ( $movimiento->tipo_id != 2 )
+                {
+                    $movimiento->fechaReingreso = $request->input('fecha');
+                }
+
                 $movimiento->descripcion = $request->input('observacion');
                 $movimiento->save();
 
                 // [ { inventario_id : 1, falla: 'sin fallar', obervaciones: 'sin observaciones' } ]
 
-                $detalleMovimiento = $request->input('activos');               
-                $movimiento->inventario()->attach( $detalleMovimiento  );
+                //$detalleMovimiento = $request->input('activos');               
+                //$movimiento->inventario()->attach( $detalleMovimiento  );
+
+                foreach( $request->input('activos') as $value )
+                {
+                    $movimiento->inventario()->attach( $value['inventario_id'],
+                    [
+                        'falla' => $value['falla'], 
+                        'observaciones' => $value['observaciones'],
+                        'recibido' => $movimiento->tipo_id == 2 ? true : false,
+                        'usuario' => $movimiento->tipo_id == 2 ? \Auth::user()->name : null
+                    ]);
+                }
 
                 foreach ( $request->input('activos') as $value )
                 {               
@@ -146,7 +171,6 @@ class MovimientoController extends Controller
                 ]);
 
             }        
-
         } catch ( \Exception $e )
         {
             DB::rollBack();

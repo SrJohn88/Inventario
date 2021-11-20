@@ -34,7 +34,7 @@ export default {
             headTablaInventario: [
                 { text: "Codigo", value: "codigo", align: "left" },
                 { text: "Descripción", value: "descripcion", align: "left" },
-                { text: "Marca", value: "marca.nombre", align: "left" },
+                { text: "Marca", value: "marca.marca", align: "left" },
                 { text: "Modelo", value: "modelo", align: "left" },
                 { text: "Serie", value: "serie", align: "left" },
                 { text: "Estado", value: "estado.estado", align: "left" },

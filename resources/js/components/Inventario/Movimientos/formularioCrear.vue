@@ -28,19 +28,20 @@
                     item-value="id"
                     return-object
                     clearable
-                    @change="errors['tipoMovimiento.id'] = []"
+                    @change="tipoMovimientoChange"
                     :error-messages="errors['tipoMovimiento.id']"
                     :menu-props="{ closeOnClick: true }"
                   ></v-autocomplete>
                 </v-col>
 
-                <v-col cols="6">
+                <!--  CAJA DE RECIBE  !-->
+                <v-col cols="5">
                   <v-autocomplete
                     v-model="movimiento.recibe"
                     :items="empleados"
                     required
                     :rules="[
-                      (v) => !!v || 'Tipo cuenta del activo es requerido',
+                      (v) => !!v || 'Selecciona quien recibe el activo',
                     ]"
                     label="Recibe"
                     :item-text="EmpleadoNombreCompleto"
@@ -53,7 +54,26 @@
                   ></v-autocomplete>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="1" md="1">
+                  <Empleado @saved="onSavedEmpleado" ref="empleado" />
+                  <v-btn
+                    elevation="5"
+                    class="mt-8"
+                    text
+                    icon
+                    color="primary"
+                    @click="mostrarModalEmpleados()"
+                    dark
+                  >
+                    <v-icon>mdi-plus-circle</v-icon>
+                  </v-btn>
+                </v-col>
+
+                <!-- FIN DE QUIEN RECIBE !-->
+
+                <!-- INICIO DE APRUEBA !-->
+
+                <v-col cols="5">
                   <v-autocomplete
                     v-model="movimiento.aprueba"
                     :items="empleados"
@@ -72,7 +92,26 @@
                   ></v-autocomplete>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="1" md="1">
+                  <Empleado @saved="onSavedEmpleado" ref="empleado" />
+                  <v-btn
+                    elevation="5"
+                    class="mt-8"
+                    text
+                    icon
+                    color="primary"
+                    @click="mostrarModalEmpleados()"
+                    dark
+                  >
+                    <v-icon>mdi-plus-circle</v-icon>
+                  </v-btn>
+                </v-col>
+
+                <!-- FIN DE APRUEBA  !-->
+
+                <!-- INICIO APROBADO POR GERENCIA !-->
+                
+                <v-col cols="5">
                   <v-autocomplete
                     v-model="movimiento.gerencia"
                     :items="empleados"
@@ -89,7 +128,24 @@
                   ></v-autocomplete>
                 </v-col>
 
-                <v-col cols="6">
+                <v-col cols="1" md="1">
+                  <Empleado @saved="onSavedEmpleado" ref="empleado" />
+                  <v-btn
+                    elevation="5"
+                    class="mt-8"
+                    text
+                    icon
+                    color="primary"
+                    @click="mostrarModalEmpleados()"
+                    dark
+                  >
+                    <v-icon>mdi-plus-circle</v-icon>
+                  </v-btn>
+                </v-col>
+
+                <!-- FIN DE APROBADO POR GERENCIA  !-->
+
+                <v-col cols="6" v-show="movimiento.tipoMovimiento.id != null && ( movimiento.tipoMovimiento.id != 2)">
                   <v-menu
                     v-model="menu"
                     :close-on-content-click="false"
@@ -117,11 +173,8 @@
                   </v-menu>
                 </v-col>
 
-                <v-col
-                  cols="5"
-                  v-if="
-                    movimiento.tipoMovimiento != null && ( movimiento.tipoMovimiento.id == 2 || movimiento.tipoMovimiento.id == 3 )
-                  "
+                <v-col cols="5" 
+                  v-if="movimiento.tipoMovimiento.id != null && ( movimiento.tipoMovimiento.id != 4)"
                 >
                   <v-autocomplete
                     append-icon="fas fa-map-marker-alt"
@@ -142,7 +195,7 @@
                   cols="1"
                   md="1"
                   v-if="
-                    movimiento.tipoMovimiento != null && ( movimiento.tipoMovimiento.id == 2 || movimiento.tipoMovimiento.id == 3)
+                    movimiento.tipoMovimiento.id != null && ( movimiento.tipoMovimiento.id != 4)
                   "
                 >
                   <Ubicacion @saved="onSavedUbicacion" ref="ubicacion" />
@@ -157,6 +210,14 @@
                   >
                     <v-icon>mdi-plus-circle</v-icon>
                   </v-btn>
+                </v-col>
+
+                <v-col cols="6" v-show="movimiento.tipoMovimiento.id != null && movimiento.tipoMovimiento.id == 4">
+                  <v-textarea
+                    v-model="movimiento.detalleSalida"
+                    label="Se Traslada a:"
+                    rows="1"
+                  ></v-textarea>
                 </v-col>
 
                 <v-col cols="12">
@@ -249,6 +310,29 @@
                   </template>
                 </v-edit-dialog>
               </template>
+
+              <template v-slot:item.observaciones="props">
+                <v-edit-dialog
+                  :return-value.sync="props.item.observaciones"
+                  large
+                  persistent
+                  @save="guardarFallar(props.item)"
+                  @cancel="cancelarFalla"
+                >
+                  {{ props.item.observaciones }}
+                  <template v-slot:input>
+                    <div class="mt-4 text-h6">Observaciones:</div>
+                    <v-text-field
+                      v-model="props.item.observaciones"
+                      :rules="[]"
+                      label="Observaciones"
+                      single-line
+                      counter
+                      autofocus
+                    ></v-text-field>
+                  </template>
+                </v-edit-dialog>
+              </template>
             </v-data-table>
           </v-form>
         </v-container>
@@ -270,6 +354,8 @@
 </template>
 
 <script>
+Vue.component("Empleado", require("../Modals/Empleado.vue").default);
+Vue.component("Ubicacion", require("../Modals/Ubicacion.vue").default);
 Vue.component("n-inventario", require("..//Modals/Movimiento.vue").default);
 
 export default {
@@ -288,7 +374,8 @@ export default {
         aprueba: { id: null, nombre: "" },
         gerencia: { id: null, nombre: "" },
         ubicacion: { id: null, ubicacion: "" },
-        observaciones: "",
+        observaciones: "", detalleSalida: '',
+        fecha: '',
         activos: [],
       },
       tiposMovimientos: [],
@@ -302,6 +389,7 @@ export default {
         { text: "Modelo", value: "modelo", align: "left" },
         { text: "Serie", value: "serie", align: "left" },
         { text: "Falla", value: "falla", align: "left" },
+        { text: "Observaciones", value: "observaciones", align: "left" },
       ],
       inventarios: [],
     };
@@ -327,7 +415,6 @@ export default {
       });
     },
     getInventario() {
-      console.log("creando desde movimiento");
       this.$refs.activo = [];
     },
     getEmpleados() {
@@ -350,11 +437,37 @@ export default {
     },
     onAddedItem(valores) {
       this.inventarios = valores;
-      //console.log(this.inventarios);
     },
     getProductFromChild() {},
     guardarMovimiento() {
-      if (this.formularioMovimiento && this.inventarios.length > 0) {
+
+      let datosValidos = true
+      let mensaje = ''
+
+      if ( this.movimiento.tipoMovimiento.id == null || this.inventarios.length == 0) 
+      {
+          mensaje = 'Debes seleccionar el tipo de movimiento y agregar al menos un activo'
+          datosValidos = false
+      } else 
+      {
+          if ( this.movimiento.tipoMovimiento.id == 1 || this.movimiento.tipoMovimiento.id == 3 )
+          {
+              if ( this.movimiento.ubicacion.id == null || this.movimiento.fecha.length == 0 )
+              {
+                mensaje = 'El campo se traslada y fecha de reingreso son requeridos'
+                datosValidos = false
+              }
+          } else if ( this.movimiento.tipoMovimiento.id == 4 )
+          {
+              if ( this.movimiento.detalleSalida.length == 0 || this.movimiento.fecha.length == 0 )
+              {
+                mensaje = 'El campo se traslada y fecha reingreso son requeridos'
+                datosValidos = false
+              }
+          }
+      }
+
+      if ( datosValidos ) {
         Swal.fire({
           title: "¡Importante!",
           text: "Estas seguro/as que los datos son correctos ¿Deseas guardar el movimiento?",
@@ -368,7 +481,13 @@ export default {
           if (result.isConfirmed) {
             let activosTemp = [...this.inventarios];
 
+            if ( this.movimiento.tipoMovimiento.id == 2 )
+            {
+
+            }
+
             activosTemp.forEach((activo) => {
+              
               this.movimiento.activos.push({
                 inventario_id: activo.id,
                 falla: activo.falla,
@@ -416,7 +535,7 @@ export default {
           }
         });
       } else {
-          this.alerta('Completa los datos', 'warning', 'IMPORTANTE')
+          this.alerta( mensaje , 'warning', 'IMPORTANTE')
       }
     },
     cancelar() {
@@ -436,8 +555,34 @@ export default {
     },
     guardarFallar(item) {},
     cancelarFalla() {},
-    mostrarModalUbicacion() {},
-    onSavedUbicacion(value) {},
+    mostrarModalUbicacion() {
+      this.$refs.ubicacion.mostrarModal()
+    },
+    onSavedUbicacion( { ... ubicacion } ) {
+        this.ubicaciones.push( ubicacion )
+    },  
+    onSavedEmpleado( empleado ) 
+    {
+      this.empleados.push( { ...empleado })
+    },
+    mostrarModalEmpleados()
+    {
+      this.$refs.empleado.mostrarModal();
+    },
+    tipoMovimientoChange()
+    {
+      this.errors['tipoMovimiento.id'] = []
+
+        this.movimiento.recibe = { id: null, nombre: "" }
+        this.movimiento.aprueba = { id: null, nombre: "" }
+        this.movimiento.gerencia = { id: null, nombre: "" }
+        this.movimiento.ubicacion = { id: null, ubicacion: "" }
+        this.movimiento.observaciones = ''
+        this.movimiento.detalleSalida = ''
+        this.$refs.formMovimiento.resetValidation()
+      
+
+    }
   },
 };
 </script>

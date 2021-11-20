@@ -267,14 +267,13 @@
                     :disabled="detalle"
                     append-icon="fas fa-map-marker-alt"
                     v-model="inventario.ubicacion"
-                    :items="ubicaciones"
-                    required
+                    :items="ubicaciones"                    
                     :rules="[(v) => !!v || 'Ubicación del activo es requerido']"
                     label="Ubicación"
                     item-text="ubicacion"
                     item-value="id"
                     return-object
-                    clearable
+                    clearable                    
                     :menu-props="{ closeOnClick: true }"
                   ></v-autocomplete>
                 </v-col>
@@ -825,7 +824,9 @@ export default {
                           ubicacion: { id: null, ubicacion: "" },
                           entidad: { id: null, entidad: "" },
                         };
-                        console.log("Limpiando");
+
+                        this.$refs.formInventario.resetValidation()
+                                              
                       } else {
                         window.location = "/inventario/index";
                       }

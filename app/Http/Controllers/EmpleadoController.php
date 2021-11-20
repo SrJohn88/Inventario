@@ -30,8 +30,7 @@ class EmpleadoController extends Controller
     {
         if( $request->isMethod('POST') )
         {   
-            $validacion = Validator::make($request->all(), [
-                'dui' => 'required|unique:empleados|max:10',
+            $validacion = Validator::make($request->all(), [                
                 'nombre' => 'required|min:2|max:200',
                 'apellido' => 'required|min:2|max:200',
                 'cargo.id' => 'required'
@@ -42,7 +41,6 @@ class EmpleadoController extends Controller
                     'respuesta' => false,
                     'mensaje' => '',
                     'errors' => [
-                        'dui' => $validacion->errors()->get('dui'),
                         'nombre' => $validacion->errors()->get('nombre'),
                         'apellido' => $validacion->errors()->get('apellido'),
                         'cargo' =>   $validacion->errors()->get('cargo.id')
@@ -68,7 +66,9 @@ class EmpleadoController extends Controller
     function update(Request $request, Empleado $empleado )
     {
         $validacion = Validator::make($request->all(), [
-            'dui' => 'required|unique:empleados,dui,'.$empleado->id.'|min:2|max:100'
+            'nombre' => 'required|min:2|max:200',
+            'apellido' => 'required|min:2|max:200',
+            'cargo.id' => 'required',            
         ], $this->mensajes);
 
         if ($validacion->fails()) {
