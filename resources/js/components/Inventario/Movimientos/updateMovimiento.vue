@@ -144,60 +144,59 @@
                     </template>
                     
                     <template v-slot:top>
-            <v-toolbar flat color="white">
-              <div class="flex-grow-1"></div>
-              <v-dialog v-model="modal" persistent max-width="700px">                
-                <v-card>
-                  <v-card-title class="headline lighten-2" primary-titles>
-                    <span class="headline" v-text="'Detalle de activo'"></span>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-container>
-                      <v-form
-                        :lazy-validation="true"
-                      >
-                        <v-row>
-                            <v-col cols="6" >
-                                <v-text-field
-                                    append-icon="mdi-folder-outline"
-                                    v-model="detalleActivo.usuario"
-                                    @keyup="errors = []"
-                                    :rules= "[]"
-                                    label="Usuario"
-                                    required
-                                    :readonly = "true"
-                                    :error-messages="errors"
-                                    ></v-text-field>
-                            </v-col>
-                            <v-col cols="6">
-                                    <v-text-field
-                                        append-icon="mdi-folder-outline"
-                                        v-model="detalleActivo.fecha"
-                                        @keyup="errors = []"
-                                        :rules= "[]"
-                                        label="Fecha de recibido"
-                                        required
-                                        :readonly = "true"
-                                        :error-messages="errors"
-                                        ></v-text-field>
-                            </v-col>
-                        </v-row>                                                
-                      </v-form>
-                    </v-container>
-                  </v-card-text>
-                  <v-divider></v-divider>
-                  <v-card-actions>
-                    <div class="flex-grow-1"></div>
-                    <v-btn
-                      color="info darken-1"
-                      text
-                      v-text="'Cerrar'"
-                      @click="ocultarModal"
-                    ></v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </v-toolbar>
+                        <v-toolbar flat color="white">
+                            <div class="flex-grow-1"></div>
+                            <v-dialog v-model="modal" persistent max-width="700px">                
+                            <v-card>
+                                <v-card-title class="headline lighten-2" primary-titles>
+                                    <span class="headline" v-text="'Detalle de activo'"></span>
+                                </v-card-title>
+                                
+                                <v-card-text>
+                                    <v-container>
+                                        <v-form :lazy-validation="true">
+                                            <v-row>
+                                                <v-col cols="6" >
+                                                    <v-text-field
+                                                        append-icon="mdi-folder-outline"
+                                                        v-model="detalleActivo.usuario"
+                                                        @keyup="errors = []"
+                                                        :rules= "[]"
+                                                        label="Usuario"
+                                                        required
+                                                        :readonly = "true"
+                                                        :error-messages="errors"
+                                                        ></v-text-field>
+                                                </v-col>
+                                                <v-col cols="6">
+                                                        <v-text-field
+                                                            append-icon="mdi-folder-outline"
+                                                            v-model="detalleActivo.fecha"
+                                                            @keyup="errors = []"
+                                                            :rules= "[]"
+                                                            label="Fecha de recibido"
+                                                            required
+                                                            :readonly = "true"
+                                                            :error-messages="errors"
+                                                            ></v-text-field>
+                                                </v-col>
+                                            </v-row>                                                
+                                        </v-form>
+                                    </v-container>
+                                </v-card-text>
+                                <v-divider></v-divider>
+                                <v-card-actions>
+                                    <div class="flex-grow-1"></div>
+                                    <v-btn
+                                    color="info darken-1"
+                                    text
+                                    v-text="'Cerrar'"
+                                    @click="ocultarModal"
+                                    ></v-btn>
+                                </v-card-actions>
+                            </v-card>
+                            </v-dialog>
+                        </v-toolbar>
                     </template>
 
                 </v-data-table>

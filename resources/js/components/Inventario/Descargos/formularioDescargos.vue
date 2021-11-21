@@ -309,20 +309,27 @@ export default {
     obtenerDescargo()
     {
       axios.get(`/Api/inventario/descargos/${ this.descargo.id }`)
-        .then(({ data: { descargo = {} } }) => {
+        .then(({ data: { descargo } }) => {
           
-          this.descargo.tipoDescargo = descargo.tipo_descargo
-          this.descargo.acta = descargo.acta
-          this.descargo.fecha = descargo.fechaActa
-          this.descargo.observaciones = descargo.observaciones
-          this.descargo.fechaRegistro = descargo.created_at
-          this.descargo.usuario = `${descargo.user.name} ${descargo.user.lastName}`
-
-          this.inventarios = descargo.inventario
+          const { 
+              tipo_descargo,
+              acta,
+              fechaActa,
+              observacion,
+              created_at,
+              user,
+              inventario
+          } = descargo[0]
+          this.descargo.tipoDescargo = { ... tipo_descargo }
+          this.descargo.acta = acta
+          this.descargo.fecha = fechaActa
+          this.descargo.observaciones = observacion
+          this.descargo.fechaRegistro = created_at
+          this.descargo.usuario = `${user.name} ${user.lastName}`
           
-          descargo.inventario.forEach( activo => {
+          inventario.forEach( activo => {
             activo.observaciones = activo.pivot.observacion
-            this.inventarios.push( { activo } )
+            this.inventarios.push( { ...activo } )
           })
 
       }).catch(() =>{

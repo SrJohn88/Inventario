@@ -116,7 +116,9 @@ class DescargoController extends Controller
     function obtenerDescargo( Descargo $descargo )
     {
         return response()->json([
-            'descargo' => $descargo::with('tipoDescargo', 'user', 'inventario', 'inventario.marca')->firstOrFail()
+            'descargo' => Descargo::with('tipoDescargo', 'user', 'inventario', 'inventario.marca')
+            ->where('id', $descargo->id )
+            ->get()
         ]);
     }
 

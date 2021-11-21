@@ -136,6 +136,7 @@ class InventarioController extends Controller
             $historialInventario->desUbicacion = $inventario->desUbicacion;
             $historialInventario->fecha_adquision = $inventario->fecha_adquision;
             $historialInventario->observacion = $inventario->observacion;
+            $historialInventario->user_id = \Auth::user()->id;
             $historialInventario->save();
         }
 

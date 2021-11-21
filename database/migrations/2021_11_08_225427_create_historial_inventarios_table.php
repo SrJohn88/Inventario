@@ -53,6 +53,10 @@ class CreateHistorialInventariosTable extends Migration
             $table->unsignedInteger('estado_id')->default(1);
             $table->foreign('estado_id')->references('id')->on('estados');
 
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+
+
             $table->Boolean('eliminado')->default( false );
             $table->timestamps();
         });
