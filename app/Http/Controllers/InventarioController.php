@@ -33,7 +33,9 @@ class InventarioController extends Controller
     function getActivos() 
     {
         return response()->json([
-            'activos' => Inventario::with('ubicacion', 'estado', 'marca', 'estado')->get()
+            'activos' => Inventario::with('ubicacion', 'estado', 'marca', 'estado')
+                        ->where('eliminado', false)
+                        ->get()
         ]);
     }
 
@@ -166,5 +168,19 @@ class InventarioController extends Controller
     function obtenerHistorialMovimientos()
     {
         return Inventario::with('historial')->get();
+    }
+
+    function indexActivosDescargados()
+    {
+        return view('Inventario.descargos.activosDescargados');
+    }
+
+    function obtenerActivosDescargados()
+    {
+        return response()->json([
+            'activos' => Inventario::with('ubicacion', 'estado', 'marca', 'estado', 'descargo')
+                        ->where('eliminado', true )
+                        ->get()
+        ]);
     }
 }

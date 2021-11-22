@@ -127,6 +127,11 @@ Route::post('/Api/inventario/movimientos/update/{movimiento}',[ MovimientoContro
 Route::get('/inventario/descargos',[ DescargoController::class, 'index'])->name("descargos.index");
 Route::get('/inventario/descargos/crear',[ DescargoController::class, 'crear'])->name("descargos.crear");
 
+// ACTIVOS DESCARGADOS
+Route::get('/inventario/activosDescargados',[ InventarioController::class, 'indexActivosDescargados'])->name("indexActivosDescargados.index");
+Route::get('/Api/inventario/activosDescargados',[ InventarioController::class, 'obtenerActivosDescargados'])->name("getActivosDescargados.index");
+
+
 // API DESCARGOS DE INVENTARIO
 Route::get('/Api/inventario/descargos/tipos',[ TipoDescargosController::class, 'obtenerTiposDescargos'])->name("TiposDescargos.get");
 Route::get('/Api/inventario/descargos',[ DescargoController::class, 'obtenerDescargos'])->name("descargos.get");
@@ -162,4 +167,5 @@ Route::get('/usuarios',[ UserController::class, 'index'])->name("usuarios.index"
 
 // API USUARIOS
 Route::get('/Api/usuarios',[ UserController::class, 'obtenerUsuarios'])->name("usuarios.get");
-
+Route::get('/Api/usuarios/roles',[ UserController::class, 'obtenerRoles'])->name("roles.get");
+Route::post('/Api/usuarios',[ UserController::class, 'save'])->name("usuarios.save");

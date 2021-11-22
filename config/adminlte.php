@@ -287,6 +287,11 @@ return [
                     'icon'  => 'fas fw fa-registered',
                 ],
                 [
+                    'text' => 'Activos descargados',
+                    'route' => 'indexActivosDescargados.index',
+                    'icon'  => 'fas fw fa-registered',
+                ],
+                [
                     'text' => 'Movimientos',
                     'route' => 'movimiento.index',
                     'icon'  => 'fas fw fa-registered',

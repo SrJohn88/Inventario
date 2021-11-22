@@ -29,7 +29,7 @@
                     append-icon="fas fa-barcode"
                     v-model="inventario.codigo"
                     @keyup="errors.codigo = []"
-                    :rules="[reglas.requerido, reglas.min]"
+                    :rules="[ reglas.codigo, reglas.min ]"
                     label="Código"
                     required
                     :disabled="detalle"
@@ -653,17 +653,20 @@ export default {
         .toISOString()
         .substr(0, 10),
       reglas: {
-        requerido: (v) => !!v || "Nombre de la entidad es requerido",
+        requerido: (v) => !!v || "Campo requerido",
         min: (v) =>
           (v.length >= 2 && v.length <= 100) ||
-          "Nombre de la entidad debe ser mayor a 2 caracteres",
+          "Este campo debe ser mayor a 2 caracteres",
         expresion: (v) =>
           /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) ||
-          "Nombre de la entidad no puede tener caracteres especiales",
+          "Este campo no puede tener caracteres especiales",
         precio: (v) =>
           v.length == 0 ||
           /^[0-9. \s]+$/g.test(v) ||
           "No parece formato de dinero",
+        codigo: (v) => !! v &&         
+          /^[0-9- \s]+$/g.test(v) ||
+          "Código no valido",
         noRequerido: (v) =>
           v.length == 0 ||
           (v.length >= 2 && v.length <= 100) ||
