@@ -164,8 +164,18 @@ Route::get('/Api/historial/movimientos/{inventario}/{desde}/{hasta}',[ Historial
 
 // USUARIOS
 Route::get('/usuarios',[ UserController::class, 'index'])->name("usuarios.index");
+Route::get('/usuarios/crear',[ UserController::class, 'crear'])->name("usuarios.crear");
+
 
 // API USUARIOS
-Route::get('/Api/usuarios',[ UserController::class, 'obtenerUsuarios'])->name("usuarios.get");
+Route::get('/Api/usuarios', [ UserController::class, 'obtenerUsuarios'])->name("usuarios.get");
 Route::get('/Api/usuarios/roles',[ UserController::class, 'obtenerRoles'])->name("roles.get");
 Route::post('/Api/usuarios',[ UserController::class, 'save'])->name("usuarios.save");
+Route::get('/Api/usuarios/sesion',[ UserController::class, 'sesion'])->name("usuarios.sesion");
+Route::get('/Api/usuarios/{user}',[ UserController::class, 'obtenerUsuario'])->name("usuarios.getOne");
+Route::post('/Api/usuarios/{user}/edit',[ UserController::class, 'update'])->name("usuarios.update");
+Route::post('/Api/usuarios/{user}/password',[ UserController::class, 'cambiarContraseña'])->name("usuarios.updatePass");
+Route::delete('/Api/usuarios/{user}/{accion}',[ UserController::class, 'desactivar'])->name("usuarios.desactivar");
+
+
+

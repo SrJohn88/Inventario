@@ -20,6 +20,20 @@
             label="Buscar Usuario"
             hide-details
           ></v-text-field>
+
+            <template>
+              <div class="text-center ma-4">
+                <v-btn                          
+                  color="primary"
+                  dark
+                  elevation="2"
+                  small
+                  @click="crear()"                        
+                >
+                  Agregar Usuario
+                </v-btn>
+              </div>
+            </template>
         </v-card-title>
 
         <v-data-table
@@ -35,161 +49,9 @@
           class="elevation-1"
           no-data-text="No hay usuarios para mostrar"
         >
+          
 
-          <template v-slot:top>
-            <v-toolbar flat color="white">
-              <div class="flex-grow-1"></div>
-              <v-dialog v-model="modal" persistent max-width="700px">
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    v-show="!mostrarUsuariosEliminados"
-                    elevation="10"
-                    color="blue  darken-3"
-                    dark
-                    class="mb-2"
-                    v-on="on"
-                  >
-                    Crear usuario&nbsp;
-                    <v-icon>mdi-plus-box-multiple-outline</v-icon>
-                  </v-btn>
-
-                  <v-checkbox
-                    v-model="mostrarUsuariosEliminados"
-                    class="mx-10"
-                    style="margin-top: 1.5rem"
-                    label="Usuarios desactivados"
-                    value="false"
-                  />
-                </template>
-                <v-card>
-                  <v-card-title class="headline grey lighten-2" primary-titles>
-                    <span class="headline" v-text="tituloFormulario"></span>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-container>
-                      <v-form
-                        ref="form"
-                        v-model="formularioValido"
-                        lazy-validation
-                      >
-                        <v-row>
-                          <v-col cols="6">
-                            <v-text-field
-                              append-icon="mdi-folder-outline"
-                              v-model="usuario.nombre"
-                              @keyup="errores = []"
-                              :rules="[
-                                reglas.requerido,
-                                reglas.min,
-                                reglas.expresion,
-                              ]"
-                              label="Nombres"
-                              required
-                              :error-messages="errores"
-                            ></v-text-field>
-                          </v-col>
-
-                          <v-col cols="6">
-                            <v-text-field
-                              append-icon="mdi-folder-outline"
-                              v-model="usuario.apellido"
-                              @keyup="errores = []"
-                              :rules="[
-                                reglas.requerido,
-                                reglas.min,
-                                reglas.expresion,
-                              ]"
-                              label="Apellidos"
-                              required
-                              :error-messages="errores"
-                            ></v-text-field>
-                          </v-col>                         
-
-                          <v-col cols="6">
-                            <v-text-field                              
-                              append-icon="mdi-folder-outline"
-                              v-model="usuario.email"
-                              @keyup="errores = []"
-                              :rules="[
-                                reglas.email,
-                              ]"
-                              label="Email"
-                              required
-                              :error-messages="errores"
-                            ></v-text-field>
-                          </v-col>
-
-                          <v-col cols="6">
-                            <v-select
-                              :error-messages="errores['rol.id']"
-                              :items="roles"
-                              v-model="usuario.rol"
-                              item-text="rol"
-                              item-value="id"
-                              label="Seleccione rol"
-                              return-object
-                              @change="errores['rol.id'] = []"                    
-                              :menu-props="{ closeOnClick: true }"
-                              :rules="[(v) => !!v || 'Tipo rol es campo obligatorio']"                              
-                            ></v-select>
-                          </v-col>
-
-                          <v-col cols="6" v-if="usuario.id == null">
-                            <v-text-field
-                              append-icon="mdi-folder-outline"
-                              v-model="usuario.password"
-                              @keyup="errores = []"
-                              :rules="[
-                                reglas.requerido,
-                                reglas.min,
-                                reglas.expresion,
-                              ]"
-                              label="Contraseña"
-                              required
-                              :error-messages="errores"
-                            ></v-text-field>
-                          </v-col>
-
-                          <v-col cols="6" v-if="usuario.id == null">
-                            <v-text-field
-                              append-icon="mdi-folder-outline"
-                              v-model="usuario.password"
-                              @keyup="errores = []"
-                              :rules="[
-                                reglas.requerido,
-                                reglas.min,
-                                reglas.expresion,
-                              ]"
-                              label="Contraseña"
-                              required
-                              :error-messages="errores"
-                            ></v-text-field>
-                          </v-col>
-
-                        </v-row>
-                      </v-form>
-                    </v-container>
-                  </v-card-text>
-                  <v-divider></v-divider>
-                  <v-card-actions>
-                    <div class="flex-grow-1"></div>
-                    <v-btn color="red darken-1" text @click="cerrarModal"
-                      >Cancelar</v-btn
-                    >
-                    <v-btn
-                      color="info darken-1"
-                      :disabled="!formularioValido"
-                      @click="save()"
-                      text
-                      v-text="tituloBtnGuardar"
-                    ></v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </v-toolbar>
-          </template>
-
-          <template v-slot:top>
+          <template v-slot:top >
             <v-toolbar flat color="white">
               <div class="flex-grow-1"></div>
               <v-dialog v-model="modalContraseña" persistent max-width="700px">
@@ -200,33 +62,45 @@
 
                   <v-card-text>
                     <v-container>
-                      <v-form :lazy-validation="true">
+                      <v-form ref="formPassword" :lazy-validation="true">
                         <v-row>
                           <v-col cols="12">
                             <v-text-field
-                              append-icon="mdi-folder-outline"
-                              v-model="cambioContraseña.actual"
-                              label="Contraseña Actual"
-                              required
-                              :readonly="true"
+                                v-model="cambioContraseña.actual"
+                                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"                                
+                                :type="show1 ? 'text' : 'password'"
+                                name="input-10-1"
+                                label="Contraseña Actual"                                
+                                counter
+                                @click:append="show1 = !show1"
+                                @keyup="errorsContraseña.actual = []"
+                                :error-messages="errorsContraseña.actual"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12">
                             <v-text-field
-                              append-icon="mdi-folder-outline"
-                              v-model="cambioContraseña.nueva"
-                              label="Nueva contraseña"
-                              required
-                              :readonly="true"
+                                v-model="cambioContraseña.password"
+                                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"                                
+                                :type="show1 ? 'text' : 'password'"
+                                name="input-10-1"
+                                label="Contraseña Actual"                                
+                                counter
+                                @click:append="show1 = !show1"
+                                @keyup="errorsContraseña.password = []"
+                                :error-messages="errorsContraseña.password"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12">
                             <v-text-field
-                              append-icon="mdi-folder-outline"
-                              v-model="cambioContraseña.nueva2"
-                              label="Repite la nueva contraseña"
-                              required
-                              :readonly="true"
+                                v-model="cambioContraseña.password2"
+                                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"                                
+                                :type="show1 ? 'text' : 'password'"
+                                name="input-10-1"
+                                label="Contraseña Actual"                                
+                                counter
+                                @click:append="show1 = !show1"
+                                @keyup="errorsContraseña.password2 = []"
+                              :error-messages="errorsContraseña.password2"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -238,60 +112,64 @@
                   <v-card-actions>
                     <div class="flex-grow-1"></div>
                     <v-btn
-                      color="info darken-1"
+                      color="red darken-1"
                       text
                       v-text="'Cerrar'"
                       @click="cerrarModalContraseña()"
                     ></v-btn>
+                    <v-btn
+                      color="info darken-1"
+                      text
+                      v-text="'Guardar'"
+                      @click="cambiarPassword()"
+                    ></v-btn>
                   </v-card-actions>
-
                 </v-card>
               </v-dialog>
             </v-toolbar>
           </template>
 
-          <template v-slot:item.action="{item}" v-slot:activator="{ on }">
-            
+          <template v-slot:item.action="{ item }" v-slot:activator="{ on }">
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
-                  v-show="!estado"
+                  v-show="!mostrarUsuariosEliminados"
                   color="success"
                   elevation="8"
                   small
                   dark
                   :disabled="item.id < 0"
                   v-on="on"
-                  @click="mostrarModal(item)"
-                  >
-                    <v-icon>mdi-pencil</v-icon>
+                  @click="editar(item)"
+                >
+                  <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </template>
-                <span>Actualizar Usuario</span>
+              <span>Actualizar Usuario</span>
             </v-tooltip>
 
-            <v-tooltip top>
+            <v-tooltip v-if="item.id == usuarioSesion.id">
               <template v-slot:activator="{ on }">
                 <v-btn
-                  v-show="!estado"
+                  v-show="!mostrarUsuariosEliminados"
                   color="warning"
                   elevation="8"
                   small
                   dark
                   :disabled="item.id < 0"
                   v-on="on"
-                  @click="mostrarModalContraseña()"
-                  >
-                    <v-icon>mdi-check</v-icon>
+                  @click="mostrarModalContraseña(item)"
+                >
+                  <v-icon>mdi-check</v-icon>
                 </v-btn>
               </template>
-                <span>Resetear Usuario</span>
+              <span>Cambiar clave</span>
             </v-tooltip>
 
-            <v-tooltip top >
-              <template v-slot:activator="{ on }" >
+            <v-tooltip top v-if="item.id != usuarioSesion.id">
+              <template v-slot:activator="{ on }">
                 <v-btn
-                  v-show="!estado"
+                  v-show="!mostrarUsuariosEliminados"
                   color="info"
                   class="mx-1"
                   elevation="8"
@@ -299,9 +177,9 @@
                   dark
                   :disabled="item.id < 0"
                   v-on="on"
-                  @click="eliminar( item )"
-                  >
-                    <v-icon>mdi-delete</v-icon>
+                  @click="eliminar(item)"
+                >
+                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
               <span>Desactivar Usuario</span>
@@ -310,7 +188,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
-                  v-show="estado"
+                  v-show="mostrarUsuariosEliminados"
                   color="teal"
                   class="mx-1"
                   elevation="8"
@@ -319,15 +197,13 @@
                   :disabled="item.id < 0"
                   v-on="on"
                   @click="restaurar(item)"
-                  >
+                >
                   <v-icon>mdi-restore</v-icon>
                 </v-btn>
               </template>
-                <span>Activar Usuario</span>
+              <span>Activar Usuario</span>
             </v-tooltip>
-
           </template>
-
         </v-data-table>
       </v-card>
     </div>
@@ -338,7 +214,7 @@
 export default {
   data() {
     return {
-      estado: false,
+      show1: false,
       formularioValido: true,
       modal: false,
       loader: false,
@@ -352,52 +228,55 @@ export default {
       usuarios: [],
       usuariosEliminados: [],
       mostrarUsuariosEliminados: false,
-      usuario: { 
-        id: null, nombre: '', apellido: '', email: '', password: '',
-        password2: '', 
-        rol: { id: null, rol: '' }
+      usuario: {
+        id: null,
+        nombre: "",
+        apellido: "",
+        email: "",
+        password: "",
+        password2: "",
+        rol: { id: null, rol: "" },
       },
-      errores: [],
-      reglas: {
-        email: (v) => !!v || 'Datos incorrecto',
-        requerido: (v) => !!v || "Nombre de la entidad es requerido",
-        min: (v) =>
-          (v.length >= 2 && v.length <= 100) ||
-          "Nombre de la entidad debe ser mayor a 2 caracteres",
-        expresion: (v) =>
-          /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) ||
-          "Nombre de la entidad no puede tener caracteres especiales",
-      },
+      
       roles: [],
       modalContraseña: false,
-      cambioContraseña: { actual: '', nueva: '', nueva2: '' }
+      errorsContraseña : [],
+      cambioContraseña: { id: null, actual: "", password: "", password2: "" },
+      esAdministrador: false,
+      usuarioSesion: { id: null, nombre: "", rol: { id: null, rol: "" } },
     };
   },
   computed: {
-    tituloFormulario() {
-      return this.usuario.id == null
-        ? "Crear nuevo usuarios"
-        : "Actualizar usuarios";
-    },
-    tituloBtnGuardar() {
-      return this.usuario.id == null ? "Guardar" : "Actualizar";
-    },
   },
   mounted() {
-    this.obtenerRoles()
-    this.obtenerUsuarios()
+    this.obtenerUsuarios();
+    this.obtenerSession();
   },
   methods: {
-    obtenerRoles()
-    {
+    obtenerSession() {
       this.loader = true;
-      axios
-        .get("/Api/usuarios/roles")
-        .then( ( { data: { roles } } )  => {
-          this.loader = false
-          this.roles = [ ... roles ]
 
-        }).catch(console.error)
+      axios
+        .get("/Api/usuarios/sesion")
+        .then(({ data: { usuario } }) => {
+          this.loader = false;
+
+          this.usuarioSesion = {... usuario }
+
+          if ( usuario.rol.rol != "Administrador") 
+          {
+            Swal.fire({
+              title: "INFORMACION",
+              text: `¡ Acceso denegado !`,
+              icon: "warning",
+              confirmButtonColor: "#3698e3",
+              confirmButtonText: "OK",
+            }).then(() => {
+              window.location = "/";
+            });
+          }
+        })
+        .catch(console.error);
     },
     obtenerUsuarios() {
       this.loader = true;
@@ -415,68 +294,93 @@ export default {
         })
         .catch(console.error);
     },
-    save()
+    cambiarPassword()
     {
-        this.loader = true
-
-        const path = this.usuario.id != null 
-                      ? `/Api/usuarios/${this.usuario.id}/edit`
-                      : '/Api/usuarios'        
-        axios
-          .post(path, this.usuario )
-          .then( response => {
-
-            this.loader = false
-
-            if ( response.status == 200 )
-            {
-              const { respuesta, mensaje } = response.data
-
-              if (respuesta) 
-              {
-                this.obtenerUsuarios()
-                this.alerta( mensaje, 'success', '¡Bien hecho!');
-                this.cerrarModal();
-              } else
-              {
-                const { errors } = response.data
-                this.errors = errors
-              }
-            } else
-            {
-              this.alerta('Ocurrio un error en el servidor', 'error', '¡IMPORTANTE!')
-            }
-
-          }).catch( () => {
-              this.loader = false
-              this.alerta('Ocurrio un error en el servidor', 'error', '¡IMPORTANTE!')
-          })
-    },
-    delete()
-    {
+      this.loader = true;
+      const path = `/Api/usuarios/${this.cambioContraseña.id}/password`  
       
-    },
-    restaurar()
-    {
+      axios
+        .post(path, this.cambioContraseña)
+        .then( response => {
+          this.loader = false
 
-    },
-    cambiarEstado() 
-    {
+          if ( response.status == 200 )
+          {
+            const { respuesta, mensaje } = response.data
 
+            if ( respuesta )
+            {
+              this.alerta(mensaje, 'success', '¡Bien hecho!')
+              this.modalContraseña = false
+
+            } else 
+            {              
+              const { errors } = response.data
+              
+              if ( Object.keys(errors).length > 0 )
+              {
+                this.errorsContraseña = { ...errors }
+              } else 
+              {
+                this.alerta( mensaje, 'warning', '¡IMPORTANTE!')
+              }
+              
+            }
+          } else {
+            console.log('La respuesta no fue ok')
+          }
+        }).catch( () => {
+            this.alerta('Ocurrio un error inesperado', 'error', '¡IMPORTANTE!')
+        })
     },
-    mostrarModal( {...usuario }) {
-      this.usuario.id = usuario.id
-      this.usuario.nombre = usuario.name
-      this.usuario.apellido = usuario.lastName
-      this.usuario.email = usuario.email
-      this.usuario.rol = { ... usuario.rol}
-      this.modal = true
-    },
-    cerrarModal() {
-      this.modal = false
-    },
-    alerta (mensaje, icono = 'info', titulo = '')
+    crear()
     {
+      window.location = `/usuarios/crear`
+    },
+    editar( {... usuario } )
+    {
+      window.location = `/usuarios/crear?id=${usuario.id}`
+    },
+    eliminar( {...usuario} ) {
+      Swal.fire({
+              title: "INFORMACION",
+              text: `¡Estas seguro de desactivar el usuario ${usuario.name} ${usuario.lastName} ?`,
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3698e3",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Si",
+              cancelButtonText: 'No'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.cambiarEstado( usuario )
+              }
+            });
+    },
+    restaurar() {},
+    cambiarEstado( usuario, eliminar = true ) 
+    {
+      axios
+        .delete(`/Api/usuarios/${usuario.id}/${eliminar}`)
+        .then( response => {
+          if (response.status == 200) {
+              
+              const { respuesta, mensaje } = response.data;
+
+              if (respuesta) {
+
+                this.obtenerUsuarios()
+
+                this.alerta( mensaje, 'success', '¡Bien hecho!')
+
+              } else {
+
+                this.alerta( mensaje, 'error', '¡Importante!')
+              }
+            }
+        }).catch( console.error )
+    },
+    alerta(mensaje, icono = "info", titulo = "") {
       Swal.fire({
         position: "top-end",
         icon: icono,
@@ -486,14 +390,23 @@ export default {
         timer: 1500,
       });
     },
-    mostrarModalContraseña()
-    {
+    mostrarModalContraseña( { ... usuario } ) {
+
+      this.cambioContraseña.id = usuario.id
+
       this.modalContraseña = true
     },
-    cerrarModalContraseña()
-    {
+    cerrarModalContraseña() {
       this.modalContraseña = false
-    }
+      setTimeout(() => {
+            this.cambioContraseña = { id: null, actual: "", password: "", password2: "" }
+            this.resetValidation();
+      }, 300)
+    },
+    resetValidation() {
+      this.errorsContraseña = [];
+      this.$refs.formPassword.resetValidation();
+    },
   },
 };
 </script>

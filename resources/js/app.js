@@ -73,6 +73,7 @@ Vue.component('empleados', require('./components/Empleados.vue').default);
 
 // USUARIOS
 Vue.component('usuarios', require('./components/Usuarios.vue').default);
+Vue.component('formulario-usuario', require('./components/FormularioUsuario.vue').default);
 
 
 import auth from './mixins/auth';
