@@ -176,6 +176,6 @@ Route::get('/Api/usuarios/{user}',[ UserController::class, 'obtenerUsuario'])->n
 Route::post('/Api/usuarios/{user}/edit',[ UserController::class, 'update'])->name("usuarios.update");
 Route::post('/Api/usuarios/{user}/password',[ UserController::class, 'cambiarContraseña'])->name("usuarios.updatePass");
 Route::delete('/Api/usuarios/{user}/{accion}',[ UserController::class, 'desactivar'])->name("usuarios.desactivar");
-
+Route::get('/Api/usuarios/{user}/resetear', [ UserController::class, 'resetearClave'])->name("usuarios.resetear");
 
 

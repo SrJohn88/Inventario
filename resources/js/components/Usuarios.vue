@@ -15,6 +15,8 @@
         <v-card-title>
           Usuarios del sistema
           <div class="flex-grow-1"></div>
+
+          
           <v-text-field
             v-model="buscarUsuario"
             label="Buscar Usuario"
@@ -22,7 +24,7 @@
           ></v-text-field>
 
             <template>
-              <div class="text-center ma-4">
+              <div class="text-center ma-4">              
                 <v-btn                          
                   color="primary"
                   dark
@@ -38,7 +40,7 @@
 
         <v-data-table
           :headers="TheadTable"
-          :items="usuarios"
+          :items="mostrarUsuariosEliminados ? usuariosEliminados : usuarios "
           :footer-props="{
             'items-per-page-options': [5, 10, 20, 30, 40],
             'items-per-page-text': 'Registros Por Página',
@@ -55,11 +57,22 @@
             <v-toolbar flat color="white">
               <div class="flex-grow-1"></div>
               <v-dialog v-model="modalContraseña" persistent max-width="700px">
+                
+                <template v-slot:activator="{ on }">                            
+                    <v-checkbox 
+                        v-model="mostrarUsuariosEliminados"
+                        class="mx-10"
+                        style="margin-top: 1.5rem;"
+                        label="Usuarios desactivados"
+                        value="false"
+                    />
+                </template>
+                
                 <v-card>
                   <v-card-title class="headline lighten-2" primary-titles>
                     <span class="headline" v-text="'Cambiar contraseña'"></span>
                   </v-card-title>
-
+                
                   <v-card-text>
                     <v-container>
                       <v-form ref="formPassword" :lazy-validation="true">
@@ -133,7 +146,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
-                  v-show="!mostrarUsuariosEliminados"
+                  v-show="!mostrarUsuariosEliminados  && usuarioSesion.rol.rol == 'Administrador'"
                   color="success"
                   elevation="8"
                   small
@@ -170,6 +183,25 @@
               <template v-slot:activator="{ on }">
                 <v-btn
                   v-show="!mostrarUsuariosEliminados"
+                  color="amber"
+                  class="mx-1"
+                  elevation="8"
+                  small
+                  dark
+                  :disabled="item.id < 0"
+                  v-on="on"
+                  @click="resetear(item)"
+                >
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </template>
+              <span>Resetear Usuario</span>
+            </v-tooltip>
+
+            <v-tooltip top v-if="item.id != usuarioSesion.id">
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-show="!mostrarUsuariosEliminados"
                   color="info"
                   class="mx-1"
                   elevation="8"
@@ -184,6 +216,7 @@
               </template>
               <span>Desactivar Usuario</span>
             </v-tooltip>
+
 
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -204,6 +237,7 @@
               <span>Activar Usuario</span>
             </v-tooltip>
           </template>
+
         </v-data-table>
       </v-card>
     </div>
@@ -221,10 +255,11 @@ export default {
       buscarUsuario: "",
       TheadTable: [
         { text: "Nombre", value: "name", align: "center" },
+        { text: "Apellido", value: "lastName", align: "center" },
         { text: "Email", value: "email", align: "center" },
         { text: "Cargo", value: "rol.rol", align: "center" },
         { text: "Acciones", value: "action", sortable: false, align: "center" },
-      ],
+      ],      
       usuarios: [],
       usuariosEliminados: [],
       mostrarUsuariosEliminados: false,
@@ -249,46 +284,50 @@ export default {
   computed: {
   },
   mounted() {
-    this.obtenerUsuarios();
-    this.obtenerSession();
+    this.obtenerSession()
+      .then( () => {
+        this.obtenerUsuarios()
+      });
   },
   methods: {
     obtenerSession() {
-      this.loader = true;
-
-      axios
+      return new Promise( (resolve, reject) => {
+        this.loader = true;
+          axios
         .get("/Api/usuarios/sesion")
         .then(({ data: { usuario } }) => {
           this.loader = false;
 
           this.usuarioSesion = {... usuario }
-
-          if ( usuario.rol.rol != "Administrador") 
-          {
-            Swal.fire({
-              title: "INFORMACION",
-              text: `¡ Acceso denegado !`,
-              icon: "warning",
-              confirmButtonColor: "#3698e3",
-              confirmButtonText: "OK",
-            }).then(() => {
-              window.location = "/";
-            });
-          }
+          resolve()
         })
-        .catch(console.error);
+        .catch( reject );
+      })      
     },
     obtenerUsuarios() {
       this.loader = true;
       axios
         .get("/Api/usuarios")
         .then(({ data: { usuarios } }) => {
-          this.usuarios = usuarios.filter(
-            (usuario) => usuario.eliminado == false
-          );
-          this.usuariosEliminados = usuarios.filter(
-            (usuario) => usuario.eliminado == true
-          );
+          
+          console.log( this.usuarioSesion.rol.rol )
+
+          if ( this.usuarioSesion.rol.rol == 'Administrador')
+          {
+            this.usuarios = usuarios.filter(
+              (usuario) => usuario.eliminado == false
+            );
+            this.usuariosEliminados = usuarios.filter(
+              (usuario) => usuario.eliminado == true
+            );
+          } else {
+            this.usuarios = usuarios.filter(
+              (usuario) => usuario.eliminado == false && usuario.id == this.usuarioSesion.id
+            );
+            this.usuariosEliminados = usuarios.filter(
+              (usuario) => usuario.eliminado == true && usuario.id == this.usuarioSesion.id
+            );
+          }
 
           this.loader = false;
         })
@@ -341,6 +380,45 @@ export default {
     {
       window.location = `/usuarios/crear?id=${usuario.id}`
     },
+    resetear( {...usuario})
+    {
+      Swal.fire({
+              title: "INFORMACION",
+              text: `¡Estas seguro de restablecer la clave del usuario ${usuario.name} ${usuario.lastName} ?`,
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3698e3",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Si",
+              cancelButtonText: 'No'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                axios
+                  .get(`/Api/usuarios/${usuario.id}/resetear`)
+                  .then( response => {
+                    if (response.status == 200) {
+                      const { respuesta, mensaje } = response.data;
+
+                      if (respuesta) {
+
+                        this.obtenerUsuarios()
+                        Swal.fire({
+                          icon: 'success',
+                          title: '¡BIEN HECHO!',
+                          text: mensaje,
+                        })
+
+                      } else {
+
+                        this.alerta( mensaje, 'error', '¡Importante!')
+                      }
+                    }
+                  }).catch( () => {
+                    this.alerta('Ocurrio un error en el servidor', 'error', '!IMPORTANTE¡')
+                  })
+              }
+            });
+    },
     eliminar( {...usuario} ) {
       Swal.fire({
               title: "INFORMACION",
@@ -357,7 +435,22 @@ export default {
               }
             });
     },
-    restaurar() {},
+    restaurar( {... usuario}) {
+      Swal.fire({
+              title: "INFORMACION",
+              text: `¡Estas seguro quieres activar el usuario ${usuario.name} ${usuario.lastName} ?`,
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3698e3",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Si",
+              cancelButtonText: 'No'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.cambiarEstado( usuario, false)
+              }
+            });
+    },
     cambiarEstado( usuario, eliminar = true ) 
     {
       axios

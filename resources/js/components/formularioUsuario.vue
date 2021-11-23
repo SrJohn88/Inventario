@@ -141,8 +141,7 @@ export default {
         rol: { id: null, rol: "" },
       },
       errores: [],
-      reglas: {
-        email: (v) => !!v || "Datos incorrecto",
+      reglas: {        
         requerido: (v) => !!v || "Campo requerido",
         min: (v) =>
           (v.length >= 2 && v.length <= 100) ||
@@ -150,6 +149,9 @@ export default {
         expresion: (v) =>
           /^[A-Za-z0-9-ñáéíóúÁÉÍÓÚ \s]+$/g.test(v) ||
           "Este campo no puede tener caracteres especiales",
+        email: (v) =>
+              !!v && /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+              "No parece un email",
       },
       roles: [],
     };

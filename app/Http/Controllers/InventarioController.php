@@ -183,4 +183,17 @@ class InventarioController extends Controller
                         ->get()
         ]);
     }
+
+
+    // REPORTES
+
+    function formReporteProcedencia()
+    {
+
+    }
+
+    function formReporteInventarioGeneral()
+    {
+
+    }
 }

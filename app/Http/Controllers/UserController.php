@@ -175,6 +175,25 @@ class UserController extends Controller
         
     }
 
+    function resetearClave( User $user )
+    {
+        $cadena = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+        $passwordAleatorio = '';
+
+        for( $i = 0; $i < 8; $i++ )
+        {
+            $passwordAleatorio .= substr( $cadena, rand(0,62), 1 );
+        }
+
+        $user->password = Hash::make($passwordAleatorio);
+        $user->save();
+
+        return response()->json([
+            'respuesta' => true,            
+            'mensaje' => 'Usuario reseteado con exito. Esta es la nueva contraseña [ '.$passwordAleatorio.' ] para el usuario '.$user->name.' '.$user->lastName
+        ]);
+    }
+
     function desactivar( User $user, $accion )
     {
         $user->eliminado = filter_var($accion, FILTER_VALIDATE_BOOLEAN);
