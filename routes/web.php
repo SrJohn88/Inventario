@@ -178,4 +178,11 @@ Route::post('/Api/usuarios/{user}/password',[ UserController::class, 'cambiarCon
 Route::delete('/Api/usuarios/{user}/{accion}',[ UserController::class, 'desactivar'])->name("usuarios.desactivar");
 Route::get('/Api/usuarios/{user}/resetear', [ UserController::class, 'resetearClave'])->name("usuarios.resetear");
 
+// REPORTES VISTAS
+Route::get('/reportes/inventario', [ InventarioController::class, 'reporteGeneral'])->name("reportes.reporteGeneral");
+Route::get('/reportes/inventario/procedencias', [ InventarioController::class, 'reporteProcedencia'])->name("reportes.reporteProcedencia");
+
+
+// API REPORTES
+Route::get('/Api/reportes/inventario/{desde}/{hasta}/{ubicacion?}', [ InventarioController::class, 'inventaroPorUbicacion'])->name("reportes.inventaroPorUbicacion");
 

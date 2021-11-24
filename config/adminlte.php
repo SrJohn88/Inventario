@@ -320,6 +320,23 @@ return [
             'route' => 'usuarios.index',
             'icon'  => 'fas fw fa-registered',            
         ],
+        [
+            'text'    => 'Reportes',
+            'icon_color' => 'amber',
+            'icon'    => 'fas fa-align-justify',
+            'submenu' => [
+                [
+                    'text' => 'Inventario General',
+                    'route' => 'reportes.reporteGeneral',
+                    'icon'  => 'fas fw fa-registered',            
+                ],
+                [
+                    'text' => 'Inventario por procedencia',
+                    'route' => 'reportes.reporteProcedencia',
+                    'icon'  => 'fas fw fa-registered',            
+                ],
+            ]
+        ]
     ],
 
     /*

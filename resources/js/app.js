@@ -75,6 +75,12 @@ Vue.component('empleados', require('./components/Empleados.vue').default);
 Vue.component('usuarios', require('./components/Usuarios.vue').default);
 Vue.component('formulario-usuario', require('./components/FormularioUsuario.vue').default);
 
+// REPORTES
+Vue.component('inventario-general', require('./components/Reportes/InventarioGeneral.vue').default);
+Vue.component('reporte-procedencia', require('./components/Reportes/ReporteProcedencia.vue').default);
+
+
+
 
 import auth from './mixins/auth';
 Vue.mixin(auth);

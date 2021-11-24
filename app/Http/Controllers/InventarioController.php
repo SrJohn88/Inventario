@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Inventario;
 use App\Models\HistorialInventario;
+Use \App\Models\Ubicacion;
 
 class InventarioController extends Controller
 {
@@ -187,13 +188,39 @@ class InventarioController extends Controller
 
     // REPORTES
 
-    function formReporteProcedencia()
+    function reporteProcedencia()
     {
-
+        return view('Reportes.procedencia');
     }
 
-    function formReporteInventarioGeneral()
+    function reporteGeneral()
     {
+        return view('Reportes.inventarioG');
+    }
 
+    function inventaroPorUbicacion( $desde, $hasta, Ubicacion $ubicacion)
+    {
+        $inventario = [];
+
+        if ( $ubicacion->id ) 
+        {
+            $inventario = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad')
+                            ->whereDate('created_at', '>=', $desde )
+                            ->whereDate('created_at', '<=', $hasta)
+                            ->orderBy('created_at', 'desc' )
+                            ->where('ubicacion_id', $ubicacion->id )
+                            ->where('eliminado', false)
+                            ->get();
+        } else 
+        {
+            $inventario = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad')
+                            ->whereDate('created_at', '>=', $desde )
+                            ->whereDate('created_at', '<=', $hasta)
+                            ->where('eliminado', false)
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+        }
+
+        return response()->json([ 'activos' => $inventario ]);
     }
 }
