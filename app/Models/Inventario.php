@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use \Carbon\Carbon;
 
 class Inventario extends Model
 {
@@ -60,5 +61,24 @@ class Inventario extends Model
     function descargo()
     {
         return $this->belongsToMany('App\Models\Descargo')->withTimestamps()->withPivot('observacion');
+    }
+
+    public function getPrecioAttribute( $precio )
+    {
+        return $precio != null ? sprintf("%.2f", $precio) : '' ;
+    }
+
+    public function getCreatedAtAttribute( $date )
+    {        
+        return Carbon::createFromDate($date)
+            ->setTimezone('America/El_Salvador')
+            ->format('d-m-Y h:i:s A');                
+    }
+
+    public function getUpdatedAtAttribute( $date )
+    {        
+        return Carbon::createFromDate($date)
+            ->setTimezone('America/El_Salvador')
+            ->format('d-m-Y h:i:s A');
     }
 }

@@ -257,83 +257,91 @@ return [
                 [
                     'text' => 'Rubros',
                     'route' => 'rubros.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon'  => 'fas fa-registered',
                 ], 
                 [
                     'text' => 'Ubicaciones',
                     'route' => 'ubicaciones.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon'  => 'fas fa-map-marker-alt',
                 ],
                 [
                     'text' => 'Tipos de descargos',
                     'route' => 'tipoDescargos.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon'  => 'fas fa-download',
                 ],                                                                                               
             ],
         ],
         [
             'text'    => 'Inventario',
             'icon_color' => 'red',
-            'icon'    => 'fas fa-align-justify',
+            'icon'    => 'fas fa-dolly-flatbed',
             'submenu' => [
                 [
                     'text' => 'Descargos',
                     'route' => 'descargos.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon'  => 'fas fa-download',
                 ],
                 [
                     'text' => 'Inventario',
                     'route' => 'inventario.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon'  => 'fas fa-truck-loading',
                 ],
                 [
                     'text' => 'Activos descargados',
                     'route' => 'indexActivosDescargados.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon'  => 'fas fa-trash-alt',
                 ],
                 [
                     'text' => 'Movimientos',
                     'route' => 'movimiento.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon'  => 'fas fa-people-carry',
                 ], 
             ],
         ],
         [
             'text'    => 'Personal',
             'icon_color' => 'red',
-            'icon'    => 'fas fa-align-justify',
+            'icon'    => 'fas fa-user-tie',
             'submenu' => [
                 [
                     'text' => 'Empleados',
                     'route' => 'empleados.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon'  => 'fas fa-user-tie',
                 ],
                 [
                     'text' => 'Cargos',
                     'route' => 'Cargos.index',
-                    'icon'  => 'fas fw fa-registered',
+                    'icon'  => 'fas fa-briefcase',
                 ],
             ],
         ],
         [
             'text' => 'Usuarios',
             'route' => 'usuarios.index',
-            'icon'  => 'fas fw fa-registered',            
+            'icon'  => 'fas fa-users',            
         ],
         [
             'text'    => 'Reportes',
             'icon_color' => 'amber',
-            'icon'    => 'fas fa-align-justify',
+            'icon'    => 'fas fa-file-download',
             'submenu' => [
                 [
                     'text' => 'Inventario General',
+                    'icon_color' => 'teal',
                     'route' => 'reportes.reporteGeneral',
-                    'icon'  => 'fas fw fa-registered',            
+                    'icon'  => 'fas fa-file-excel',            
                 ],
                 [
                     'text' => 'Inventario por procedencia',
+                    'icon_color' => 'teal',
                     'route' => 'reportes.reporteProcedencia',
-                    'icon'  => 'fas fw fa-registered',            
+                    'icon'  => 'fas fa-file-excel',            
+                ],
+                [
+                    'text' => 'Descargos',
+                    'icon_color' => 'amber',
+                    'route' => 'reportes.reporteDescargos',
+                    'icon'  => 'fas fa-file-excel',            
                 ],
             ]
         ]

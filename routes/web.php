@@ -181,8 +181,11 @@ Route::get('/Api/usuarios/{user}/resetear', [ UserController::class, 'resetearCl
 // REPORTES VISTAS
 Route::get('/reportes/inventario', [ InventarioController::class, 'reporteGeneral'])->name("reportes.reporteGeneral");
 Route::get('/reportes/inventario/procedencias', [ InventarioController::class, 'reporteProcedencia'])->name("reportes.reporteProcedencia");
+Route::get('/reportes/inventario/descargos', [ InventarioController::class, 'reporteDescargos'])->name("reportes.reporteDescargos");
 
 
 // API REPORTES
 Route::get('/Api/reportes/inventario/{desde}/{hasta}/{ubicacion?}', [ InventarioController::class, 'inventaroPorUbicacion'])->name("reportes.inventaroPorUbicacion");
+Route::post('/Api/reportes/inventario/entidadesRubros', [ InventarioController::class, 'inventarioPorEntidadRubro'])->name("reportes.inventarioPorEntidadRubro");
+Route::get('/Api/reportes/inventario/descargos/{tipoDescargo}/{desde}/{hasta}', [ InventarioController::class, 'ReporteActivosDescargados'])->name("reportes.ReporteActivosDescargados");
 

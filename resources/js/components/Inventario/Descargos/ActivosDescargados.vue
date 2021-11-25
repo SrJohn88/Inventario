@@ -38,21 +38,38 @@
 
                 <template v-slot:item.action="{item}" v-slot:activator="{ on }">                    
                     <v-tooltip top >
-                    <template v-slot:activator="{ on }" >
-                        <v-btn
-                        color="info"
-                        class="mx-1"
-                        elevation="8"
-                        small
-                        dark
-                        :disabled="item.id < 0"
-                        v-on="on"
-                        @click="detalle(item)"
-                        >
-                        <v-icon>far fa-clipboard</v-icon>
-                        </v-btn>
-                    </template>
-                    <span>Ver Detalle</span>
+                        <template v-slot:activator="{ on }" >
+                            <v-btn
+                            color="info"
+                            class="mx-1"
+                            elevation="8"
+                            small
+                            dark
+                            :disabled="item.id < 0"
+                            v-on="on"
+                            @click="detalle(item)"
+                            >
+                            <v-icon>far fa-clipboard</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Ver Detalle</span>
+                    </v-tooltip>
+                    <v-tooltip top >
+                        <template v-slot:activator="{ on }" >
+                            <v-btn
+                            color="amber"
+                            class="mx-1"
+                            elevation="8"
+                            small
+                            dark
+                            :disabled="item.id < 0"
+                            v-on="on"
+                            @click="irDescargo(item)"
+                            >
+                            <v-icon>far fa-clipboard</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Ver descargo</span>
                     </v-tooltip>
                 </template>
 
@@ -95,6 +112,7 @@ export default {
                     
                     activos.forEach( activo => {
                         activo.acta = activo.descargo[0].acta
+                        activo.idDescargo = activo.descargo[0].id
                         this.activos.push( activo )
                     })
                     //this.activos = activos;
@@ -104,6 +122,10 @@ export default {
         detalle( {...activo })
         {
             window.location = `/inventario/crear?id=${activo.id}&detalle=true`
+        },
+        irDescargo( {...activo } )
+        {
+            window.location = `/inventario/descargos/crear?id=${activo.idDescargo}`
         }
     }
 }

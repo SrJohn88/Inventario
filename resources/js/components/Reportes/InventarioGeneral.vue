@@ -35,20 +35,18 @@
                   <v-radio
                     label="General"
                     value="General"
-                    @click="cambiarValor(true)"
+                    @change="resetUbicacion"                    
                   ></v-radio>
                   <v-radio
                     label="Ubicación"
-                    value="Ubicacion"
-                    @click="cambiarValor(false)"
+                    value="Ubicacion"                    
                   ></v-radio>
                 </v-radio-group>
               </v-container>
 
               <v-card-title>
                 <v-row>
-                  <v-col cols="6" align="center" v-if="rangoFechas">
-                    <!-- <label>Fecha Inicio: </label> -->
+                  <v-col cols="6" align="center" v-if="rangoFechas">                
                     <date-picker
                       v-model="desde"
                       :editable="false"
@@ -62,8 +60,7 @@
                     >
                     </date-picker>
                   </v-col>
-                  <v-col cols="6" align="center" v-if="rangoFechas">
-                    <!-- <label>Fecha Final: </label> -->
+                  <v-col cols="6" align="center" v-if="rangoFechas">                    
                     <date-picker
                       v-model="hasta"
                       :editable="false"
@@ -77,7 +74,7 @@
                     >
                     </date-picker>
                   </v-col>
-                  <v-col cols="12" align="center" v-if="true">
+                  <v-col cols="12" align="center" v-if="tipoReporte == 'Ubicacion'">
                   <v-autocomplete
                     style="width: 50% !important"
                     v-model="ubicacion"
@@ -124,6 +121,7 @@
                       dark
                       :loading="loader"
                       :disabled="loader"
+                      @click="exportarExcel"
                     >
                       EXPORTAR EN EXCEL
                       <!-- <v-icon right >fas fa-file-excel</v-icon> -->
@@ -142,6 +140,9 @@
 </template>
 
 <script>
+
+import { json2excel } from 'js2excel';
+
 export default {
   data()
   {
@@ -166,7 +167,8 @@ export default {
       ubicacion: { id: null, ubicacion: '' },
       rangoFechas: true,
       desde: null, hasta: null,
-      modalReporte: false
+      modalReporte: false,
+      precioTotal : 0
     }
   },
   mounted()
@@ -183,39 +185,102 @@ export default {
         })
         .catch(console.error);
     },
+    resetUbicacion()
+    {
+      this.ubicacion = null
+    },
     generar()
     {
-      if ( this.tipoReporte )
+      if ( this.tipoReporte && this.desde && this.hasta )
       {
         const path = this.ubicacion == null || this.ubicacion.id == null
                 ? `/Api/reportes/inventario/${this.desde}/${this.hasta}` 
                 : `/Api/reportes/inventario/${this.desde}/${this.hasta}/${this.ubicacion.id}` 
         
         this.loader = true
+        this.activos = []
+        this.precioTotal = 0
 
         axios
           .get( path )
           .then( ( { data : { activos } } ) => {
+
+            activos.forEach( activo => {
+              if ( activo.precio )
+              {
+                this.precioTotal +=parseFloat( activo.precio )
+              }
+
+              this.activos.push( {...activo } )
+            })
+
+            //this.activos.unshift( { precio: 'Total:'+this.precioTotal })
             this.loader = false
-            this.activos = [ ...activos ]
+
           }).catch( () => {
             this.loader = false
+            console.log('ocurrio un error')
           })
         
       } else 
       {
         Swal.fire({
-          icon: 'error',
+          icon: 'warning',
           title: '¡IMPORTANTE!',
-          text: 'Completa los campos',
+          text: 'Revisa que los datos sean correctos',
         })
       }
     },
-    obtenerInventario()
+    exportarExcel()
     {
+      if ( this.activos.length > 0 )
+      {
+          let data = []
 
+          this.activos.forEach( activo => {
+            data.push({
+              id: activo.id,
+              codigo: activo.codigo,
+              serie: activo.serie,
+              descripcion: activo.descripcion,
+              marca: activo.marca ? activo.marca.marca : '',
+              modelo: activo.modelo,
+              procedencia: activo.procedencia.procedencia,
+              entidad: activo.entidad ? activo.entidad.entidad : '',
+              cuenta: activo.cuenta ? activo.cuenta.cuenta : '',
+              precio: activo.precio,
+              rubro: activo.rubro ? activo.rubro.rubro : '',
+              ubicacion: activo.ubicacion ?  activo.ubicacion.ubicacion : '',
+              fechaAdquision: activo.fecha_adquision,
+              estado: activo.estado ? activo.estado.estado : '',
+              observacion: activo.observacion,
+              fechaRegistro: activo.created_at,
+              ultimaActualizacion: activo.updated_at
+            })
+          })
+
+          try {
+            
+            json2excel({
+              data,
+              name: 'ReporteGeneral',
+              formateDate: 'yyyy/mm/dd'
+            })
+            
+          } catch (e) {
+              console.error('export error');
+          }
+      } else 
+      {
+        Swal.fire({
+          icon: 'warning',
+          title: '¡IMPORTANTE!',
+          text: 'No hay datos para exportar',
+        })
+      }
+      
     },
-    cambiarValor( value )
+    obtenerInventario()
     {
 
     }

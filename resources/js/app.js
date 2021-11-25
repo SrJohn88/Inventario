@@ -78,8 +78,7 @@ Vue.component('formulario-usuario', require('./components/FormularioUsuario.vue'
 // REPORTES
 Vue.component('inventario-general', require('./components/Reportes/InventarioGeneral.vue').default);
 Vue.component('reporte-procedencia', require('./components/Reportes/ReporteProcedencia.vue').default);
-
-
+Vue.component('reporte-descargos', require('./components/Reportes/ReporteDescargos.vue').default);
 
 
 import auth from './mixins/auth';
