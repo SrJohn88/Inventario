@@ -33,9 +33,30 @@
                     <template>
                         <v-card-text>
                             <v-row>
-                                <v-col cols="6"  align="center">
+                                <v-col cols="4"  align="center">
                                     <v-autocomplete
-                                    style="width: 75% !important"
+                                    no-data-text="No hay procedencias"
+                                    style="width: 90% !important"
+                                    input-class="form-control"
+                                    class="mt-2"
+                                    v-model="reporte.procedencia"
+                                    :items="procedencias"
+                                    required
+                                    label="Procedencias"
+                                    item-text="procedencia"
+                                    item-value="id"
+                                    return-object
+                                    clearable
+                                    :menu-props="{
+                                        closeOnClick: true,
+                                    }"
+                                    ></v-autocomplete>
+                                </v-col>
+
+                                <v-col cols="4"  align="center">
+                                    <v-autocomplete
+                                    no-data-text="No hay entidades"
+                                    style="width: 90% !important"
                                     input-class="form-control"
                                     class="mt-2"
                                     v-model="reporte.entidad"
@@ -53,9 +74,10 @@
                                 </v-col>
                                 <!-- Rubro -->
                                 
-                                <v-col cols="6"  align="center">
+                                <v-col cols="4"  align="center">
                                     <v-autocomplete
-                                    style="width: 75% !important"
+                                    no-data-text="No hay rubros"
+                                    style="width: 90% !important"
                                     input-class="form-control"
                                     class="mt-2"
                                     v-model="reporte.rubro"
@@ -152,6 +174,25 @@
                 </template>
 
                 </v-data-table>
+
+                <template>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12"  align="right">
+                                <v-text-field
+                                    label="Precio total:"
+                                    outlined
+                                    prefix="$"
+                                    style="width: 20% !important"
+                                    input-class="form-control"
+                                    v-model="precioTotal"
+                                    readonly
+                                ></v-text-field>                                                                    
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </template>
+
             </v-card>
         </div>
     </div>
@@ -181,9 +222,10 @@ export default {
                 { text: "Observación", value: "observacion", sortable: false },
             ],
             activos: [],
-            entidades:  [], rubros:[],
+            entidades:  [], rubros:[], procedencias: [],
 
             reporte: {
+                procedencia: null,
                 entidad: null,
                 rubro: null,
                 desde: '', hasta: ''
@@ -194,10 +236,25 @@ export default {
     },
     mounted()
     {
+        this.obtenerProcedencias()
         this.obtenerRubros()
         this.obtenerEntidades()
     },
     methods: {
+        obtenerProcedencias()
+        {
+            axios
+                .get(`/Api/procedencias`)
+                .then(({ data: { procedencias } }) => {
+                    procedencias.forEach( procedencia => {
+                        if ( procedencia.procedencia != 'COMPRAS')
+                        {
+                            this.procedencias.push( {...procedencia } )
+                        }
+                    })                    
+                })
+                .catch(console.error)
+        },
         obtenerRubros()
         {
             axios
@@ -222,58 +279,69 @@ export default {
         {            
             const path = `/Api/reportes/inventario/entidadesRubros`
 
-            if ( this.reporte.entidad || this.reporte.rubro )
+            if ( this.reporte.procedencia )
             {
-                this.loader = true
-                this.activos = []
-                this.precioTotal = 0
+                if ( this.reporte.desde && this.reporte.hasta )
+                {
+                    this.loader = true
+                    this.activos = []
+                    this.precioTotal = 0
 
-                axios
-                .post( path, this.reporte )
-                .then( response => {
-                    this.loader = false
+                    axios
+                        .post( path, this.reporte )
+                        .then( response => {
+                            this.loader = false
 
-                    if ( response.status == 200 )
-                    {
-                        const { respuesta, mensaje } = response.data
+                            if ( response.status == 200 )
+                            {
+                                const { respuesta, mensaje } = response.data
 
-                        if ( respuesta )
-                        {
-                            const { activos } = response.data                                        
-
-                            activos.forEach( activo => {
-                                
-                                if ( activo.precio )
+                                if ( respuesta )
                                 {
-                                    this.precioTotal = parseFloat( Number(this.precioTotal) ) + parseFloat( Number(activo.precio) )
-                                }
-                                this.activos.push( {...activo } )
-                            });
+                                    const { activos } = response.data                                        
 
-                            console.log( parseFloat(this.precioTotal).toFixed(2) )
-                        } else 
-                        {
-                            throw new Error('No fue exitoso')
-                        }
-                    }
-                    
-                })  
-                .catch( () => {
-                    this.loader = false
+                                    activos.forEach( activo => {
+                                        
+                                        if ( activo.precio )
+                                        {
+                                            this.precioTotal = parseFloat( Number(this.precioTotal) ) + parseFloat( Number(activo.precio) )
+                                        }
+                                        this.activos.push( {...activo } )
+                                    });
+
+                                    this.precioTotal = this.precioTotal.toFixed(2) 
+                                } else 
+                                {
+                                    throw new Error('No fue exitoso')
+                                }
+                            }
+                            
+                        })  
+                        .catch( () => {
+                            this.loader = false
+                            Swal.fire({
+                            icon: 'warning',
+                            title: '¡IMPORTANTE!',
+                            text: 'Ocurrio un error al generar el reporte, revisa que el rango de fechas sea correcto',
+                            })
+                        })
+
+                } else 
+                {
                     Swal.fire({
-                    icon: 'warning',
-                    title: '¡IMPORTANTE!',
-                    text: 'Ocurrio un error al generar el reporte, revisa que el rango de fechas sea correcto',
+                        icon: 'warning',
+                        title: '¡IMPORTANTE!',
+                        text: 'Revisa que las fechas sean correctas',
                     })
-                })
+                }
             } else 
             {
                 Swal.fire({
-                    icon: 'warning',
-                    title: '¡IMPORTANTE!',
-                    text: 'Selecciona una entidad o rubro para generar el reporte',
-                })
-            }
+                        icon: 'warning',
+                        title: '¡IMPORTANTE!',
+                        text: 'Selecciona una procedencia para filtrar',
+                    })
+            }                
         },
         exportarExcel()
         {
@@ -306,14 +374,14 @@ export default {
                 })
                 
                 data.push(
-                   { precio: this.precioTotal.toFixed(2) }
+                   { precio: `Precio total: ${ this.precioTotal}`}
                 )
 
                 try {
                     
                     json2excel({
                     data,
-                    name: 'ReportePorEntidadRubro',
+                    name: 'ReportePorProcedencia',
                     formateDate: 'yyyy/mm/dd'
                     })
                     this.loader = false

@@ -338,8 +338,20 @@ return [
                     'icon'  => 'fas fa-file-excel',            
                 ],
                 [
+                    'text' => 'Inventario por compras',
+                    'icon_color' => 'teal',
+                    'route' => 'reportes.reporteCompras',
+                    'icon'  => 'fas fa-file-excel',            
+                ],
+                [
+                    'text' => 'Movimientos',
+                    'icon_color' => 'teal',
+                    'route' => 'reportes.reporteMovimientos',
+                    'icon'  => 'fas fa-file-excel',            
+                ],
+                [
                     'text' => 'Descargos',
-                    'icon_color' => 'amber',
+                    'icon_color' => 'teal',
                     'route' => 'reportes.reporteDescargos',
                     'icon'  => 'fas fa-file-excel',            
                 ],

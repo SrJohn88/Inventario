@@ -220,7 +220,6 @@ export default {
         .then( ( { data: { cuentas } } ) => {
           this.cuentas = cuentas.filter((r) => r.eliminado == false);
           this.cuentasEliminadas = cuentas.filter((r) => r.eliminado == true);
-          console.log( [this.cuentas, this.cuentasEliminadas ] )
         })
         .catch(console.error);
     },

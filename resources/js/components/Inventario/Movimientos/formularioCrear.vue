@@ -415,8 +415,7 @@ export default {
       axios
         .get("/Api/empleados")
         .then(({ data: { empleados } }) => {
-          this.empleados = empleados;
-          console.log(this.empleados);
+          this.empleados = empleados          
         })
         .catch(console.error);
     },

@@ -134,6 +134,24 @@
 
         </v-data-table>
 
+        <template>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12"  align="right">
+                                <v-text-field
+                                    label="Precio total:"
+                                    outlined
+                                    prefix="$"
+                                    style="width: 20% !important"
+                                    input-class="form-control"
+                                    v-model="precioTotal"
+                                    readonly
+                                ></v-text-field>                                                                    
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </template>
+
       </v-card>
     </div>
   </div>
@@ -208,13 +226,13 @@ export default {
             activos.forEach( activo => {
               if ( activo.precio )
               {
-                this.precioTotal +=parseFloat( activo.precio )
+                this.precioTotal += parseFloat( activo.precio )
               }
 
               this.activos.push( {...activo } )
             })
 
-            //this.activos.unshift( { precio: 'Total:'+this.precioTotal })
+            this.precioTotal = this.precioTotal.toFixed(2)
             this.loader = false
 
           }).catch( () => {
@@ -258,6 +276,8 @@ export default {
               ultimaActualizacion: activo.updated_at
             })
           })
+
+          data.push( {precio: `Precio total: ${this.precioTotal }` } )
 
           try {
             

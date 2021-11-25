@@ -205,6 +205,16 @@ class InventarioController extends Controller
         return view('Reportes.descargos');
     }
 
+    function reporteCompras ()
+    {
+        return view('Reportes.compras');
+    }
+
+    function reporteMovimientos ()
+    {
+        return view('Reportes.movimientos');
+    }
+
     function inventaroPorUbicacion( $desde, $hasta, Ubicacion $ubicacion)
     {
         $inventario = [];
@@ -232,27 +242,15 @@ class InventarioController extends Controller
     }
 
     function inventarioPorEntidadRubro( Request $request )
-    {
-        $validacion = Validator::make($request->all(), [
-            'desde' => 'required',                        
-            'hasta' => 'required'  
-        ], $this->mensajes);
-
-        if ($validacion->fails()) {
-            return response()->json([
-                'respuesta' => false,
-                'mensaje' => '',
-                'errors' => $validacion->errors()
-            ]);
-        }        
-
-        $activos = [];
+    {          
+        $activos = [];        
 
         if ( $request->input('entidad.id') && $request->input('rubro.id') )
         {
             $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
                                     ->whereDate('fecha_adquision', '>=', $request->input('desde'))
                                     ->whereDate('fecha_adquision', '<=', $request->input('hasta'))
+                                    ->where('procedencia_id', $request->input('procedencia.id'))
                                     ->where('entidad_id', $request->input('entidad.id'))
                                     ->where('rubro_id', $request->input('rubro.id'))
                                     ->where('eliminado', false)
@@ -264,6 +262,7 @@ class InventarioController extends Controller
             $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
                                     ->whereDate('fecha_adquision', '>=', $request->input('desde'))
                                     ->whereDate('fecha_adquision', '<=', $request->input('hasta'))
+                                    ->where('procedencia_id', $request->input('procedencia.id'))
                                     ->where('entidad_id', $request->input('entidad.id'))                                    
                                     ->where('eliminado', false)
                                     ->orderBy('fecha_adquision', 'desc')
@@ -274,7 +273,17 @@ class InventarioController extends Controller
             $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
                                     ->whereDate('fecha_adquision', '>=', $request->input('desde'))
                                     ->whereDate('fecha_adquision', '<=', $request->input('hasta'))                                    
+                                    ->where('procedencia_id', $request->input('procedencia.id'))
                                     ->where('rubro_id', $request->input('rubro.id'))
+                                    ->where('eliminado', false)
+                                    ->orderBy('fecha_adquision', 'desc')
+                                    ->get();           
+        } else if (  !$request->input('entidad.id') && !$request->input('rubro.id')  )
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
+                                    ->whereDate('fecha_adquision', '>=', $request->input('desde'))
+                                    ->whereDate('fecha_adquision', '<=', $request->input('hasta'))                                    
+                                    ->where('procedencia_id', $request->input('procedencia.id'))                                    
                                     ->where('eliminado', false)
                                     ->orderBy('fecha_adquision', 'desc')
                                     ->get();           
@@ -282,6 +291,50 @@ class InventarioController extends Controller
         
         return response()->json([
             'respuesta' => true,
+            'activos' => $activos               
+        ]);
+    }
+
+    function inventarioPorCompras( Request $request )
+    {
+        $activos = [];
+
+        if ( $request->input('cuenta.id') && $request->input('rubro.id') )
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
+                        ->whereDate('fecha_adquision', '>=', $request->input('desde'))
+                        ->whereDate('fecha_adquision', '<=', $request->input('hasta'))
+                        ->where('procedencia_id', 1)
+                        ->where('cuenta_id', $request->input('cuenta.id'))
+                        ->where('rubro_id', $request->input('rubro.id'))
+                        ->where('eliminado', false)
+                        ->orderBy('fecha_adquision', 'desc')
+                        ->get();
+
+        } else if ( $request->input('cuenta.id') && !$request->input('rubro.id') )
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
+                        ->whereDate('fecha_adquision', '>=', $request->input('desde'))
+                        ->whereDate('fecha_adquision', '<=', $request->input('hasta'))
+                        ->where('procedencia_id', 1)
+                        ->where('cuenta_id', $request->input('cuenta.id'))                        
+                        ->where('eliminado', false)
+                        ->orderBy('fecha_adquision', 'desc')
+                        ->get();
+
+        } else if ( !$request->input('cuenta.id') && $request->input('rubro.id'))
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
+                        ->whereDate('fecha_adquision', '>=', $request->input('desde'))
+                        ->whereDate('fecha_adquision', '<=', $request->input('hasta'))
+                        ->where('procedencia_id', 1)                        
+                        ->where('rubro_id', $request->input('rubro.id'))
+                        ->where('eliminado', false)
+                        ->orderBy('fecha_adquision', 'desc')
+                        ->get();
+        }
+
+        return response()->json([            
             'activos' => $activos               
         ]);
     }
@@ -309,5 +362,43 @@ class InventarioController extends Controller
         return response()->json([
             'activos' => $descargoTemp            
         ]);
+    }
+
+    function ReporteInventarioMovimientos(\App\Models\TipoMovimiento $tipoMovimiento, $desde, $hasta, $accion )
+    {
+        $activos = [];
+
+        $movimientos = \App\Models\Movimiento::with('tipoMovimiento', 'inventario', 'inventario.marca', 'inventario.entidad', 'inventario.cuenta', 'inventario.ubicacion', 'inventario.procedencia', 'inventario.rubro')
+                        ->where('tipo_id', $tipoMovimiento->id)
+                        ->whereDate('created_at', '>=', $desde )
+                        ->whereDate('created_at', '<=', $hasta )
+                        ->get();
+
+        foreach( $movimientos as $movimiento )
+        {
+             foreach( $movimiento->inventario as $inventario )
+             {
+                $inventario->idMovimiento = $movimiento->id;
+                $inventario->tipoMovimiento = $movimiento->tipoMovimiento->tipo;
+                $inventario->fechaCreacion = $movimiento->created_At;
+
+                if ( $accion == 'COMPLETOS' )
+                {
+                    if ( $inventario->pivot->recibido)
+                    {
+                        array_push( $activos, $inventario );
+                    } 
+                } else 
+                {
+                    if ( !$inventario->pivot->recibido)
+                    {
+                        array_push( $activos, $inventario );
+                    } 
+                }
+                
+             }
+        }
+
+        return response()->json([ 'activos' => $activos ]);
     }
 }
