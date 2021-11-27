@@ -82,6 +82,9 @@ Vue.component('reporte-descargos', require('./components/Reportes/ReporteDescarg
 Vue.component('reporte-compras', require('./components/Reportes/ReporteCompras.vue').default);
 Vue.component('reporte-movimientos', require('./components/Reportes/ReporteMovimientos.vue').default);
 
+// REVISION
+Vue.component('revisiones', require('./components/Revision/Revisiones.vue').default);
+Vue.component('formulario-revisiones', require('./components/Revision/FormularioRevisiones.vue').default);
 
 import auth from './mixins/auth';
 Vue.mixin(auth);

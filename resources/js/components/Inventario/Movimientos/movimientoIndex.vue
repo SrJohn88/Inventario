@@ -131,7 +131,6 @@ export default {
                             created_at, porcentaje
                         })
                     });
-                    console.log( this.movimientos)
                 })
                 .catch( console.error )
         },

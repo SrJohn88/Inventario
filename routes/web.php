@@ -18,6 +18,7 @@ use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\HistorialInventarioController;
 use App\Http\Controllers\HistorialMovimientoController;
+use App\Http\Controllers\RevisionController;
 use App\Http\Controllers\TipoDescargosController;
 use App\Http\Controllers\TipoMovimientoController;
 use App\Http\Controllers\UserController;
@@ -192,3 +193,12 @@ Route::post('/Api/reportes/inventario/entidadesRubros', [ InventarioController::
 Route::get('/Api/reportes/inventario/descargos/{tipoDescargo}/{desde}/{hasta}', [ InventarioController::class, 'ReporteActivosDescargados'])->name("reportes.ReporteActivosDescargados");
 Route::post('/Api/reportes/inventario/compras', [ InventarioController::class, 'inventarioPorCompras'])->name("reportes.inventarioPorCompras");
 Route::get('/Api/reportes/inventario/movimientos/{tipoMovimiento}/{desde}/{hasta}/{accion}', [ InventarioController::class, 'ReporteInventarioMovimientos'])->name("reportes.ReporteInventarioMovimientos");
+
+// LEVANTAMIENTO FISICO 
+Route::get('/inventario/revision', [ RevisionController::class, 'index'])->name("revision.index");
+Route::get('/inventario/revision/crear', [ RevisionController::class, 'formulario'])->name("revision.crear");
+
+// LEVANTAMIENTO FISICO API
+Route::get('/Api/inventario/revisiones', [ RevisionController::class, 'obtenerRevisiones'])->name("revision.get");
+Route::get('/Api/inventario/revisiones/{revision}', [ RevisionController::class, 'obtenerRevision'])->name("revision.getOne");
+Route::post('/Api/inventario/revisiones', [ RevisionController::class, 'save'])->name("revision.save");
