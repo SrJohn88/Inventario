@@ -202,3 +202,4 @@ Route::get('/inventario/revision/crear', [ RevisionController::class, 'formulari
 Route::get('/Api/inventario/revisiones', [ RevisionController::class, 'obtenerRevisiones'])->name("revision.get");
 Route::get('/Api/inventario/revisiones/{revision}', [ RevisionController::class, 'obtenerRevision'])->name("revision.getOne");
 Route::post('/Api/inventario/revisiones', [ RevisionController::class, 'save'])->name("revision.save");
+Route::post('/Api/inventario/revisiones/{revision}', [ RevisionController::class, 'update'])->name("revision.update");

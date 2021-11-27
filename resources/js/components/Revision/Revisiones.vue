@@ -138,7 +138,7 @@ export default {
         { text: "Elaborada por", value: "user.name", align: "center" },
         { text: "Progreso", value: "progreso", align: "center" },
         { text: "Revisados", value: "revisados", align: "center" },
-        { text: "Activos", value: "total", align: "center" },
+        { text: "Total a revisar", value: "total", align: "center" },
         { text: "Fecha de registro", value: "created_at", align: "center" },
         { text: "Acciones", value: "action", sortable: false, align: "center" },
       ],      
@@ -164,6 +164,9 @@ export default {
       this.loader = true
       axios.get(`/Api/inventario/revisiones`)
         .then( ({ data: { revisiones } } ) => {
+          
+          this.revisiones = []
+
           this.loader = false
 
           let revisionesActivas = revisiones.filter((r) => r.eliminado == false );
@@ -194,6 +197,8 @@ export default {
           
           if (response.status == 200) 
           {
+            const { respuesta, mensaje } = response.data 
+
             if (respuesta) 
             {
               this.obtenerRevisiones()
@@ -202,7 +207,8 @@ export default {
             } else
             {
               const { errors } = response.data
-              this.errors = errors
+              this.errors = [...errors]
+              console.log( this.errors )
             }
           
           } else 
@@ -216,8 +222,15 @@ export default {
     },
     cerrarModal() 
     {
-      this.modal = false
-
+      this.modal = false;
+        setTimeout(() => {
+          this.revision = { id: null, nombre: null }
+          this.resetValidation();
+        }, 300);    
+    },
+    resetValidation() {
+      this.errors = [];
+      this.$refs.formRevision.resetValidation();
     },
     editar( { ...revision } )
     {

@@ -316,6 +316,19 @@ return [
             ],
         ],
         [
+            'text'    => 'Resión de inventario',
+            'icon_color' => 'amber',
+            'icon'    => 'fas fa-file-download',
+            'submenu' => [
+                [
+                    'text' => 'Revisiones',
+                    'icon_color' => 'teal',
+                    'route' => 'revision.index',
+                    'icon'  => '',            
+                ],
+            ]
+        ],
+        [
             'text' => 'Usuarios',
             'route' => 'usuarios.index',
             'icon'  => 'fas fa-users',            

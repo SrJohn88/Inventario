@@ -36,7 +36,7 @@ class RevisionController extends Controller
     function obtenerRevision( Revision $revision )
     {
         return response()->json([
-            'revisiones' => Revision::with('user', 'inventario')->where('id', $revision->id)->get()
+            'revisiones' => Revision::with('user', 'inventario', 'inventario.estado')->where('id', $revision->id)->get()
         ]); 
     }
 
@@ -54,7 +54,7 @@ class RevisionController extends Controller
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => '',
-                    'errors' => $validacion->errors()
+                    'errors' => $validacion->errors()->get('nombre')
                 ]);
             }
 
@@ -90,5 +90,35 @@ class RevisionController extends Controller
                 'mensaje' => 'Ocurrio un error en el servidor'
             ]);
         }
+    }
+
+    function update( Request $request, Revision $revision )
+    {
+        try {
+
+            foreach ( $request->input('activos') as $value )
+            {
+                $revision->inventario()->updateExistingPivot(
+                    $value['inventario_id'], [
+                        'observacion'=> $value['observacion'],
+                        'revisado' => $value['revisado'],
+                        'esCorrecto' => $value['esCorrecto']
+                    ]
+                );
+            }
+
+            return response()->json([
+                'respuesta' => true,    
+                'mensaje' => 'Revision gaurdada exitosamente'
+            ]);
+
+        } catch( \Exception $e )
+        {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Ocurrio un error en el servidor'
+            ]);
+        }
+    
     }
 }
