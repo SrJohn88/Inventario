@@ -31,11 +31,10 @@
 
           <template v-slot:top>
               <v-container fluid>
-                <v-radio-group v-model="tipoReporte" row>
+                <v-radio-group v-model="tipoReporte" row @change="reset">
                   <v-radio
                     label="General"
-                    value="General"
-                    @change="resetUbicacion"                    
+                    value="General"                    
                   ></v-radio>
                   <v-radio
                     label="Ubicación"
@@ -46,7 +45,7 @@
 
               <v-card-title>
                 <v-row>
-                  <v-col cols="6" align="center" v-if="rangoFechas">                
+                  <v-col cols="6" align="center" v-if="tipoReporte == 'General'">                
                     <date-picker
                       v-model="desde"
                       :editable="false"
@@ -60,7 +59,7 @@
                     >
                     </date-picker>
                   </v-col>
-                  <v-col cols="6" align="center" v-if="rangoFechas">                    
+                  <v-col cols="6" align="center" v-if="tipoReporte == 'General'">                    
                     <date-picker
                       v-model="hasta"
                       :editable="false"
@@ -166,7 +165,7 @@ export default {
   {
     return {
       loader: false,
-      tipoReporte: null,
+      tipoReporte: 'General',
       buscarActivo: '',
       encabezados: [
         { text: "Código", value: "codigo", sortable: false },
@@ -182,7 +181,7 @@ export default {
       ],
       activos: [],
       ubicaciones: [],
-      ubicacion: { id: null, ubicacion: '' },
+      ubicacion: null,
       rangoFechas: true,
       desde: null, hasta: null,
       modalReporte: false,
@@ -203,18 +202,41 @@ export default {
         })
         .catch(console.error);
     },
-    resetUbicacion()
+    reset()
     {
       this.ubicacion = null
+      this.desde = null
+      this.hasta = null
     },
     generar()
     {
-      if ( this.tipoReporte && this.desde && this.hasta )
+      let valido = true
+      let path = ''
+
+      if ( this.tipoReporte == 'Ubicacion')
       {
-        const path = this.ubicacion == null || this.ubicacion.id == null
-                ? `/Api/reportes/inventario/${this.desde}/${this.hasta}` 
-                : `/Api/reportes/inventario/${this.desde}/${this.hasta}/${this.ubicacion.id}` 
+        if ( this.ubicacion != null )
+        {
+          path = `/Api/reportes/inventario/${this.ubicacion.id}`
+        } else {
+          valido = false
+        }
+      } else if  ( this.tipoReporte == 'General')
+      {
+        if ( this.hasta && this.desde )
+        {
+          path = `/Api/reportes/inventario/${this.desde}/${this.hasta}`
+        } else 
+        {
+          valido = false
+        }
         
+      } else {
+        valido = false
+      }
+      
+      if ( valido )
+      {
         this.loader = true
         this.activos = []
         this.precioTotal = 0
@@ -239,8 +261,8 @@ export default {
             this.loader = false
             console.log('ocurrio un error')
           })
-        
-      } else 
+      }              
+     else 
       {
         Swal.fire({
           icon: 'warning',
@@ -256,28 +278,27 @@ export default {
           let data = []
 
           this.activos.forEach( activo => {
-            data.push({
-              id: activo.id,
-              codigo: activo.codigo,
-              serie: activo.serie,
-              descripcion: activo.descripcion,
-              marca: activo.marca ? activo.marca.marca : '',
-              modelo: activo.modelo,
-              procedencia: activo.procedencia.procedencia,
-              entidad: activo.entidad ? activo.entidad.entidad : '',
-              cuenta: activo.cuenta ? activo.cuenta.cuenta : '',
-              precio: activo.precio,
-              rubro: activo.rubro ? activo.rubro.rubro : '',
-              ubicacion: activo.ubicacion ?  activo.ubicacion.ubicacion : '',
-              fechaAdquision: activo.fecha_adquision,
-              estado: activo.estado ? activo.estado.estado : '',
-              observacion: activo.observacion,
-              fechaRegistro: activo.created_at,
-              ultimaActualizacion: activo.updated_at
+            data.push({              
+              CODIGO: activo.codigo,
+              SERIE: activo.serie,
+              DESCRIPCION: activo.descripcion,
+              MARCA: activo.marca ? activo.marca.marca : '',
+              MODELO: activo.modelo,
+              PROCEDENCIA: activo.procedencia.procedencia,
+              ENTIDAD: activo.entidad ? activo.entidad.entidad : '',
+              CUENTA: activo.cuenta ? activo.cuenta.cuenta : '',
+              PRECIO: activo.precio,
+              RUBRO: activo.rubro ? activo.rubro.rubro : '',
+              UBICACION: activo.ubicacion ?  activo.ubicacion.ubicacion : '',
+              FECHA_ADQUISICION: activo.fecha_adquision,
+              ESTADO: activo.estado ? activo.estado.estado : '',
+              OBSERVACION: activo.observacion,
+              FECHA_REGISTRO: activo.created_at,
+              ULTIMA_ACTUALIZACION: activo.updated_at
             })
           })
 
-          data.push( {precio: `Precio total: ${this.precioTotal }` } )
+          data.push( {PRECIO: `Precio total: ${this.precioTotal }` } )
 
           try {
             

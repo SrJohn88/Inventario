@@ -228,7 +228,7 @@ export default {
                 procedencia: null,
                 entidad: null,
                 rubro: null,
-                desde: '', hasta: ''
+                desde: null, hasta: null
             },
             erroresReporte: [],
             precioTotal : 0
@@ -275,47 +275,81 @@ export default {
                 })
                 .catch(console.error)
         },
+        obtenerInventarioProcedencia()
+        {
+            this.loader = true;
+            axios
+                .get("/Api/entidades")
+                .then(({ data: { entidades } }) => {
+                    this.entidades = entidades.filter( ent => ent.eliminado == false);        
+                    this.loader = false
+                })
+                .catch(console.error)
+        },
         generar()
         {            
-            const path = `/Api/reportes/inventario/entidadesRubros`
+            let path = ``
+            let valido = true
+            this.loader = true
+            this.activos = []
+            this.precioTotal = 0
 
-            if ( this.reporte.procedencia )
+            if ( this.reporte.procedencia && !this.reporte.entidad && !this.reporte.rubro )
             {
-                if ( this.reporte.desde && this.reporte.hasta )
-                {
-                    this.loader = true
-                    this.activos = []
-                    this.precioTotal = 0
+                console.log('obteniendo procedencias ')
+                path = `/Api/reportes/inventario/procedencia/${this.reporte.procedencia.id}/${this.reporte.desde}/${this.reporte.hasta}`
+                axios
+                    .get( path, this.reporte )
+                    .then( ( { data: { activos, respuesta } } ) => {
+                        this.loader = false
 
-                    axios
-                        .post( path, this.reporte )
-                        .then( response => {
-                            this.loader = false
+                        if ( respuesta )
+                        {
+                            this.activos = [ ...activos ]
+                        } else {
+                            throw new Error('Revisa los datos')
+                        }
+                        
+                    }).catch( () => {
+                        this.loader = false
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '¡IMPORTANTE!',
+                            text: 'Ocurrio un error al generar el reporte, revisa los datos',
+                        })
+                    })
+                
+            } else 
+            {          
+                path = `/Api/reportes/inventario/entidadesRubros`  
+                axios
+                    .post( path, this.reporte )
+                    .then( response => {
+                        this.loader = false
 
-                            if ( response.status == 200 )
+                        if ( response.status == 200 )
+                        {
+                            const { respuesta, mensaje } = response.data
+
+                            if ( respuesta )
                             {
-                                const { respuesta, mensaje } = response.data
+                                const { activos } = response.data                                        
 
-                                if ( respuesta )
-                                {
-                                    const { activos } = response.data                                        
-
-                                    activos.forEach( activo => {
+                                activos.forEach( activo => {
                                         
-                                        if ( activo.precio )
-                                        {
-                                            this.precioTotal = parseFloat( Number(this.precioTotal) ) + parseFloat( Number(activo.precio) )
-                                        }
-                                        this.activos.push( {...activo } )
-                                    });
+                                    if ( activo.precio )
+                                    {
+                                        this.precioTotal = parseFloat( Number(this.precioTotal) ) + parseFloat( Number(activo.precio) )
+                                    }
+                                    this.activos.push( {...activo } )
+                                });
 
                                     this.precioTotal = this.precioTotal.toFixed(2) 
                                 } else 
                                 {
                                     throw new Error('No fue exitoso')
                                 }
-                            }
-                            
+                            }                            
                         })  
                         .catch( () => {
                             this.loader = false
@@ -324,24 +358,8 @@ export default {
                             title: '¡IMPORTANTE!',
                             text: 'Ocurrio un error al generar el reporte, revisa que el rango de fechas sea correcto',
                             })
-                        })
-
-                } else 
-                {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: '¡IMPORTANTE!',
-                        text: 'Revisa que las fechas sean correctas',
-                    })
-                }
-            } else 
-            {
-                Swal.fire({
-                        icon: 'warning',
-                        title: '¡IMPORTANTE!',
-                        text: 'Selecciona una procedencia para filtrar',
-                    })
-            }                
+                        })               
+            }               
         },
         exportarExcel()
         {

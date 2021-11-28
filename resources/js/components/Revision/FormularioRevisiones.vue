@@ -75,25 +75,27 @@
               >
                 Guardar             
               </v-btn>
-
             </v-col>
           </v-row>
-          
-          <div class="text-center ma-4">
-            
-
-          </div>
         </v-card-title>
 
         <v-card-title>
           Activos
           <div class="flex-grow-1"></div>
+          <v-checkbox 
+                v-model="estado"
+                class="mx-10"
+                style="margin-top: 1.5rem;"
+                label="Activos Revisados"
+                value="false"
+              />
           <v-text-field v-model="buscar" label="Buscar activo" hide-details></v-text-field>
+          
         </v-card-title>
 
         <v-data-table
           :headers="encabezados"
-          :items="activos"
+          :items=" estado ? activos : activosPendientes"
           :footer-props="{
             'items-per-page-options': [ 50, 100, 150 ],
             'items-per-page-text': 'Registros Por Página',
@@ -121,17 +123,17 @@
             ></v-simple-checkbox>
         </template>
 
-        <template v-slot:item.observacion="{item}">
+        <template v-slot:item.pivot.observacion="{item}">
                 <v-edit-dialog
                   :return-value.sync="item.pivot.observacion"
                   large
-                  persistent
-                  v-if="!item.completo"
+                  persistent                  
                 >
                   {{ item.pivot.observacion }}
                   <template v-slot:input>
                     <div class="mt-4 text-h6">Observaciones:</div>
                     <v-text-field
+                      :readonly="item.completo"
                       v-model="item.pivot.observacion"
                       :rules="[]"
                       label="Observaciones"
@@ -155,9 +157,10 @@ export default {
   data()
   {
     return {
+      estado: false,
       buscar: '',
       loader: false,
-      activos: [],
+      activos: [], activosPendientes: [],
       encabezados: [
         { text: "Fecha Adquisición", value: "fecha_adquision",sortable: false, align: "center" },
         { text: "Código", value: "codigo", sortable: false },
@@ -165,7 +168,7 @@ export default {
         { text: "Estado", value: "estado.estado" },
         { text: "Revisado", value: "revisado", align: 'center', sortable: false },
         { text: "Ubicacion Correcta", value: "esCorrecto", align: 'center', sortable: false },                        
-        { text: "Observación", value: "observacion", sortable: false },
+        { text: "Observación", value: "pivot.observacion", sortable: false },
       ],
       revision: { 
           id : null, nombre: '', 
@@ -194,6 +197,7 @@ export default {
             .then( ( { data: { revisiones = [] } } ) => {
               
               this.loader = false
+              let activosTemporal = []
 
               const {
                 user, nombre, inventario, created_at
@@ -201,7 +205,7 @@ export default {
 
               this.revision.nombre = nombre
               this.revision.user = { ...user }
-              // this.activos = [...inventario ]
+              
               this.revision.created_at = created_at
 
               inventario.forEach( activo => {
@@ -209,9 +213,12 @@ export default {
                 activo.pivot.revisado = (!!parseInt( activo.pivot.revisado ) ? true : false )
                 activo.pivot.esCorrecto = (!!parseInt( activo.pivot.esCorrecto ) ? true : false )
 
-                this.activos.push( { ...activo } )
+                activosTemporal.push( { ...activo } )
               })
-              
+
+              this.activos = activosTemporal.filter( i => i.completo == true )
+              this.activosPendientes = activosTemporal.filter( i => i.completo == false )
+
             }).catch( console.error )
     },
     save()
@@ -222,7 +229,7 @@ export default {
 
       let datos = []
 
-      this.activos.forEach( activo => {
+      this.activosPendientes.forEach( activo => {
         datos.push({
           'inventario_id': activo.id,
           'revisado' : activo.pivot.revisado,

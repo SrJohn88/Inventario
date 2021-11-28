@@ -170,9 +170,19 @@ export default {
                 .then(({ data: { tiposDescargos } }) => {
                     this.tiposDescargos = tiposDescargos.filter((r) => r.eliminado == false )
             })
-        },
+        },    
         generar()
         {
+            let path = ``
+
+            if ( this.tipoDescargo && this.tipoDescargo.id && ( this.desde && this.hasta ) )
+            {
+
+            } else if ( true )
+            {
+
+            }
+
             if ( this.tipoDescargo && this.tipoDescargo.id && this.desde && this.hasta )
             {   
                 this.loader = true  

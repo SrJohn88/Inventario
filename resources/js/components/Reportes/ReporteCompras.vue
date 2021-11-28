@@ -213,6 +213,7 @@ export default {
     {
         this.obtenerCuentas()
         this.obtenerRubros()
+        this.obtenerInventarioPorCompras()
     },
     methods: {
         obtenerRubros()
@@ -233,12 +234,20 @@ export default {
                 })
                 .catch(console.error)
         },
-        generar()
+        obtenerInventarioPorCompras()
         {
+            this.loader = true
+            
+            axios.get(`/Api/reportes/compras`)
+                .then(({ data: { activos } }) => {
+                    this.activos = [ ...activos ]
+                    this.loader = false
+            })
+        },
+        generar()
+        {           
             if ( this.reporte.cuenta || this.reporte.rubro )
             {
-                if ( this.reporte.desde && this.reporte.hasta )
-                {
                     this.loader = true
                     this.activos = []
                     this.precioTotal = 0
@@ -273,22 +282,10 @@ export default {
                                 title: '¡IMPORTANTE!',
                                 text: 'Ocurrio un error al generar el reporte',
                             })
-                        })
-                } else
-                {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: '¡IMPORTANTE!',
-                        text: 'Revisa que los datos sean correctos',
-                    })
-                }
+                        })                
             } else 
             {
-                Swal.fire({
-                    icon: 'warning',
-                    title: '¡IMPORTANTE!',
-                    text: 'Selecciona una cuenta o rubro para generar el reporte',
-                })
+                this.obtenerInventarioPorCompras()
             }
 
         },
@@ -299,28 +296,27 @@ export default {
                 let data = []
 
                 this.activos.forEach( activo => {
-                    data.push({
-                    id: activo.id,
-                    codigo: activo.codigo,
-                    serie: activo.serie,
-                    descripcion: activo.descripcion,
-                    marca: activo.marca ? activo.marca.marca : '',
-                    modelo: activo.modelo,
-                    procedencia: activo.procedencia.procedencia,
-                    entidad: activo.entidad ? activo.entidad.entidad : '',
-                    cuenta: activo.cuenta ? activo.cuenta.cuenta : '',
-                    precio: activo.precio,
-                    rubro: activo.rubro ? activo.rubro.rubro : '',
-                    ubicacion: activo.ubicacion ?  activo.ubicacion.ubicacion : '',
-                    fechaAdquision: activo.fecha_adquision,
-                    estado: activo.estado ? activo.estado.estado : '',
-                    observacion: activo.observacion,
-                    fechaRegistro: activo.created_at,
-                    ultimaActualizacion: activo.updated_at
+                    data.push({                    
+                    CODIGO: activo.codigo,
+                    SERIE: activo.serie,
+                    DESCRIPCION: activo.descripcion,
+                    MARCA: activo.marca ? activo.marca.marca : '',
+                    MODELO: activo.modelo,
+                    PROCEDENCIA: activo.procedencia.procedencia,
+                    ENTIDAD: activo.entidad ? activo.entidad.entidad : '',
+                    CUENTA: activo.cuenta ? activo.cuenta.cuenta : '',
+                    PRECIO: activo.precio,
+                    RUBRO: activo.rubro ? activo.rubro.rubro : '',
+                    UBICACION: activo.ubicacion ?  activo.ubicacion.ubicacion : '',
+                    FECHA_ADQUISICION: activo.fecha_adquision,
+                    ESTADO: activo.estado ? activo.estado.estado : '',
+                    OBSERVACION: activo.observacion,
+                    FECHA_REGISTRO: activo.created_at,
+                    ULTIMA_ACTUALIZACION: activo.updated_at
                     })
                 })
 
-                data.push( { precio: `Precio Total: ${this.precioTotal }` } )
+                data.push( { PRECIO: `Precio Total: ${this.precioTotal }` } )
 
                 try {            
                     json2excel({

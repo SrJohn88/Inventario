@@ -215,91 +215,67 @@ class InventarioController extends Controller
         return view('Reportes.movimientos');
     }
 
-    function inventaroPorUbicacion( $desde, $hasta, Ubicacion $ubicacion)
-    {
-        $inventario = [];
+    // REPORTE GENERAR
 
-        if ( $ubicacion->id ) 
+    function inventarioPorUbicacion( Ubicacion $ubicacion )
+    {
+        $inventario = $inventario = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                        
+                        ->orderBy('fecha_adquision', 'desc' )
+                        ->where('ubicacion_id', $ubicacion->id )
+                        ->where('eliminado', false)
+                        ->get();
+                            
+        return response()->json([ 'activos' => $inventario ]);
+
+    }
+
+    function reporteInventarioUbicacion( $desde, $hasta )
+    {    
+        if ( $desde && $hasta )
         {
-            $inventario = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
-                            ->whereDate('fecha_adquision', '>=', $desde )
-                            ->whereDate('fecha_adquision', '<=', $hasta)
-                            ->orderBy('fecha_adquision', 'desc' )
-                            ->where('ubicacion_id', $ubicacion->id )
-                            ->where('eliminado', false)
-                            ->get();
-        } else 
-        {
-            $inventario = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
+            $date = date_create( $desde );
+            $desde = date_format( $date, 'Y-m-d');
+            $date = date_create( $hasta );
+            $hasta = date_format( $date, 'Y-m-d');
+        }
+        
+        $inventario = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
                             ->whereDate('fecha_adquision', '>=', $desde )
                             ->whereDate('fecha_adquision', '<=', $hasta)
                             ->where('eliminado', false)
                             ->orderBy('fecha_adquision', 'desc')
                             ->get();
-        }
 
         return response()->json([ 'activos' => $inventario ]);
     }
 
-    function inventarioPorEntidadRubro( Request $request )
-    {          
-        $activos = [];        
+    // REPORTE DE COMPRAS 
 
-        if ( $request->input('entidad.id') && $request->input('rubro.id') )
-        {
-            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
-                                    ->whereDate('fecha_adquision', '>=', $request->input('desde'))
-                                    ->whereDate('fecha_adquision', '<=', $request->input('hasta'))
-                                    ->where('procedencia_id', $request->input('procedencia.id'))
-                                    ->where('entidad_id', $request->input('entidad.id'))
-                                    ->where('rubro_id', $request->input('rubro.id'))
-                                    ->where('eliminado', false)
-                                    ->orderBy('fecha_adquision', 'desc')
-                                    ->get();
-            
-        } else if (  $request->input('entidad.id') && !$request->input('rubro.id')  )
-        {        
-            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
-                                    ->whereDate('fecha_adquision', '>=', $request->input('desde'))
-                                    ->whereDate('fecha_adquision', '<=', $request->input('hasta'))
-                                    ->where('procedencia_id', $request->input('procedencia.id'))
-                                    ->where('entidad_id', $request->input('entidad.id'))                                    
-                                    ->where('eliminado', false)
-                                    ->orderBy('fecha_adquision', 'desc')
-                                    ->get();
+    function compras()
+    {
+        $inventario = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                                                
+                        ->where('procedencia_id', 1)                                                
+                        ->where('eliminado', false)
+                        ->orderBy('fecha_adquision', 'desc')
+                        ->get();
 
-        } else if (  !$request->input('entidad.id') && $request->input('rubro.id')  )
-        {
-            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
-                                    ->whereDate('fecha_adquision', '>=', $request->input('desde'))
-                                    ->whereDate('fecha_adquision', '<=', $request->input('hasta'))                                    
-                                    ->where('procedencia_id', $request->input('procedencia.id'))
-                                    ->where('rubro_id', $request->input('rubro.id'))
-                                    ->where('eliminado', false)
-                                    ->orderBy('fecha_adquision', 'desc')
-                                    ->get();           
-        } else if (  !$request->input('entidad.id') && !$request->input('rubro.id')  )
-        {
-            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
-                                    ->whereDate('fecha_adquision', '>=', $request->input('desde'))
-                                    ->whereDate('fecha_adquision', '<=', $request->input('hasta'))                                    
-                                    ->where('procedencia_id', $request->input('procedencia.id'))                                    
-                                    ->where('eliminado', false)
-                                    ->orderBy('fecha_adquision', 'desc')
-                                    ->get();           
-        }  
-        
-        return response()->json([
-            'respuesta' => true,
-            'activos' => $activos               
-        ]);
+        return response()->json([ 'activos' => $inventario ]);
     }
 
     function inventarioPorCompras( Request $request )
     {
         $activos = [];
 
-        if ( $request->input('cuenta.id') && $request->input('rubro.id') )
+        if ( $request->input('desde') && $request->input('hasta'))
+        {
+            $date = date_create( $request->input('desde') );
+            $desde = date_format( $date, 'Y-m-d');
+            $date = date_create( $request->input('hasta') );
+            $hasta = date_format( $date, 'Y-m-d');
+        }
+        
+
+        if ( $request->input('cuenta.id') && $request->input('rubro.id') && $request->input('desde') && $request->input('desde'))
         {
             $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
                         ->whereDate('fecha_adquision', '>=', $request->input('desde'))
@@ -309,10 +285,10 @@ class InventarioController extends Controller
                         ->where('rubro_id', $request->input('rubro.id'))
                         ->where('eliminado', false)
                         ->orderBy('fecha_adquision', 'desc')
-                        ->get();
+                        ->get();                        
 
-        } else if ( $request->input('cuenta.id') && !$request->input('rubro.id') )
-        {
+        } else if ( $request->input('cuenta.id') && !$request->input('rubro.id') && $request->input('desde') && $request->input('hasta') )
+        {        
             $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
                         ->whereDate('fecha_adquision', '>=', $request->input('desde'))
                         ->whereDate('fecha_adquision', '<=', $request->input('hasta'))
@@ -320,24 +296,185 @@ class InventarioController extends Controller
                         ->where('cuenta_id', $request->input('cuenta.id'))                        
                         ->where('eliminado', false)
                         ->orderBy('fecha_adquision', 'desc')
-                        ->get();
+                        ->get();            
+
+        } else if ( !$request->input('cuenta.id') && $request->input('rubro.id') && $request->input('desde') && $request->input('hasta'))
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                        
+                        ->where('procedencia_id', 1)                        
+                        ->where('rubro_id', $request->input('rubro.id'))
+                        ->where('eliminado', false)
+                        ->where('fecha_adquision', '>=', $desde )
+                        ->where('fecha_adquision', '<=', $hasta )
+                        ->orderBy('fecha_adquision', 'desc')
+                        ->get();    
+            //$activos = [ $desde, $hasta];        
+        }
+
+        else if ( $request->input('cuenta.id') && $request->input('rubro.id') )
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                        
+                        ->where('procedencia_id', 1)
+                        ->where('cuenta_id', $request->input('cuenta.id'))
+                        ->where('rubro_id', $request->input('rubro.id'))
+                        ->where('eliminado', false)
+                        ->orderBy('fecha_adquision', 'desc')
+                        ->get();                        
+
+        } else if ( $request->input('cuenta.id') && !$request->input('rubro.id') )
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                        
+                        ->where('procedencia_id', 1)
+                        ->where('cuenta_id', $request->input('cuenta.id'))                        
+                        ->where('eliminado', false)
+                        ->orderBy('fecha_adquision', 'desc')
+                        ->get();                        
 
         } else if ( !$request->input('cuenta.id') && $request->input('rubro.id'))
         {
-            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
-                        ->whereDate('fecha_adquision', '>=', $request->input('desde'))
-                        ->whereDate('fecha_adquision', '<=', $request->input('hasta'))
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                        
                         ->where('procedencia_id', 1)                        
                         ->where('rubro_id', $request->input('rubro.id'))
                         ->where('eliminado', false)
                         ->orderBy('fecha_adquision', 'desc')
-                        ->get();
+                        ->get();                        
         }
 
         return response()->json([            
             'activos' => $activos               
         ]);
     }
+
+    // REPORTE POR PROCEDENCIA
+
+    function inventarioPorProcedencia( \App\Models\Procedencia $procedencia, $desde, $hasta )
+    {        
+        if ( $procedencia && $desde != 'null' && $hasta != 'null' )
+        {            
+            $date = date_create( $desde );
+            $desde = date_format( $date, 'Y-m-d');
+            $date = date_create( $hasta );
+            $hasta = date_format( $date, 'Y-m-d');
+
+            $inventario = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                                                
+            ->where('procedencia_id', $procedencia->id )
+            ->whereDate('fecha_adquision', '>=', $desde )
+            ->whereDate('fecha_adquision', '<=', $hasta )                                                
+            ->where('eliminado', false)
+            ->orderBy('fecha_adquision', 'desc')
+            ->get();
+
+        } else if ( $procedencia && $desde == 'null' && $hasta == 'null') {
+    
+            $inventario = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                                                
+                                ->where('procedencia_id', $procedencia->id )                                                
+                                ->where('eliminado', false)
+                                ->orderBy('fecha_adquision', 'desc')
+                                ->get();
+        } else {
+
+            return response()->json([
+                'respuesta' => false,            
+                'activos' => []               
+            ]);
+        }
+
+        return response()->json([ 
+            'respuesta' => true,           
+            'activos' => $inventario               
+        ]);        
+    }
+    
+    function inventarioPorEntidadRubro( Request $request )
+    {          
+        $activos = [];      
+        
+        if ( $request->input('desde') && $request->input('hasta'))
+        {
+            $date = date_create( $request->input('desde') );
+            $desde = date_format( $date, 'Y-m-d');
+            $date = date_create( $request->input('hasta') );
+            $hasta = date_format( $date, 'Y-m-d');
+        }
+
+        if ( $request->input('entidad.id') && $request->input('rubro.id') && $request->input('desde') && $request->input('hasta') )
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
+                                    ->whereDate('fecha_adquision', '>=', $desde )
+                                    ->whereDate('fecha_adquision', '<=', $hasta )
+                                    ->where('procedencia_id', $request->input('procedencia.id'))
+                                    ->where('entidad_id', $request->input('entidad.id'))
+                                    ->where('rubro_id', $request->input('rubro.id'))
+                                    ->where('eliminado', false)
+                                    ->orderBy('fecha_adquision', 'desc')
+                                    ->get();
+            
+        } else if (  $request->input('entidad.id') && !$request->input('rubro.id') && $request->input('desde') && $request->input('hasta') )
+        {        
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
+                                    ->whereDate('fecha_adquision', '>=', $desde )
+                                    ->whereDate('fecha_adquision', '<=', $hasta )
+                                    ->where('procedencia_id', $request->input('procedencia.id'))
+                                    ->where('entidad_id', $request->input('entidad.id'))                                    
+                                    ->where('eliminado', false)
+                                    ->orderBy('fecha_adquision', 'desc')
+                                    ->get();
+
+        } else if (  !$request->input('entidad.id') && $request->input('rubro.id') && $request->input('desde') && $request->input('hasta') )
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')
+                                    ->whereDate('fecha_adquision', '>=', $desde )
+                                    ->whereDate('fecha_adquision', '<=', $hasta )                                    
+                                    ->where('procedencia_id', $request->input('procedencia.id'))
+                                    ->where('rubro_id', $request->input('rubro.id'))
+                                    ->where('eliminado', false)
+                                    ->orderBy('fecha_adquision', 'desc')
+                                    ->get();           
+        }
+        // inicia nuevo 
+        else if ( $request->input('entidad.id') && $request->input('rubro.id') && !$request->input('desde') && !$request->input('hasta')  )
+        {
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                                    
+                                    ->where('procedencia_id', $request->input('procedencia.id'))
+                                    ->where('entidad_id', $request->input('entidad.id'))
+                                    ->where('rubro_id', $request->input('rubro.id'))
+                                    ->where('eliminado', false)
+                                    ->orderBy('fecha_adquision', 'desc')
+                                    ->get();
+            //$activos = ['ok'];
+
+        }else if (  $request->input('entidad.id') && !$request->input('rubro.id') && !$request->input('desde') && !$request->input('hasta')  )
+        {        
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                                    
+                                    ->where('procedencia_id', $request->input('procedencia.id'))
+                                    ->where('entidad_id', $request->input('entidad.id'))                                    
+                                    ->where('eliminado', false)
+                                    ->orderBy('fecha_adquision', 'desc')
+                                    ->get();
+
+        }else if (  !$request->input('entidad.id') && $request->input('rubro.id') && !$request->input('desde') && !$request->input('hasta') )
+        {        
+            $activos = Inventario::with('marca', 'ubicacion', 'cuenta', 'procedencia', 'rubro', 'entidad', 'estado')                                    
+                                    ->where('procedencia_id', $request->input('procedencia.id'))
+                                    ->where('rubro_id', $request->input('rubro.id'))                                    
+                                    ->where('eliminado', false)
+                                    ->orderBy('fecha_adquision', 'desc')
+                                    ->get();
+                                    
+        } else {
+            return response()->json([
+                'respuesta' => false,
+                'activos' => []               
+            ]);
+        }
+        
+        return response()->json([
+            'respuesta' => true,
+            'activos' => $activos               
+        ]);
+    }
+
+    
 
     function ReporteActivosDescargados( TipoDescargos $tipoDescargo, $desde, $hasta)
     {

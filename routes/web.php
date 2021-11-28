@@ -188,7 +188,14 @@ Route::get('/reportes/inventario/movimientos', [ InventarioController::class, 'r
 
 
 // API REPORTES
-Route::get('/Api/reportes/inventario/{desde}/{hasta}/{ubicacion?}', [ InventarioController::class, 'inventaroPorUbicacion'])->name("reportes.inventaroPorUbicacion");
+        // REPORTE GENERAL Y POR UBICACION
+Route::get('/Api/reportes/inventario/{desde}/{hasta}', [ InventarioController::class, 'reporteInventarioUbicacion'])->name("reportes.reporteInventarioUbicacion");
+Route::get('/Api/reportes/inventario/{ubicacion}', [ InventarioController::class, 'inventarioPorUbicacion'])->name("reportes.inventarioPorUbicacion");
+
+        // REPORTE POR COMPRAS
+Route::get('/Api/reportes/compras', [ InventarioController::class, 'compras'])->name("reportes.compras");
+
+
 Route::post('/Api/reportes/inventario/entidadesRubros', [ InventarioController::class, 'inventarioPorEntidadRubro'])->name("reportes.inventarioPorEntidadRubro");
 Route::get('/Api/reportes/inventario/descargos/{tipoDescargo}/{desde}/{hasta}', [ InventarioController::class, 'ReporteActivosDescargados'])->name("reportes.ReporteActivosDescargados");
 Route::post('/Api/reportes/inventario/compras', [ InventarioController::class, 'inventarioPorCompras'])->name("reportes.inventarioPorCompras");
@@ -203,3 +210,7 @@ Route::get('/Api/inventario/revisiones', [ RevisionController::class, 'obtenerRe
 Route::get('/Api/inventario/revisiones/{revision}', [ RevisionController::class, 'obtenerRevision'])->name("revision.getOne");
 Route::post('/Api/inventario/revisiones', [ RevisionController::class, 'save'])->name("revision.save");
 Route::post('/Api/inventario/revisiones/{revision}', [ RevisionController::class, 'update'])->name("revision.update");
+
+
+        // REPORTE POR PROCEDENCIA 
+Route::get('/Api/reportes/inventario/procedencia/{procedencia}/{desde}/{hasta}', [ InventarioController::class, 'inventarioPorProcedencia'])->name("reportes.inventarioPorProcedencia");

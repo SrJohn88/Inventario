@@ -12,7 +12,7 @@ class RevisionController extends Controller
     private $mensajes = [
         'required' => 'Este campo es requerido',
         'min' => 'El campo debe tener al menos :min caracteres.',
-        'unique' => 'La :attribute ya existe',
+        'unique' => 'Ya  una revision con este nombre',
     ];
 
     function index()
@@ -47,7 +47,7 @@ class RevisionController extends Controller
             DB::beginTransaction();
 
             $validacion = Validator::make($request->all(), [
-                'nombre' => 'required|min:2|max:200',                
+                'nombre' => 'required|unique:revisiones|min:2|max:200',                
             ], $this->mensajes);
 
             if ($validacion->fails()) {
