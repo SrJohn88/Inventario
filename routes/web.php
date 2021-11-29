@@ -25,6 +25,7 @@ use App\Http\Controllers\UserController;
 use App\Models\HistorialInventario;
 use App\Models\HistorialMovimiento;
 
+
 Auth::routes();
 Route::get('/',HomeController::class);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -214,3 +215,8 @@ Route::post('/Api/inventario/revisiones/{revision}', [ RevisionController::class
 
         // REPORTE POR PROCEDENCIA 
 Route::get('/Api/reportes/inventario/procedencia/{procedencia}/{desde}/{hasta}', [ InventarioController::class, 'inventarioPorProcedencia'])->name("reportes.inventarioPorProcedencia");
+
+
+
+// PDF
+Route::get('/pdf', [MovimientoController::class, 'pdfMovimiento']);

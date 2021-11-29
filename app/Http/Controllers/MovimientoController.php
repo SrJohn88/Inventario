@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Movimiento;
 use App\Models\HistorialMovimiento;
+use App\Models\TipoMovimiento;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class MovimientoController extends Controller
 {
@@ -245,4 +247,20 @@ class MovimientoController extends Controller
         return view('Inventario.movimientos.actualizar');
     }
 
+    // GENERANDO PDF
+
+    function pdfMovimiento()
+    {
+        $tiposMovimientos = TipoMovimiento::all();
+
+        $movimiento = Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'aprueba.cargo', 'aprobadoGerencia', 'aprobadoGerencia.cargo', 'user', 'inventario', 'inventario.rubro')
+                            ->where('id', 1 )->get();                            
+
+        $pdf = PDF::loadView('Inventario.movimientos.movimientoPDF', [
+                        'movimiento' => $movimiento[0],
+                        'tiposMovimientos' => $tiposMovimientos
+                    ])
+                ->setPaper('a4', 'landscape');;
+        return $pdf->stream();
+    }
 }
