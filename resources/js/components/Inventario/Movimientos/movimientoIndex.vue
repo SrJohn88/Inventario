@@ -62,8 +62,21 @@
                             >
                             <v-icon>far fa-clipboard</v-icon>
                             </v-btn>
+
+                            <v-btn
+                            color="success"
+                            class="mx-1"
+                            elevation="8"
+                            small
+                            dark
+                            :disabled="item.id < 0"
+                            v-on="on"
+                            @click="generarPDF( item )"
+                            >
+                            <v-icon>far fa-clipboard</v-icon>
+                            </v-btn>
                         </template>
-                        <span>Ver Detalle</span>
+                        <span>Generar reporte</span>
                         </v-tooltip>
                     </template>
 
@@ -137,6 +150,10 @@ export default {
         detalle ( movimiento )
         {
             window.location = `/inventario/movimientos/detalle?id=${movimiento.id}`
+        },
+        generarPDF ( {...movimiento })
+        {
+            window.open(`http://localhost:8000/inventario/movimientos/documento/${movimiento.id}`, '_blank')
         }
     }
 

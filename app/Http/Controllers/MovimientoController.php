@@ -249,12 +249,12 @@ class MovimientoController extends Controller
 
     // GENERANDO PDF
 
-    function pdfMovimiento()
+    function pdfMovimiento( Movimiento $movimiento )
     {
         $tiposMovimientos = TipoMovimiento::all();
 
         $movimiento = Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'aprueba.cargo', 'aprobadoGerencia', 'aprobadoGerencia.cargo', 'user', 'inventario', 'inventario.rubro')
-                            ->where('id', 1 )->get();                            
+                            ->where('id', $movimiento->id )->get();                            
 
         $pdf = PDF::loadView('Inventario.movimientos.movimientoPDF', [
                         'movimiento' => $movimiento[0],
@@ -262,5 +262,31 @@ class MovimientoController extends Controller
                     ])
                 ->setPaper('a4', 'landscape');;
         return $pdf->stream();
+    }
+
+    function activosMovimientos ()
+    {
+        return view('Inventario.movimientos.activosMovimiento');
+    }
+
+    function obtenerActivosMovimientos()
+    {
+        $activos = [];
+
+        $movimientos = \App\Models\Movimiento::with('tipoMovimiento', 'inventario', 'inventario.marca', 'inventario.entidad', 'inventario.cuenta', 'inventario.ubicacion', 'inventario.procedencia', 'inventario.rubro')                    
+                        ->get();
+        
+        foreach( $movimientos as $movimiento )
+        {
+            foreach( $movimiento->inventario as $activo )
+            {                
+                if ( !$activo->pivot->recibido)
+                {
+                    array_push( $activos, $activo );
+                }
+            }
+        }
+        
+        return response()->json([ 'activos' => $activos ]);
     }
 }

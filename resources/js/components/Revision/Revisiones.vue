@@ -98,8 +98,21 @@
                 >
                   <v-icon>far fa-clipboard</v-icon>
                 </v-btn>
+
+                <v-btn
+                  color="success"
+                  class="mx-1"
+                  elevation="8"
+                  small
+                  dark
+                  :disabled="item.id < 0"
+                  v-on="on"
+                  @click="generarPdf( item )"
+                >
+                  <v-icon>far fa-clipboard</v-icon>
+                </v-btn>
               </template>
-              <span>Editar</span>
+              <span>Generar reporte</span>
             </v-tooltip>
           </template>
 
@@ -235,6 +248,10 @@ export default {
     editar( { ...revision } )
     {
       window.location = `/inventario/revision/crear?id=${revision.id}`
+    },
+    generarPdf( {...revision })
+    {
+      window.open(`http://localhost:8000/inventario/revisiones/documento/${revision.id}`, '_blank')
     },
     alerta (mensaje, icono = 'info', titulo = '')
     {

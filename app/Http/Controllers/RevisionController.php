@@ -121,4 +121,12 @@ class RevisionController extends Controller
         }
     
     }
+
+    function generarPdf ( Revision $revision )
+    {
+        $pdf = \PDF::loadView('Revision.revisionPDF', [
+            'revision' => $revision
+        ])->setPaper('a4', 'landscape');
+        return $pdf->stream();
+    }
 }

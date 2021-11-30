@@ -219,4 +219,12 @@ Route::get('/Api/reportes/inventario/procedencia/{procedencia}/{desde}/{hasta}',
 
 
 // PDF
-Route::get('/pdf', [MovimientoController::class, 'pdfMovimiento']);
+Route::get('/inventario/movimientos/documento/{movimiento}', [MovimientoController::class, 'pdfMovimiento']);
+Route::get('/inventario/revisiones/documento/{revision}', [RevisionController::class, 'generarPdf']);
+
+
+Route::get('/inventario/movimientos/activos', [ MovimientoController::class, 'activosMovimientos'])->name('movimiento.activosMovimientos');
+Route::get('/Api/activos/movimientos', [ MovimientoController::class, 'obtenerActivosMovimientos'])->name('movimiento.obtenerActivosMovimientos');
+
+
+

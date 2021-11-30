@@ -31,6 +31,7 @@
                     <th>CODIGO</th>
                     <th>DESCRIPCIÓN DEL ACTIVO</th>                
                     <th>ESTADO O FALLA</th>
+                    <th>REINGRESO</th>
                     <th>OBSERVACIÓN</th>
                 </tr>                
             </thead>
@@ -41,6 +42,12 @@
                         <td>{{$activo->codigo}}</td>
                         <td>{{$activo->descripcion}}</td>
                         <td>{{ $activo->pivot->falla }}</td>
+                        @if( $activo->pivot->recibido )
+                            <td>{{ $activo->pivot->updated_at ?? '' }}</td>
+                        @else
+                            <td></td>
+                        @endif
+                        
                         <td> {{ $activo->pivot->observaciones }}</td>                
                     </tr>   
                 @endforeach                
@@ -177,7 +184,7 @@
                     <tr>
                         <td>Cargo</td>
                         @if ( $movimiento->recibe )
-                            <td> {{ $movimiento->aprobadoGerencia->cargo->cargo }}</td>
+                            <td> {{ $movimiento->recibe->cargo->cargo }}</td>
                         @else
                             <td></td>
                         @endif
@@ -270,7 +277,8 @@
     }
 
     table.tblFirma {
-        font-size: 16px;    
+        font-size: 16px;
+        height: 150px;    
     }
 
     .tblFirma td {

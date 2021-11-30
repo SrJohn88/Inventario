@@ -53,6 +53,8 @@ Vue.component('inventario-detalle', require('./components/Inventario/inventarioD
 Vue.component('movimiento-index', require('./components/Inventario/Movimientos/movimientoIndex.vue').default);
 Vue.component('movimiento-crear', require('./components/Inventario/Movimientos/formularioCrear.vue').default);
 Vue.component('update-movimiento', require('./components/Inventario/Movimientos/updateMovimiento.vue').default);
+Vue.component('activos-movimiento', require('./components/Inventario/Movimientos/activosMovimiento.vue').default);
+
 
 // DESCARGOS DE INVENTARIO
 Vue.component('formulario-descargos', require('./components/Inventario/Descargos/formularioDescargos.vue').default);

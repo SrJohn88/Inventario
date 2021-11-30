@@ -296,6 +296,11 @@ return [
                     'route' => 'movimiento.index',
                     'icon'  => 'fas fa-people-carry',
                 ], 
+                [
+                    'text' => 'Activos en movimientos',
+                    'route' => 'movimiento.activosMovimientos',
+                    'icon'  => 'fas fa-people-carry',
+                ], 
             ],
         ],
         [
