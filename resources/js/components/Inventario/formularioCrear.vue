@@ -122,8 +122,7 @@
                 <v-col cols="5" v-show="inventario.procedencia.id == 1">
                   <v-autocomplete
                     v-model="inventario.cuenta"
-                    :items="cuentas"
-                    :rules="[(v) => !!v || 'La cuenta es requerida']"
+                    :items="cuentas"                    
                     label="Cuenta"
                     item-text="cuenta"
                     item-value="id"
@@ -154,8 +153,7 @@
                   <v-autocomplete
                     :disabled="detalle"
                     v-model="inventario.entidad"
-                    :items="entidades"
-                    :rules="[(v) => !!v || 'La entidad es requerido']"
+                    :items="entidades"                    
                     label="Entidad Donante"
                     item-text="entidad"
                     item-value="id"
@@ -318,6 +316,7 @@
           <v-btn
             ref="btnGuardarInventario"
             color="info darken-1"
+            :disabled="!inventarioValido"
             @click="save()"
             v-text="textButton"
           ></v-btn>
@@ -776,8 +775,6 @@ export default {
     this.obtenerUbicaciones();
     this.obtenerProcedencias();
 
-    //console.log( this.detalle )
-
     if (this.idPrueba != null) {
       this.obtenerActivo();
     }
@@ -849,7 +846,7 @@ export default {
       axios
         .get(`/Api/procedencias`)
         .then(({ data: { procedencias } }) => {
-          this.procedencias = procedencias;
+          this.procedencias = [ ... procedencias];
         })
         .catch(console.error);
     },
@@ -857,7 +854,7 @@ export default {
       axios
         .get(`/Api/marcas`)
         .then(({ data: { marcas } }) => {
-          this.marcas = marcas.filter((r) => r.eliminado == false);
+          this.marcas = marcas.filter( r => r.eliminado == false);
         })
         .catch(console.error);
     },
@@ -969,8 +966,7 @@ export default {
         }
       });
     },
-    cancelar() {
-      console.log(this.inventarioValido);
+    cancelar() {      
       Swal.fire({
         title: "INFORMACION",
         text: `¿Quieres cancelar el registro`,
@@ -1063,10 +1059,9 @@ export default {
         })
         .catch(console.error);
     },
-    onChangeProcedencia() {
-      //console.log("click en change");
-      //this.$refs.autocompleteCuenta.internalSearch = null;
-      //this.inventario.cuenta = { id: null, cuenta: ''}
+    onChangeProcedencia() {      
+      this.inventario.cuenta = { id: null, cuenta: null }
+      this.inventario.entidad = { id: null, entidad: null }
     },
     mostrarModalHistorial( activo )
     {
@@ -1099,6 +1094,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>

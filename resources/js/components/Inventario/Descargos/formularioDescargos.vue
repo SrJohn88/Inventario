@@ -53,6 +53,8 @@
                   <v-col cols="6">
                     <v-text-field
                       append-icon="mdi-file"
+                      @change="errors['acta'] = []"
+                      :error-messages="errors['acta']"
                       v-model="descargo.acta"
                       :rules="[]"
                       label="Numero de acta"
@@ -78,6 +80,8 @@
                         required                        
                         v-bind="attrs"
                         v-on="on"
+                        @change="errors['fecha'] = []"
+                        :error-messages="errors['fecha']"
                         :disabled = "descargo.id != null"
                       ></v-text-field>
                     </template>
