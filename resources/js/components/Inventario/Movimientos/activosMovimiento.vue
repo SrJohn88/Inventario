@@ -49,7 +49,7 @@
                             v-on="on"
                             @click="detalle(item)"
                             >
-                            <v-icon>far fa-clipboard</v-icon>
+                            <v-icon>far fa-edit</v-icon>
                             </v-btn>
                         </template>
                         <span>Ver Detalle</span>
@@ -66,7 +66,7 @@
                             v-on="on"
                             @click="irMovimiento(item)"
                             >
-                            <v-icon>far fa-clipboard</v-icon>
+                            <v-icon>far fa-file</v-icon>
                             </v-btn>
                         </template>
                         <span>Ver movimiento</span>

@@ -19,6 +19,7 @@
 
                   <v-col cols="5">
                     <v-select
+                    append-icon="fas fa-info"
                       ref="cboTipoDescargo"
                       :error-messages="errors['tipoDescargo.id']"
                       :items="tiposDescargos"
@@ -73,9 +74,9 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
+                      append-icon="fas fa-calendar-alt"
                         v-model="descargo.fecha"
-                        label="Seleccione la fecha del acta"
-                        prepend-icon="mdi-calendar"
+                        label="Seleccione la fecha del acta"                        
                         readonly
                         required                        
                         v-bind="attrs"
@@ -96,6 +97,7 @@
                   <v-col cols="6">
                     <v-textarea                    
                       label="Observación"
+                      append-icon="fas fa-eye"
                       v-model="descargo.observaciones"
                       no-resize
                       rows="1"
@@ -106,7 +108,8 @@
 
                   <v-col cols="6">
                     <v-textarea
-                      disabled                    
+                      disabled         
+                      append-icon="fas fa-user"           
                       label="Creado por:"
                       v-model="descargo.usuario"
                       no-resize
@@ -118,7 +121,8 @@
 
                   <v-col cols="6">
                     <v-textarea   
-                      disabled                 
+                      disabled    
+                      append-icon="fas fa-calendar-alt"             
                       label="Fecha de Registro"
                       v-model="descargo.fechaRegistro"
                       no-resize

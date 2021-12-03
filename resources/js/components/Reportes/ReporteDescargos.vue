@@ -172,17 +172,7 @@ export default {
             })
         },    
         generar()
-        {
-            let path = ``
-
-            if ( this.tipoDescargo && this.tipoDescargo.id && ( this.desde && this.hasta ) )
-            {
-
-            } else if ( true )
-            {
-
-            }
-
+        {            
             if ( this.tipoDescargo && this.tipoDescargo.id && this.desde && this.hasta )
             {   
                 this.loader = true  
@@ -190,7 +180,7 @@ export default {
                 this.precioTotal = 0
                 this.activos = []
 
-                const path = `/Api/reportes/inventario/descargos/${this.tipoDescargo.id}/${'2021-10-1'}/${'2021-11-24'}`
+                const path = `/Api/reportes/inventario/descargos/${this.tipoDescargo.id}/${this.desde}/${this.hasta}`
                 axios
                     .get( path )
                     .then( response => {

@@ -30,7 +30,8 @@
                   dark
                   elevation="2"
                   small
-                  @click="crear()"                        
+                  @click="crear()"  
+                  :disabled="usuarioSesion.rol.rol != 'Administrador'"                      
                 >
                   Agregar Usuario
                 </v-btn>
@@ -192,7 +193,7 @@
                   v-on="on"
                   @click="resetear(item)"
                 >
-                  <v-icon>mdi-delete</v-icon>
+                  <v-icon>fas fa-key</v-icon>
                 </v-btn>
               </template>
               <span>Resetear Usuario</span>

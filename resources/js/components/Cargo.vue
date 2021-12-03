@@ -54,7 +54,7 @@
                                         <v-container>
                                             <v-form ref="formCargos" v-model="validForm" :lazy-validation="true">
                                                 <v-text-field
-                                                append-icon="mdi-folder-outline"
+                                                append-icon="fas fa-cogs"
                                                 v-model="cargo.cargo"
                                                 @keyup="errors = []"
                                                 :rules="[reglas.min, reglas.requerido, reglas.expresion]"

@@ -51,7 +51,7 @@
                         <v-tooltip top >
                         <template v-slot:activator="{ on }" >
                             <v-btn
-                            color="success"
+                            color="info"
                             class="mx-1"
                             elevation="8"
                             small
@@ -60,11 +60,15 @@
                             v-on="on"
                             @click="detalle( item )"
                             >
-                            <v-icon>far fa-clipboard</v-icon>
-                            </v-btn>
-
+                            <v-icon>fas fa-edit</v-icon>
+                            </v-btn>                            
+                        </template>
+                        <span>Ver detalle</span>
+                        </v-tooltip>
+                        <v-tooltip top >
+                        <template v-slot:activator="{ on }" >                            
                             <v-btn
-                            color="success"
+                            color="red"
                             class="mx-1"
                             elevation="8"
                             small
@@ -73,7 +77,7 @@
                             v-on="on"
                             @click="generarPDF( item )"
                             >
-                            <v-icon>far fa-clipboard</v-icon>
+                            <v-icon>far fa-file-pdf</v-icon>
                             </v-btn>
                         </template>
                         <span>Generar reporte</span>

@@ -477,9 +477,15 @@ class InventarioController extends Controller
     
 
     function ReporteActivosDescargados( TipoDescargos $tipoDescargo, $desde, $hasta)
-    {
-        $descargoTemp = [];
+    {        
         
+        $date = date_create( $desde );
+        $desde = date_format( $date, 'Y-m-d');
+        $date = date_create( $hasta );
+        $hasta = date_format( $date, 'Y-m-d');
+        
+        $descargoTemp = [];
+
         $descargos = \App\Models\Descargo::with('inventario', 'inventario.marca', 'inventario.entidad', 'inventario.cuenta', 'inventario.ubicacion', 'inventario.procedencia', 'inventario.rubro')
                                             ->where('tipoDescargo_id', $tipoDescargo->id)
                                             ->whereDate('fechaActa', '>=', $desde )
@@ -503,6 +509,12 @@ class InventarioController extends Controller
 
     function ReporteInventarioMovimientos(\App\Models\TipoMovimiento $tipoMovimiento, $desde, $hasta, $accion )
     {
+
+        $date = date_create( $desde );
+        $desde = date_format( $date, 'Y-m-d');
+        $date = date_create( $hasta );
+        $hasta = date_format( $date, 'Y-m-d');
+
         $activos = [];
 
         $movimientos = \App\Models\Movimiento::with('tipoMovimiento', 'inventario', 'inventario.marca', 'inventario.entidad', 'inventario.cuenta', 'inventario.ubicacion', 'inventario.procedencia', 'inventario.rubro')
@@ -526,8 +538,8 @@ class InventarioController extends Controller
                         array_push( $activos, $inventario );
                     } 
                 } else 
-                {
-                    if ( !$inventario->pivot->recibido)
+                {                           
+                    if (! $inventario->pivot->recibido )
                     {
                         array_push( $activos, $inventario );
                     } 

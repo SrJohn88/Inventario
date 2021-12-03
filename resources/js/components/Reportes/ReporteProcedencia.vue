@@ -305,7 +305,14 @@ export default {
 
                         if ( respuesta )
                         {
-                            this.activos = [ ...activos ]
+                            activos.forEach( activo => {                                
+                                if ( activo.precio )
+                                {
+                                    this.precioTotal += parseFloat( activo.precio)
+                                }
+                                this.activos.push( { ...activo } )
+                                })
+                                this.precioTotal = this.precioTotal.toFixed(2)                                                    
                         } else {
                             throw new Error('Revisa los datos')
                         }

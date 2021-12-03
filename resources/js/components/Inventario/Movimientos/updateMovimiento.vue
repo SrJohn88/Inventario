@@ -13,6 +13,7 @@
                         <v-row>
                             <v-col cols="12" sm="6" >
                                 <v-text-field
+                                    append-icon="fas fa-code"
                                     v-model="movimiento.tipoMovimiento.tipo"
                                     label="Tipo de movimiento"
                                     disabled
@@ -21,6 +22,7 @@
 
                             <v-col cols="12" sm="6" >
                                 <v-text-field
+                                    append-icon="fas fa-user"
                                     v-model="movimiento.aprueba.nombre"
                                     label="Aprobo"
                                     disabled
@@ -29,6 +31,7 @@
 
                             <v-col cols="12" sm="6" >
                                 <v-text-field
+                                append-icon="fas fa-user"
                                     v-model="movimiento.recibe.nombre"
                                     label="Recibio"
                                     disabled
@@ -37,30 +40,52 @@
 
                             <v-col cols="12" sm="6" >
                                 <v-text-field
+                                    append-icon="fas fa-user"
                                     v-model="movimiento.gerencia.nombre"
                                     label="Aprobo por gerencia"
                                     disabled
                                 ></v-text-field>
                             </v-col>
 
-                            <v-col cols="12" sm="6" >
+                            <v-col cols="12" sm="4" >
                                 <v-text-field
+                                    append-icon="fas fa-user"
                                     v-model="movimiento.usuario.name"
                                     label="Entregado por"
                                     disabled
                                 ></v-text-field>
                             </v-col>
 
-                            <v-col cols="12" sm="6" >
+                            <v-col cols="12" sm="4" >
                                 <v-text-field
+                                    append-icon="fas fa-calendar-alt"
+                                    v-model="movimiento.fechaReingreso"
+                                    label="Fecha Reingreso"
+                                    disabled
+                                ></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" sm="4" >
+                                <v-text-field
+                                    append-icon="fas fa-calendar-alt"
                                     v-model="movimiento.created_at"
                                     label="Fecha de registro"
                                     disabled
                                 ></v-text-field>
                             </v-col>
 
-                            <v-col cols="12" sm="12" >
+                            <v-col cols="12" sm="6" >
                                 <v-text-field
+                                    append-icon="fas fa-file"
+                                    v-model="movimiento.detalleSalida"
+                                    label="Se traslada a"
+                                    disabled
+                                ></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" sm="6" >
+                                <v-text-field
+                                    append-icon="fas fa-eye"
                                     v-model="movimiento.observaciones"
                                     label="Observaciones"
                                     disabled
@@ -241,17 +266,19 @@ export default {
                 gerencia: { id: null, nombre: "" },
                 ubicacion: { id: null, ubicacion: "" },
                 fecha: "",
+                fechaReingreso: '',
                 registro: null,
                 usuario: { id: null, nombre: ''},
                 created_at: '',
                 observaciones: "",
+                detalleSalida: '',
                 activos: [],
             },
             headMovimientos: [
                 { text: "Codigo", value: "codigo", align: "left" },
                 { text: "Descripción", value: "descripcion", align: "left" },            
                 { text: "Marca", value: "marca.marca", align: "left" },            
-                { text: "Modelo", value: "modelo", align: "left" },            
+                { text: "Ubicacion", value: "ubicacion.ubicacion", align: "left" },          
                 { text: "Falla", value: "pivot.falla", align: "left" },
                 { text: "Observaciones", value: "pivot.observaciones", align: "left" },
                 { text: "Estado", value: "estado", align: "left" },
@@ -307,6 +334,8 @@ export default {
                         aprobado_gerencia,
                         created_at,
                         descripcion,
+                        fechaReingreso,
+                        detalleSalida,
                         inventario                        
                     } = movimiento[0]
 
@@ -316,8 +345,10 @@ export default {
                     this.movimiento.gerencia = { ... aprobado_gerencia}
                     this.movimiento.registro = created_at
                     this.movimiento.usuario = { ... user }
+                    this.movimiento.fechaReingreso = fechaReingreso
                     this.movimiento.observaciones = descripcion
                     this.movimiento.created_at = created_at
+                    this.movimiento.detalleSalida = detalleSalida
 
                     inventario.forEach( inventario => {
                         if ( !inventario.marca )

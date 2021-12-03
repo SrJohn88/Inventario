@@ -26,7 +26,7 @@
             <v-row>
               <v-col cols="6">
                 <v-text-field
-                  append-icon="mdi-folder-outline"
+                  append-icon="fas fa-user-tag"
                   v-model="usuario.nombre"
                   @keyup="errores.nombre = []"
                   :rules="[reglas.requerido, reglas.min, reglas.expresion]"
@@ -38,7 +38,7 @@
 
               <v-col cols="6">
                 <v-text-field
-                  append-icon="mdi-folder-outline"
+                  append-icon="fas fa-user-tag"
                   v-model="usuario.apellido"
                   @keyup="errores.apellido = []"
                   :rules="[reglas.requerido, reglas.min, reglas.expresion]"
@@ -50,7 +50,7 @@
 
               <v-col cols="6">
                 <v-text-field
-                  append-icon="mdi-folder-outline"
+                  append-icon="fas fa-envelope"
                   v-model="usuario.email"
                   @keyup="errores.email = []"
                   :rules="[reglas.email]"
@@ -62,6 +62,7 @@
 
               <v-col cols="6">
                 <v-select
+                  append-icon="fas fa-cogs"
                   :error-messages="errores['rol.id']"
                   :items="roles"
                   v-model="usuario.rol"

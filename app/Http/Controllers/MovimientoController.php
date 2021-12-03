@@ -237,7 +237,7 @@ class MovimientoController extends Controller
     function obtenerDetMovimiento( Movimiento $movimiento )
     {
         return response()->json([
-            'movimiento' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'aprobadoGerencia', 'user', 'inventario', 'inventario.marca')
+            'movimiento' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'aprobadoGerencia', 'user', 'inventario', 'inventario.marca', 'inventario.ubicacion')
                             ->where('id', $movimiento->id )->get()
         ]);
     }

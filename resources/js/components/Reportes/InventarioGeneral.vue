@@ -62,13 +62,14 @@
                   <v-col cols="6" align="center" v-if="tipoReporte == 'General'">                    
                     <date-picker
                       v-model="hasta"
-                      :editable="false"
-                      lang="es"
+                      locale="es"
+                      :date-format="date => $moment(date)-format('DD-MM-YYYY')"
+                      :formatted-value.sync="formatted"
+                      :editable="false"                      
                       style="width: 75% !important"
                       input-class="form-control"
                       class="mt-2"
-                      value-type="format"
-                      format="DD-MM-YYYY"
+                      value-type="format"                      
                       placeholder="Fecha Hasta"
                     >
                     </date-picker>

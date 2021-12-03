@@ -18,6 +18,7 @@
               <v-row>
                 <v-col cols="6">
                   <v-autocomplete
+                  append-icon="fas fa-code"
                     v-model="movimiento.tipoMovimiento"
                     :items="tiposMovimientos"
                     :rules="[
@@ -37,6 +38,7 @@
                 <!--  CAJA DE RECIBE  !-->
                 <v-col cols="5">
                   <v-autocomplete
+                  append-icon="fas fa-user"
                     v-model="movimiento.recibe"
                     :items="empleados"
                     required
@@ -75,6 +77,7 @@
 
                 <v-col cols="5">
                   <v-autocomplete
+                    append-icon="fas fa-user"
                     v-model="movimiento.aprueba"
                     :items="empleados"                    
                     :rules="[]"
@@ -110,6 +113,7 @@
                 
                 <v-col cols="5">
                   <v-autocomplete
+                  append-icon="fas fa-user"
                     v-model="movimiento.gerencia"
                     :items="empleados"                    
                     :rules="[]"
@@ -150,6 +154,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
+                      append-icon="fas fa-calendar-alt"
                         v-model="movimiento.fecha"
                         label="Seleccione fecha de reingreso"
                         prepend-icon="mdi-calendar"
@@ -161,11 +166,12 @@
                     </template>
                     <v-date-picker
                       v-model="movimiento.fecha"
+                      locale="es"
                       @input="menu = false"
                       :min="getFechaActual"
                     ></v-date-picker>
                   </v-menu>
-                </v-col>
+                </v-col>                
 
                 <v-col cols="5" 
                   v-if="movimiento.tipoMovimiento.id != null && ( movimiento.tipoMovimiento.id != 4)"
@@ -208,6 +214,7 @@
 
                 <v-col cols="6" v-show="movimiento.tipoMovimiento.id != null && movimiento.tipoMovimiento.id == 4">
                   <v-textarea
+                    append-icon="fas fa-file"
                     v-model="movimiento.detalleSalida"
                     label="Se Traslada a:"
                     rows="1"
@@ -216,6 +223,7 @@
 
                 <v-col cols="12">
                   <v-textarea
+                    append-icon="fas fa-eye"
                     v-model="movimiento.observacion"
                     label="Observacion"
                     rows="2"
@@ -380,7 +388,7 @@ export default {
         { text: "Codigo", value: "codigo", align: "left" },
         { text: "Descripción", value: "descripcion", align: "left" },
         { text: "Marca", value: "marca.marca", align: "left" },
-        { text: "Modelo", value: "modelo", align: "left" },
+        { text: "Ubicacion", value: "ubicacion.ubicacion", align: "left" },
         { text: "Serie", value: "serie", align: "left" },
         { text: "Falla", value: "falla", align: "left" },
         { text: "Observaciones", value: "observaciones", align: "left" },
@@ -391,7 +399,7 @@ export default {
   computed: {
     getFechaActual () 
     {
-      return `${this.fechaActual.getFullYear()}-${ this.fechaActual.getMonth() + 1}-${ this.fechaActual.getDate()}`
+      return `${this.fechaActual.getFullYear()}-${ this.fechaActual.getMonth() + 1 < 10 ? '0'+this.fechaActual.getMonth() + 1 : this.fechaActual.getMonth() + 1 }-${ this.fechaActual.getDate() < 10 ? '0'+this.fechaActual.getDate() : this.fechaActual.getDate()}`
     }
   },
   mounted() {
@@ -472,12 +480,7 @@ export default {
           cancelButtonText: "Cancelar",
         }).then((result) => {
           if (result.isConfirmed) {
-            let activosTemp = [...this.inventarios];
-
-            if ( this.movimiento.tipoMovimiento.id == 2 )
-            {
-
-            }
+            let activosTemp = [...this.inventarios];            
 
             activosTemp.forEach((activo) => {
               
@@ -511,7 +514,19 @@ export default {
                         allowOutsideClick: false,
                       }).then((result) => {
                         if (result.isConfirmed) {
-                          this.movimiento = {};
+                          this.movimiento = {
+                              tipoMovimiento: { id: null, tipo: "" },
+                              recibe: { id: null, nombre: "" },
+                              aprueba: { id: null, nombre: "" },
+                              gerencia: { id: null, nombre: "" },
+                              ubicacion: { id: null, ubicacion: "" },
+                              observaciones: "", detalleSalida: '',
+                              fecha: '',
+                              activos: [],
+                            }
+                          this.inventarios = []
+                          this.errors = [];
+                          this.$refs.formMovimiento.resetValidation();
                         } else {
                           window.location = "/inventario/movimientos";
                         }

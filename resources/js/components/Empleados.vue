@@ -76,7 +76,7 @@
                                 <v-row>
                                     <v-col cols="12">
                                         <v-text-field
-                                            append-icon="mdi-folder-outline"
+                                            append-icon="fas fa-user-tag"
                                             v-model="empleado.nombre"
                                             @keyup="errorsEmpleado.nombre = []"
                                             :rules= "[
@@ -92,7 +92,7 @@
 
                                     <v-col cols="12">
                                         <v-text-field
-                                            append-icon="mdi-folder-outline"
+                                            append-icon="fas fa-user-tag"
                                             v-model="empleado.apellido"
                                             @keyup="errorsEmpleado.apellido = []"
                                             :rules= "[
@@ -108,7 +108,7 @@
 
                                     <v-col cols="12">
                                         <v-text-field
-                                            append-icon="mdi-folder-outline"
+                                            append-icon="fas fa-id-card"
                                             v-model="empleado.dui"
                                             @keyup="errorsEmpleado.dui = []"
                                             :rules= "[
@@ -122,6 +122,7 @@
 
                                     <v-col cols="12">
                                             <v-autocomplete
+                                            append-icon="fas fa-cogs"
                                                 v-model="empleado.cargo"
                                                 :items="cargos"
                                                 required

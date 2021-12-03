@@ -93,6 +93,13 @@ Vue.mixin(auth);
 
 Vue.component('date-picker',Datepicker)
 
+const moment = require('moment')
+require('moment/locale/es')
+
+Vue.use('vue-moment', {
+  moment
+})
+
  const app = new Vue({
   el: '#app',
   vuetify: new Vuetify(),

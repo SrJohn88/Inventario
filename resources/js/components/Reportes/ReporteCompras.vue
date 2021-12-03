@@ -239,8 +239,16 @@ export default {
             this.loader = true
             
             axios.get(`/Api/reportes/compras`)
-                .then(({ data: { activos } }) => {
-                    this.activos = [ ...activos ]
+                .then(({ data: { activos } }) => {                                       
+
+                    activos.forEach( activo => {                                
+                        if ( activo.precio )
+                        {
+                            this.precioTotal += parseFloat( activo.precio)
+                        }
+                        this.activos.push( { ...activo } )
+                    })
+                    this.precioTotal = this.precioTotal.toFixed(2)                    
                     this.loader = false
             })
         },

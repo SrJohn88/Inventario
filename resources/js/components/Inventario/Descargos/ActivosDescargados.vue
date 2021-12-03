@@ -49,7 +49,7 @@
                             v-on="on"
                             @click="detalle(item)"
                             >
-                            <v-icon>far fa-clipboard</v-icon>
+                            <v-icon>fas fa-info-circle</v-icon>
                             </v-btn>
                         </template>
                         <span>Ver Detalle</span>
@@ -66,7 +66,7 @@
                             v-on="on"
                             @click="irDescargo(item)"
                             >
-                            <v-icon>far fa-clipboard</v-icon>
+                            <v-icon>far fa-file-pdf</v-icon>
                             </v-btn>
                         </template>
                         <span>Ver descargo</span>

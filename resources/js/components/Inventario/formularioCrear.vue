@@ -39,7 +39,7 @@
 
                 <v-col cols="6">
                   <v-text-field
-                    append-icon=""
+                    append-icon="fas fa-code"
                     :rules="[reglas.noRequerido]"
                     v-model="inventario.serie"
                     label="Serie"
@@ -49,6 +49,7 @@
 
                 <v-col cols="12">
                   <v-textarea
+                    append-icon="fas fa-tags"
                     @keyup="errors.descripcion = []"
                     :error-messages="errors.descripcion"
                     v-model="inventario.descripcion"
@@ -62,6 +63,7 @@
 
                 <v-col cols="5">
                   <v-autocomplete
+                    append-icon="fas fa-building"
                     v-model="inventario.marca"
                     :items="marcas"
                     label="Marca"
@@ -93,7 +95,7 @@
 
                 <v-col cols="6">
                   <v-text-field
-                    append-icon=""
+                    append-icon="fas fa-cube"
                     v-model="inventario.modelo"
                     label="Modelo"
                     :disabled="detalle"
@@ -102,6 +104,7 @@
 
                 <v-col cols="6">
                   <v-select
+                  append-icon="fas fa-compass"
                     ref="autocompleteCuenta"
                     @keyup="errors['procedencia.id'] = []"
                     :error-messages="errors['procedencia.id']"
@@ -121,6 +124,7 @@
 
                 <v-col cols="5" v-show="inventario.procedencia.id == 1">
                   <v-autocomplete
+                  append-icon="fas fa-wallet"
                     v-model="inventario.cuenta"
                     :items="cuentas"                    
                     label="Cuenta"
@@ -152,6 +156,7 @@
                 <v-col cols="5" v-if="inventario.procedencia.id != 1">
                   <v-autocomplete
                     :disabled="detalle"
+                    append-icon="fas fa-home"
                     v-model="inventario.entidad"
                     :items="entidades"                    
                     label="Entidad Donante"
@@ -182,7 +187,7 @@
                 <v-col cols="6">
                   <v-text-field
                     :disabled="detalle"
-                    append-icon="fas fa-tags"
+                    append-icon="fas fa-money-bill-wave"
                     v-model="inventario.precio"
                     :rules="[reglas.precio]"
                     label="Precio"
@@ -192,6 +197,7 @@
 
                 <v-col cols="5">
                   <v-autocomplete
+                    append-icon="fas fa-book-open"
                     @keyup="errors['rubro.id'] = []"
                     :error-messages="errors['rubro.id']"
                     :disabled="detalle"
@@ -238,7 +244,7 @@
                         :disabled="detalle"
                         v-model="inventario.fecha"
                         label="Fecha adquisición"
-                        prepend-icon="mdi-calendar"
+                        append-icon="fas fa-calendar-alt"
                         readonly
                         v-bind="attrs"
                         v-on="on"
@@ -246,6 +252,8 @@
                     </template>
                     <v-date-picker
                       v-model="inventario.fecha"
+                      locale="es"
+                      :date-format="date => $moment(date).format('DD-MM-YYYY')"
                       @input="menu = false"
                       :max="limitFecha"
                     ></v-date-picker>
@@ -289,6 +297,7 @@
 
                 <v-col cols="12">
                   <v-textarea
+                  append-icon="fas fa-file"
                     :disabled="detalle"
                     label="Observación"
                     v-model="inventario.observaciones"
@@ -313,7 +322,7 @@
             label="¿Desea guardar una copia de los cambios?"
           />
           <v-btn color="red darken-1" text @click="cancelar()">Cancelar</v-btn>
-          <v-btn
+          <v-btn            
             ref="btnGuardarInventario"
             color="info darken-1"
             :disabled="!inventarioValido"

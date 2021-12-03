@@ -54,7 +54,7 @@
                     <v-container>
                       <v-form ref="formRevision" v-model="validForm" :lazy-validation="true">
                         <v-text-field
-                          append-icon="mdi-folder-outline"
+                          append-icon="fas fa-plus-circle"
                           v-model="revision.nombre"
                           @keyup="errors = []"
                           :rules="[reglas.min, reglas.requerido, reglas.expresion]"
@@ -87,7 +87,7 @@
             <v-tooltip top >
               <template v-slot:activator="{ on }" >
                 <v-btn
-                  color="success"
+                  color="info"
                   class="mx-1"
                   elevation="8"
                   small
@@ -96,11 +96,15 @@
                   v-on="on"
                   @click="editar( item )"
                 >
-                  <v-icon>far fa-clipboard</v-icon>
-                </v-btn>
-
+                  <v-icon>fas fa-edit</v-icon>
+                </v-btn>                
+              </template>
+              <span>Editar</span>
+            </v-tooltip>
+            <v-tooltip top >
+              <template v-slot:activator="{ on }" >                
                 <v-btn
-                  color="success"
+                  color="red"
                   class="mx-1"
                   elevation="8"
                   small
@@ -109,7 +113,7 @@
                   v-on="on"
                   @click="generarPdf( item )"
                 >
-                  <v-icon>far fa-clipboard</v-icon>
+                  <v-icon>far fa-file-pdf</v-icon>
                 </v-btn>
               </template>
               <span>Generar reporte</span>
