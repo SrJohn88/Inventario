@@ -74,11 +74,20 @@
                                 ></v-text-field>
                             </v-col>
 
-                            <v-col cols="12" sm="6" >
+                            <v-col cols="12" sm="6" v-if="movimiento.tipoMovimiento && movimiento.tipoMovimiento.id == 4" >
                                 <v-text-field
                                     append-icon="fas fa-file"
                                     v-model="movimiento.detalleSalida"
                                     label="Se traslada a"
+                                    disabled
+                                ></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" sm="6" v-if="movimiento.tipoMovimiento && movimiento.tipoMovimiento.id != 4" >
+                                <v-text-field
+                                    append-icon="fas fa-file"
+                                    v-model="movimiento.detalleSalida.ubicacion"
+                                    label="Se traslada a ubicacion"
                                     disabled
                                 ></v-text-field>
                             </v-col>
@@ -271,7 +280,7 @@ export default {
                 usuario: { id: null, nombre: ''},
                 created_at: '',
                 observaciones: "",
-                detalleSalida: '',
+                detalleSalida: { id: null, ubicacion: ''},
                 activos: [],
             },
             headMovimientos: [
@@ -335,7 +344,7 @@ export default {
                         created_at,
                         descripcion,
                         fechaReingreso,
-                        detalleSalida,
+                        ubicacion,
                         inventario                        
                     } = movimiento[0]
 
@@ -348,7 +357,7 @@ export default {
                     this.movimiento.fechaReingreso = fechaReingreso
                     this.movimiento.observaciones = descripcion
                     this.movimiento.created_at = created_at
-                    this.movimiento.detalleSalida = detalleSalida
+                    this.movimiento.detalleSalida = ubicacion ? { ...ubicacion } : { id: null, ubicacion : ''} 
 
                     inventario.forEach( inventario => {
                         if ( !inventario.marca )

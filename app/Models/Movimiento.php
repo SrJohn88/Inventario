@@ -21,6 +21,11 @@ class Movimiento extends Model
         return $this->belongsTo('App\Models\TipoMovimiento', 'tipo_id');
     }
 
+    function ubicacion()
+    {
+        return $this->belongsTo('App\Models\Ubicacion', 'seTranslada');
+    }
+
     function recibe() 
     {
         return $this->belongsTo('App\Models\Empleado', 'recibido_por');

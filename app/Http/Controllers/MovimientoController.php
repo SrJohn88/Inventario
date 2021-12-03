@@ -66,7 +66,7 @@ class MovimientoController extends Controller
                 $movimiento->aprobado_por = $request->input('aprueba.id');
                 $movimiento->user_id = \Auth::user()->id;
 
-                if ( $movimiento->tipo_id == 1 || $movimiento->tipo_id == 3 )
+                if ( $movimiento->tipo_id == 1 || $movimiento->tipo_id == 3 || $movimiento->tipo_id == 2 )
                 {
                     $movimiento->seTranslada = $request->input('ubicacion.id');
                 }
@@ -237,7 +237,7 @@ class MovimientoController extends Controller
     function obtenerDetMovimiento( Movimiento $movimiento )
     {
         return response()->json([
-            'movimiento' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'aprobadoGerencia', 'user', 'inventario', 'inventario.marca', 'inventario.ubicacion')
+            'movimiento' => Movimiento::with('tipoMovimiento', 'recibe', 'aprueba', 'aprobadoGerencia', 'user', 'ubicacion', 'inventario', 'inventario.marca', 'inventario.ubicacion')
                             ->where('id', $movimiento->id )->get()
         ]);
     }
