@@ -219,28 +219,31 @@ export default {
                 let data = []
 
                 this.activos.forEach( activo => {
-                    data.push({
-                    id: activo.id,
-                    codigo: activo.codigo,
-                    serie: activo.serie,
-                    descripcion: activo.descripcion,
-                    marca: activo.marca ? activo.marca.marca : '',
-                    modelo: activo.modelo,
-                    procedencia: activo.procedencia.procedencia,
-                    entidad: activo.entidad ? activo.entidad.entidad : '',
-                    cuenta: activo.cuenta ? activo.cuenta.cuenta : '',
-                    precio: activo.precio,
-                    rubro: activo.rubro ? activo.rubro.rubro : '',
-                    ubicacion: activo.ubicacion ?  activo.ubicacion.ubicacion : '',
-                    fechaAdquision: activo.fecha_adquision,
-                    estado: activo.estado ? activo.estado.estado : '',
-                    observacion: activo.observacion,
-                    acta: activo.acta,
-                    fechaActa: activo.fechaActa,
-                    fechaRegistro: activo.created_at,
-                    ultimaActualizacion: activo.updated_at
+                    data.push({                    
+                    CODIGO: activo.codigo,
+                    SERIE: activo.serie,
+                    DESCRIPCION: activo.descripcion,
+                    MARCA: activo.marca ? activo.marca.marca : '',
+                    MODELO: activo.modelo,
+                    PROCEDENCIA: activo.procedencia.procedencia,
+                    ENTIDAD: activo.entidad ? activo.entidad.entidad : '',
+                    CUENTA: activo.cuenta ? activo.cuenta.cuenta : '',
+                    PRECIO: activo.precio,
+                    RUBRO: activo.rubro ? activo.rubro.rubro : '',
+                    UBICACION: activo.ubicacion ?  activo.ubicacion.ubicacion : '',
+                    FECHA_ADQUISION: activo.fecha_adquision,
+                    ESTADO: activo.estado ? activo.estado.estado : '',
+                    OBSERVACION: activo.observacion,
+                    ACTA: activo.acta,
+                    FECHA_ACTA: activo.fechaActa,
+                    FECHA_REGISTRO: activo.created_at,
+                    ULTIMA_ACTUALIZACION: activo.updated_at
                     })
                 })
+
+                data.push(
+                   { PRECIO: `Precio total: ${ this.precioTotal}`}
+                )
 
                 try {            
                     json2excel({

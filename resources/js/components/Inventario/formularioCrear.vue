@@ -105,8 +105,7 @@
                 <v-col cols="6">
                   <v-select
                   append-icon="fas fa-compass"
-                    ref="autocompleteCuenta"
-                    @keyup="errors['procedencia.id'] = []"
+                    ref="autocompleteCuenta"                    
                     :error-messages="errors['procedencia.id']"
                     :items="procedencias"
                     v-model="inventario.procedencia"
@@ -198,7 +197,7 @@
                 <v-col cols="5">
                   <v-autocomplete
                     append-icon="fas fa-book-open"
-                    @keyup="errors['rubro.id'] = []"
+                    @change="errors['rubro.id'] = []"
                     :error-messages="errors['rubro.id']"
                     :disabled="detalle"
                     v-model="inventario.rubro"
@@ -262,7 +261,7 @@
 
                 <v-col cols="5">
                   <v-autocomplete
-                    @keyup="errors['ubicacion.id'] = []"
+                    @change="errors['ubicacion.id'] = []"
                     :error-messages="errors['ubicacion.id']"
                     :disabled="detalle"
                     append-icon="fas fa-map-marker-alt"
@@ -359,13 +358,14 @@
                       v-model="cpFechaInicioMovi"
                       label="Desde"
                       prepend-icon="mdi-calendar"
-                      readonly
+                      readonly                      
                       required
                       v-bind="attrs"
                       v-on="on"
                     ></v-text-field>
                   </template>
                   <v-date-picker
+                    locale="es"
                     v-model="cpFechaInicioMovi"
                     @input="menuFechaInicioMovi = false"
                     :max="limitFecha"
@@ -394,6 +394,7 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
+                  locale="es"
                     v-model="cpFechaFinalMovi"
                     @input="menuFechaFinalMovi = false"
                     :max="limitFecha"
@@ -459,6 +460,7 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
+                    locale="es"
                     v-model="cpFechaInicio"
                     @input="menuFechaInicio = false"
                     :max="limitFecha"
@@ -487,6 +489,7 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
+                  locale="es"
                     v-model="cpFechaFinal"
                     @input="menuFechaFinal = false"
                     :max="limitFecha"
@@ -1069,6 +1072,7 @@ export default {
         .catch(console.error);
     },
     onChangeProcedencia() {      
+      errors['procedencia.id'] = []
       this.inventario.cuenta = { id: null, cuenta: null }
       this.inventario.entidad = { id: null, entidad: null }
     },

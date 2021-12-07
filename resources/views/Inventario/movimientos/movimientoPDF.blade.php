@@ -58,10 +58,18 @@
     <div class="detalleSalido">
         <table border="0" cellspacing="0" cellpadding="0" id="detalle">
             <tbody>
-                <tr>
-                    <td>Se traslada a:</td>                       
-                    <td colspan="2"> {{ $movimiento->detalleSalida ?? '' }}</td>                        
-                </tr>
+                @if( $movimiento->tipo_id == 4 )
+                    <tr>
+                        <td>Se trasalada a:</td>
+                        <td>{{ $movimiento->detalleSalida }}</td>
+                    </tr>
+                @else
+                    <tr>
+                        <td>Se traslada a:</td>                       
+                        <td colspan="2"> {{ $movimiento->ubicacion->ubicacion ?? '' }}</td>                        
+                    </tr>
+                @endif
+                
                 <tr>
                     <td>Fecha de reingreso:</td>                       
                     <td>{{ $movimiento->fechaReingreso }}</td> 

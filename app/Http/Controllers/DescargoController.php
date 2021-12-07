@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Validator;
 
 class DescargoController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     protected $mensajes = [
         'required' => 'Este campo es requerido',
         'min' => 'Este campo debe tener al menos :min caracteres.',

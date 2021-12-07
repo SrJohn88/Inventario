@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Validator;
 
 class RevisionController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     private $mensajes = [
         'required' => 'Este campo es requerido',
         'min' => 'El campo debe tener al menos :min caracteres.',

@@ -155,6 +155,7 @@ export default {
               "No parece un email",
       },
       roles: [],
+      usuarioSesion : {}
     };
   },
   computed: {
@@ -172,16 +173,33 @@ export default {
 
     this.usuario.id = params.has("id") ? params.get("id") : null;
   },
-  mounted() {
+  created()
+  {
+    this.obtenerSession();
+  },
+  mounted() {    
     this.obtenerRoles();
 
     if ( this.usuario.id != null )
     {
-      this.obtenerUsuario()
-      console.log(this.usuario )
+      this.obtenerUsuario()      
     }
   },
   methods: {
+    obtenerSession() {
+      this.loader = true;
+      axios
+        .get("/Api/usuarios/sesion")
+        .then(({ data: { usuario } }) => {
+          this.loader = false;
+          
+          if ( usuario.rol.rol !== 'Administrador' )
+          {
+              window.location = '/usuarios'
+          }
+        })
+        .catch(console.error);           
+    },
     obtenerRoles() {
       this.loader = true;
       axios

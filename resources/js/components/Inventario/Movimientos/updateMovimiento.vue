@@ -77,7 +77,7 @@
                             <v-col cols="12" sm="6" v-if="movimiento.tipoMovimiento && movimiento.tipoMovimiento.id == 4" >
                                 <v-text-field
                                     append-icon="fas fa-file"
-                                    v-model="movimiento.detalleSalida"
+                                    v-model="movimiento.seTraslada"
                                     label="Se traslada a"
                                     disabled
                                 ></v-text-field>
@@ -281,6 +281,7 @@ export default {
                 created_at: '',
                 observaciones: "",
                 detalleSalida: { id: null, ubicacion: ''},
+                seTraslada: '',
                 activos: [],
             },
             headMovimientos: [
@@ -343,8 +344,9 @@ export default {
                         aprobado_gerencia,
                         created_at,
                         descripcion,
-                        fechaReingreso,
+                        updated_at,
                         ubicacion,
+                        detalleSalida,
                         inventario                        
                     } = movimiento[0]
 
@@ -354,10 +356,11 @@ export default {
                     this.movimiento.gerencia = { ... aprobado_gerencia}
                     this.movimiento.registro = created_at
                     this.movimiento.usuario = { ... user }
-                    this.movimiento.fechaReingreso = fechaReingreso
+                    this.movimiento.fechaReingreso = updated_at
                     this.movimiento.observaciones = descripcion
                     this.movimiento.created_at = created_at
-                    this.movimiento.detalleSalida = ubicacion ? { ...ubicacion } : { id: null, ubicacion : ''} 
+                    this.movimiento.detalleSalida = ubicacion ? { ...ubicacion } : { id: null, ubicacion : 'nulll'} 
+                    this.movimiento.seTraslada = detalleSalida ? detalleSalida : ''
 
                     inventario.forEach( inventario => {
                         if ( !inventario.marca )

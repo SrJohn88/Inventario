@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class RubroController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     private $mensajes = [
         'required' => 'El :attribute es requerido',
         'min' => 'El :attribute debe tener al menos :min caracteres.',

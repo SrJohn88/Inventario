@@ -56,6 +56,7 @@
                       value-type="format"
                       format="DD-MM-YYYY"
                       placeholder="Fecha Desde"
+                      :max="obtenerFechaActual"
                     >
                     </date-picker>
                   </v-col>
@@ -63,17 +64,18 @@
                     <date-picker
                       v-model="hasta"
                       locale="es"
-                      :date-format="date => $moment(date)-format('DD-MM-YYYY')"
-                      :formatted-value.sync="formatted"
+                      :date-format="date => $moment(date)-format('DD-MM-YYYY')"                      
                       :editable="false"                      
                       style="width: 75% !important"
                       input-class="form-control"
                       class="mt-2"
                       value-type="format"                      
-                      placeholder="Fecha Hasta"
+                      placeholder="Fecha Hasta"                      
+                      :min="limitFecha"
                     >
                     </date-picker>
-                  </v-col>
+                  </v-col>                                                 
+
                   <v-col cols="12" align="center" v-if="tipoReporte == 'Ubicacion'">
                   <v-autocomplete
                     style="width: 50% !important"
@@ -186,9 +188,12 @@ export default {
       rangoFechas: true,
       desde: null, hasta: null,
       modalReporte: false,
-      precioTotal : 0
+      precioTotal : 0,
+      limitFecha: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
     }
-  },
+  },  
   mounted()
   {
     this.obtenerUbicaciones()
@@ -321,10 +326,6 @@ export default {
         })
       }
       
-    },
-    obtenerInventario()
-    {
-
     }
   }
 }

@@ -14,6 +14,11 @@ use PDF;
 
 class MovimientoController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     private $mensajes = [
         'required' => 'Este campo es requerido',
         'min' => 'El campo debe tener al menos :min caracteres.',

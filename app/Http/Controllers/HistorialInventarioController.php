@@ -8,6 +8,11 @@ use App\Models\Inventario;
 
 class HistorialInventarioController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     function obtenerHistorialActivo ( Inventario $inventario, $desde, $hasta)
     {
         return response()->json([

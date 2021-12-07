@@ -10,6 +10,11 @@ use App\Models\Rol;
 
 class UserController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     private $mensajes = [
         'required' => 'Campo requerido',
         'min' => 'Este campo debe tener al menos :min caracteres.',

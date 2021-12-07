@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-    <title>Document</title>
+    <title>Reporte de revision</title>
 </head>
 <body>
 
@@ -23,9 +23,9 @@
                     <th>Fecha de registro</th>
                 </tr>
                 <tr>
-                    <td>NOmbre de prueba</td>
-                    <td>Jonathan</td>
-                    <td>29-11-2021</td>
+                    <td>{{ $revision->nombre }}</td>
+                    <td> {{ $revision->user->name. ' '.$revision->user->lastName }}</td>
+                    <td>{{ $revision->created_at }}</td>
                 </tr>
             </tbody>
         </table>
@@ -52,7 +52,7 @@
                         <td>{{ $activo->codigo }}</td>
                         <td>{{ $activo->estado->estado }}</td>
                         <td> {{ $activo->ubicacion->ubicacion }}</td>
-                        <td>{{ $activo->pivot->revisado ? 'SI' : 'NO' }}</td>
+                        <td>{{ $activo->pivot->revisado ? 'SI' : '' }}</td>
                         <td>{{ $activo->pivot->esCorrecto ? 'SI' : '' }}</td>
                         <td>{{ $activo->pivot->observacion }}</td>
                     </tr>    

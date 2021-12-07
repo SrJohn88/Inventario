@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\DB;
 
 class InventarioController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     private $mensajes = [
         'required' => 'El :attribute es requerido',
         'min' => 'El :attribute debe tener al menos :min caracteres.',

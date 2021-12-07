@@ -86,14 +86,15 @@
                         :disabled = "descargo.id != null"
                       ></v-text-field>
                     </template>
-                    <v-date-picker
+                    <v-date-picker                      
+                      locale="es"                                          
                       v-model="descargo.fecha"
                       @input="menu = false"
-                      :max="getFechaActual"
+                      :max="limitFecha"
                     ></v-date-picker>
                   </v-menu>
                 </v-col>
-
+              
                   <v-col cols="6">
                     <v-textarea                    
                       label="Observación"
@@ -258,6 +259,9 @@ export default {
   data()
   {
     return {
+      limitFecha: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
       menu: false,
       formDescargos: false,
       errors: [],
@@ -283,15 +287,11 @@ export default {
       },
       fechaActual: new Date(),
       formTitle: 'Agregar activo',
-      modalInventario: false,
+      modalInventario: false      
     }
   },
   computed : 
-  {
-    getFechaActual () 
-    {
-      return `${this.fechaActual.getFullYear()}-${ this.fechaActual.getMonth() + 1}-${ this.fechaActual.getDate()}`
-    },
+  {    
     title ()
     {
       return this.descargo.id == null ? 'Descargo de inventario' : 'Detalle de descargo'

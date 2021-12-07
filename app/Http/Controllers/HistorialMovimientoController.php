@@ -8,6 +8,11 @@ use App\Models\HistorialMovimiento;
 
 class HistorialMovimientoController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     function obtenerHistorialMovimientos ( Inventario $inventario, $desde, $hasta )
     {
         return response()->json([
