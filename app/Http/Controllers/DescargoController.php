@@ -45,7 +45,7 @@ class DescargoController extends Controller
                 $validacion = Validator::make($request->all(), [
                     'tipoDescargo.id' => 'required',
                     'fecha' => 'required',
-                    'acta' => 'required'
+                    'acta' => 'required|unique:descargos'
                 ], $this->mensajes);
 
                 if ($validacion->fails()) {

@@ -45,7 +45,7 @@
           :footer-props="{
             'items-per-page-options': [5, 10, 20, 30, 40],
             'items-per-page-text': 'Registros Por Página',
-          }"
+          }"          
           :items-per-page="5"
           :search="buscarUsuario"
           multi-sort
@@ -61,6 +61,7 @@
                 
                 <template v-slot:activator="{ on }">                            
                     <v-checkbox 
+                        v-show="usuarioSesion.rol.rol == 'Administrador'"
                         v-model="mostrarUsuariosEliminados"
                         class="mx-10"
                         style="margin-top: 1.5rem;"
